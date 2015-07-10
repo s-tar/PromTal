@@ -14,4 +14,7 @@ class Session():
         return self.__data.get(item, None)
 
     def __setattr__(self, key, value):
-        self.__data[key] = value
+        if hasattr(self.__data, key):
+            raise KeyError("Key '%s' is reserved" % key)
+        else:
+            self.__data[key] = value

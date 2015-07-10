@@ -6,6 +6,7 @@ from application.config import config
 
 __author__ = 's-tar'
 
+app.wsgi_app = SessionMiddleware(app.wsgi_app, config['session'])
+
 if __name__ == '__main__':
-    app.wsgi_app = SessionMiddleware(app.wsgi_app, config['session'])
     app.run(host='192.168.1.2', port=3000, debug=True)

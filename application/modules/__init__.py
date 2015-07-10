@@ -7,13 +7,12 @@ __author__ = 's-tar'
 
 
 __all__ = []
-modules = glob.glob(os.path.dirname(__file__)+"/*.py")
-modules = modules + glob.glob(os.path.dirname(__file__)+"/*/__init__.py")
+directory = os.path.dirname(__file__)
+modules = glob.glob(directory+"/*.py")
+modules += glob.glob(directory+"/*/__init__.py")
 
 for f in modules:
-    f = f.replace("__init__.py", "")
-    f = f.replace(os.path.dirname(__file__), "")
-    f = f.replace(".py", "", -1)
-    f = f.strip('/').strip('\\')
+    f = f.replace("__init__.py", "").replace(directory, "")\
+         .replace(".py", "", -1).strip('/').strip('\\')
     if f:
         __all__.append(os.path.basename(f))
