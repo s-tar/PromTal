@@ -1,19 +1,22 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+import os
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
 
-__author__ = 's-tar'
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=templates_dir, static_folder=static_folder)
 app.config['SQLALCHEMY_DATABASE_URI'] = '{type}://{username}:{password}@{host}/{db}?charset=utf8'.format(**config['db'])
 db = SQLAlchemy(app)
 
 @app.before_request
 def before_req():
+    if request.path.startswith('/admin/'):
+        # TODO Add user authorization checking
+        pass
     setattr(request, 'session', Session(request.environ['beaker.session']))
 
 from application.modules import *

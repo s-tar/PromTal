@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #eee !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+header {
+    padding: 10px 0;
+    background-color: white;
+    border-bottom: 1px solid #ccc;
+}
+
+header .logo img {
+    height: 30px;
+}

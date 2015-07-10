@@ -1,13 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-from flask import request
+from flask import request, render_template
 from application import app
-
-__author__ = 's-tar'
 
 @app.route("/")
 def index():
-    return "This is index page."
+    return render_template('index.html')
 
 
 @app.route("/session")

@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-__author__ = 's-tar'
-
-
 class xset(set):
     def __freeze__(self):
         return frozenset(self)

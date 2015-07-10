@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import os
 import glob
-
-__author__ = 's-tar'
-
 
 __all__ = []
 directory = os.path.dirname(__file__)

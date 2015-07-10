@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-__author__ = 's-tar'
-
-
 class Session():
     def __init__(self, data):
         self.__dict__.update({'_Session__data': data})

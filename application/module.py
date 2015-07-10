@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 from flask import Blueprint
 import application
-
-__author__ = 's-tar'
-
 
 class Module(Blueprint):
     __all = []
@@ -13,24 +8,28 @@ class Module(Blueprint):
         Blueprint.__init__(self, *args, **kwargs)
         self.__all.append(self)
 
-    def post(self, rule, methods=[], **options):
+    def post(self, rule, **options):
         def wrap(f):
-            return application.app.route(rule, methods=['POST'], **options)(f)
+            options['methods'] = ['POST']
+            return application.app.route(rule, **options)(f)
         return wrap
 
-    def get(self, rule, methods=[], **options):
+    def get(self, rule, **options):
         def wrap(f):
-            return application.app.route(rule, methods=['GET'], **options)(f)
+            options['methods'] = ['GET']
+            return application.app.route(rule, **options)(f)
         return wrap
 
-    def delete(self, rule, methods=[], **options):
+    def delete(self, rule, **options):
         def wrap(f):
-            return application.app.route(rule, methods=['DELETE'], **options)(f)
+            options['methods'] = ['DELETE']
+            return application.app.route(rule, **options)(f)
         return wrap
 
-    def put(self, rule, methods=[], **options):
+    def put(self, rule, **options):
         def wrap(f):
-            return application.app.route(rule, methods=['PUT'], **options)(f)
+            options['methods'] = ['PUT']
+            return application.app.route(rule, **options)(f)
         return wrap
 
     @classmethod
