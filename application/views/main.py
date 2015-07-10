@@ -15,3 +15,7 @@ def session_check(text=None):
 
     return "This is session check page.<br/>" \
            "Session text: %s" % s.text
+
+@app.route("/profile")
+def profile():
+    return render_template('profile/profile.html')
