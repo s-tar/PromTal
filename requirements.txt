@@ -6,3 +6,4 @@ MarkupSafe==0.23
 SQLAlchemy==1.0.6
 Werkzeug==0.10.4
 itsdangerous==0.24
+ldap3==3.0
