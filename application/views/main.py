@@ -19,3 +19,7 @@ def session_check(text=None):
 @app.route("/profile")
 def profile():
     return render_template('profile/profile.html')
+
+@app.route("/pro")
+def pro():
+    return render_template('index2.html')
