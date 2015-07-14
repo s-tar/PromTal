@@ -26,9 +26,11 @@ def session_check(text=None):
 def profile():
     return render_template('profile/profile.html')
 
+
 @main.route("/login")
 def login():
     return render_template('login/login.html')
+
 
 @main.route("/restore")
 def restore():
