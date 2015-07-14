@@ -1,12 +1,18 @@
 from flask import request, render_template
 from application.module import Module
 
+<<<<<<< HEAD
 main = Module('main', __name__)
 
 
 @main.get("/")
 def index():
     return render_template('index.html')
+=======
+@app.route("/")
+def main():
+    return render_template('main.html')
+>>>>>>> master
 
 
 @main.get("/session")

@@ -1,5 +1,5 @@
 from flask import Blueprint
-import application
+
 
 class Module(Blueprint):
     __all = []
