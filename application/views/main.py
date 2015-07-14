@@ -2,8 +2,8 @@ from flask import request, render_template
 from application import app
 
 @app.route("/")
-def index():
-    return render_template('index.html')
+def main():
+    return render_template('main.html')
 
 
 @app.route("/session")
@@ -19,10 +19,6 @@ def session_check(text=None):
 @app.route("/profile")
 def profile():
     return render_template('profile/profile.html')
-
-@app.route("/main")
-def pro():
-    return render_template('main.html')
 
 @app.route("/login")
 def login():
