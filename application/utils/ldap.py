@@ -27,6 +27,8 @@ class LDAP(object):
         app.config.setdefault('LDAP_PASSWORD', None)
         app.config.setdefault('LDAP_BASE_DN', None)
         app.config.setdefault('LDAP_OBJECTS_DN', 'distinguishedName')
+        app.config.setdefault('LDAP_USER_FIELDS', [])
+        app.config.setdefault('LDAP_USER_OBJECT_FILTER', '(objectClass=*)')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
 
         for option in ['USERNAME', 'PASSWORD', 'BASE_DN']:
@@ -57,9 +59,7 @@ class LDAP(object):
             raise LDAPException(self.error(e))
 
     def bind_user(self, username, password):
-        user_dn = self.simple_formatter(current_app.config['LDAP_BASE_DN'],
-                                        current_app.config['LDAP_OBJECTS_DN'],
-                                        username)
+        user_dn = self.get_object_details(username, dn_only=True)
         if user_dn is None:
             return
         try:
@@ -73,10 +73,8 @@ class LDAP(object):
         except ldap3.LDAPExceptionError:
             return
 
-    # TODO Change simple_formatter to more flexible method
-    @staticmethod
-    def simple_formatter(base, dn, value):
-        return '{dn}={value},{base}'.format(dn=dn, value=value, base=base)
+    def get_object_details(self, user, dn_only=False):
+        return user
 
     @staticmethod
     def error(e):
