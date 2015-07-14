@@ -1,5 +1,3 @@
-from functools import wraps
-
 import ldap3
 from flask import abort, current_app, g, make_response, redirect, url_for, request
 
@@ -11,9 +9,6 @@ class LDAPException(RuntimeError):
         self.message = message
 
     def __str__(self):
-        return self.message
-
-    def __unicode__(self):
         return self.message
 
 
@@ -38,28 +33,24 @@ class LDAP(object):
             if app.config['LDAP_{0}'.format(option)] is None:
                 raise LDAPException('LDAP_{0} cannot be None!'.format(option))
 
-    def initialize(self, user=None, password=None, authentication=None):
-        server = ldap3.Server('{0}://{1}:{2}'.format(
-                self.app.config['LDAP_SCHEMA'],
-                self.app.config['LDAP_HOST'],
-                self.app.config['LDAP_PORT']))
+    def initialize(self):
         try:
-            conn = ldap3.Connection(
-                server=server,
-                user=user,
-                password=password,
-                authentication=authentication)
-            return conn
+            server = ldap3.Server('{0}://{1}:{2}'.format(
+                current_app.app.config['LDAP_SCHEMA'],
+                current_app.app.config['LDAP_HOST'],
+                current_app.app.config['LDAP_PORT']))
+            return server
         except ldap3.LDAPExceptionError as e:
             raise LDAPException(self.error(e))
 
     def bind(self):
+        server = self.initialize()
         try:
-            conn = self.initialize(
-                self.app.config['LDAP_USERNAME'],
-                self.app.config['LDAP_PASSWORD'],
-                ldap3.SIMPLE
-            )
+            conn = ldap3.Connection(
+                server=server,
+                user=self.app.config['LDAP_USERNAME'],
+                password=self.app.config['LDAP_PASSWORD'],
+                authentication=ldap3.SIMPLE)
             conn.bind()
             return conn
         except ldap3.LDAPExceptionError as e:
@@ -72,7 +63,12 @@ class LDAP(object):
         if user_dn is None:
             return
         try:
-            conn = self.initialize(user_dn, password, ldap3.SIMPLE)
+            server = self.initialize()
+            conn = ldap3.Connection(
+                server=server,
+                user=user_dn,
+                password=password,
+                authentication=ldap3.SIMPLE)
             return conn.bind()
         except ldap3.LDAPExceptionError:
             return
@@ -81,17 +77,6 @@ class LDAP(object):
     @staticmethod
     def simple_formatter(base, dn, value):
         return '{dn}={value},{base}'.format(dn=dn, value=value, base=base)
-
-    @staticmethod
-    def login_require(func):
-        @wraps(func)
-        def wrapped(*args, **kwargs):
-            if g.user is None:
-                return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW'],
-                                        next=request.path))
-            return func(*args, **kwargs)
-
-        return wrapped
 
     @staticmethod
     def error(e):
