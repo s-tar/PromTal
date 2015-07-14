@@ -1,8 +1,7 @@
 from application.models.community import Community
 from application.models.file import File
-from collections import defaultdict
 from application import Module, db
-from application.models.news import News
+from application.models.post import Post
 from application.utils import auth
 from application.utils.validator import Validator
 from flask import render_template, request, abort, redirect, url_for
@@ -32,9 +31,8 @@ def community_page(id):
 
 @module.get('/new')
 @module.get('/edit/<int:id>')
-def news_form(id=None):
+def community_form(id=None):
     community = Community.get(id) or Community()
-    categories = defaultdict(list)
     if id and community.owner != auth.service.get_user():
         abort(403)
     return render_template('community/form.html', **{'community': community})
@@ -84,10 +82,71 @@ def save():
 def delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
-        news = News.get(id)
-        if news:
-            db.session.delete(news)
+        community = Community.get(id)
+        if community:
+            db.session.delete(community)
             db.session.commit()
             return jsonify({'status': 'ok'})
 
     return jsonify({'status': 'fail'})
+
+
+@module.get('/<int:community_id>/post/<int:id>')
+def post_page(community_id, id):
+    post = Post.get(id)
+    return render_template('community/post_one.html', **{'post': post})
+
+@module.get('/<int:community_id>/post/new')
+@module.get('/<int:community_id>/post/edit/<int:id>')
+def post_form(community_id, id=None):
+    user = auth.service.get_user()
+    community = Community.get(community_id)
+    post = Post.get(id) if id else Post()
+
+    if not community or not post:
+        abort(404)
+
+    if not community.is_member(user) or (id and post.author != user):
+        abort(403)
+
+    return render_template('community/post_form.html', **{'community_id': community_id, 'post': post})
+
+@module.route("/post/save", methods=['POST'])
+def post_save():
+    v = Validator(request.form)
+    v.fields('id').integer(nullable=True)
+    v.field('title').required()
+    v.field('text').required()
+    v.field('community_id').required().integer()
+    user = auth.service.get_user()
+
+    if not user.is_authorized():
+        abort(403)
+
+    if not v.is_valid():
+        return jsonify({
+            'status': 'fail',
+            'errors': v.errors
+        })
+
+    data = v.valid_data
+    if not data.id:
+        post = Post()
+        post.community_id = data.community_id
+    else:
+        post = Post.get(data.id)
+
+    if not post:
+        abort(400)
+    if post.author and post.author != user:
+        abort(403)
+    post.title = data.title
+    post.text = data.text
+    post.author = user
+
+    db.session.add(post)
+    db.session.commit()
+    return jsonify({
+        'status': 'ok',
+        'post': post.as_dict()
+    })

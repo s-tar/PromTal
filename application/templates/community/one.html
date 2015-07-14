@@ -1,7 +1,45 @@
 {% import "macros/user.html" as user %}
 {% extends "layout.html" %}
 {% block content %}
-<div class="community-page frame">
-    <div class="header"></div>
+<div class="community-page">
+    <div class="row">
+    <div class="col-md-8 col-md-offset-2 header">
+        <div class="community frame">
+            {% if community.type == community.TYPE.PRIVATE %}
+                <div class="closed fa fa-lock" title="Закрытая группа"></div>
+            {% endif %}
+            <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
+            <div class="info">
+                <div class="name">{{ community.name or '' }}</div>
+                <div class="description">{{ community.description or '' }}</div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-md-8 col-md-offset-2 news-list">
+        {% for post in community.posts %}
+        <article class="frame">
+            {% if current_user == post.author %}
+            <div class="edit-buttons">
+                <a href="{{ url_for('community.post_form', community_id=community.id, id=post.id) }}"><span class="fa fa-edit"></span></a>
+                <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-times"></span></a>
+            </div>
+            {% endif %}
+            <h3 class="title"><a href="{{ url_for('community.post_page', community_id=community.id, id=post.id) }}">{{ post.title or '' }}</a></h3>
+            <div class="text" onCLick="javascript: window.location.href='/post/{{ post.id }}'">{{ post.announcement|safe or '' }}</div>
+            <div class="datetime">{{ post.datetime|datetime(old_time=False) or '' }}</div>
+            <div class="footer">
+                <div class="author">
+                    {{ user.icon(post.author) }}
+                    <div class="comments-counter" title="Комментарии" data-count="{{ post.comments_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}"></div>
+                    <div class="likes-counter-component" title="Понравилось" data-count="{{ post.votes_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}" data-my-vote="{{ post.my_vote.value }}"></div>
+                    <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ post.views_count or 0 }}</div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    </div>
 </div>
 {% endblock %}
