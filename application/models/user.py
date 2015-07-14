@@ -1,4 +1,4 @@
-from application import db
+from application.db import db
 
 
 class User(db.Model):
@@ -6,6 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True)
     name = db.Column(db.String(64))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     mobile_phone = db.Column(db.String(15))
     inner_phone = db.Column(db.String(4))
     email = db.Column(db.String)
