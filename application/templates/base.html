@@ -1,0 +1,10 @@
+{% include 'header.html' %}
+    <div id="wrapper">
+        {% include 'navigation/navbar.html' %}
+        <div id="page-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+{% include 'footer.html' %}
