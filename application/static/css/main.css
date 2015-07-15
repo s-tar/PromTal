@@ -14,8 +14,9 @@ header {
     border-bottom: 1px solid #ccc;
 }
 
-img.logo {
-    height: 50px;
+.logo img {
+    height: 30px;
+    margin: 10px;
 }
 a.logo {
     padding: 0;
