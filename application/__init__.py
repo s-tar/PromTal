@@ -4,6 +4,7 @@ from flask import Flask, request
 from beaker.middleware import SessionMiddleware
 
 from application.db import db
+from application.ldap import ldap
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
@@ -20,6 +21,7 @@ def create_app(config_name):
     app.wsgi_app = SessionMiddleware(app.wsgi_app, config[config_name].session)
 
     db.init_app(app)
+    ldap.init_app(app)
 
     from application import models
 
