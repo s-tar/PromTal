@@ -44,7 +44,7 @@ def create_conn_to_ldap(ldap_config):
 def get_user_details(ldap_conn, ldap_config):
     ldap_conn.search(
         search_base=ldap_config['LDAP_BASE_DN'],
-        search_filter='(mail=rezoluta.o@partner.prom.ua)',#ldap_config['LDAP_USER_OBJECT_FILTER'],
+        search_filter=ldap_config['LDAP_USER_OBJECT_FILTER'],
         search_scope=ldap3.SUBTREE,
         attributes=ldap3.ALL_ATTRIBUTES
     )
@@ -69,13 +69,12 @@ def fill_db():
 
     postgresql_cursor = postgresql_conn.cursor()
     for user in get_user_details(ldap_conn, ldap_config):
-        # postgresql_cursor.execute("INSERT INTO users (login, full_name, mobile_phone, inner_phone, email)"
-        #                           "VALUES(%s, %s, %s, %s, %s)", (user.get('cn', [''])[0],
-        #                                                          user.get('displayName', [''])[0],
-        #                                                          user.get('mobile', [''])[0],
-        #                                                          user.get('inner_phone', [''])[0],
-        #                                                          user.get('mail', [''])[0]))
-        print(user)
+        postgresql_cursor.execute("INSERT INTO users (login, full_name, mobile_phone, inner_phone, email)"
+                                  "VALUES(%s, %s, %s, %s, %s)", (user.get('cn', [''])[0],
+                                                                 user.get('displayName', [''])[0],
+                                                                 user.get('mobile', [''])[0],
+                                                                 user.get('inner_phone', [''])[0],
+                                                                 user.get('mail', [''])[0]))
     postgresql_conn.commit()
 
     ldap_conn.unbind()
