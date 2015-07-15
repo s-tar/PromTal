@@ -14,14 +14,20 @@ var Input = React.createClass({
         this.props.registerField(this)
         return {error: ''};
     },
-    onChange: function() {
-        this.setState({error: ''})
+    onChange: function(onChnageFunc) {
+        var self = this
+        function _onChange() {
+            self.setState({error: ''})
+            if(typeof onChnageFunc == 'function')
+                onChnageFunc(self)
+        }
+        return _onChange
     },
     render: function() {
         var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <input {...this.props} onChange={this.onChange}/>{error}
+                <input {...this.props} onChange={this.onChange(this.props.onChange)}/>{error}
             </div>
         )
     }
@@ -32,14 +38,20 @@ var TextArea = React.createClass({
         this.props.registerField(this)
         return {error: ''};
     },
-    onChange: function() {
-        this.setState({error: ''})
+    onChange: function(onChnageFunc) {
+        var self = this
+        function _onChange() {
+            self.setState({error: ''})
+            if(typeof onChnageFunc == 'function')
+                onChnageFunc(self)
+        }
+        return _onChange
     },
     render: function() {
         var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <textarea {...this.props} onChange={this.onChange}>{this.props.children}</textarea>{error}
+                <textarea {...this.props} onChange={this.onChange(this.props.onChange)}>{this.props.children}</textarea>{error}
             </div>
         )
     }
@@ -60,6 +72,11 @@ var AJAXForm = React.createClass({
         }
         return _registerField
     },
+    showErrors: function(errors) {
+        for(var name in errors)
+            for(var i in errors[name])
+                this.fields[name][i].setState({error: errors[name][i][0].message})
+    },
     onSubmit: function(e) {
         e.preventDefault();
         var self = this
@@ -71,12 +88,10 @@ var AJAXForm = React.createClass({
             data: form.serialize(),
 
             success: function(json) {
-                console.log(json)
-                for(var name in json.errors)
-                    for(var i in json.errors[name])
-                        self.fields[name][i].setState({error: json.errors[name][i][0].message})
+                self.showErrors(json.errors)
                 if(json.status == 'ok'){
-                    console.log('FORM IS OK!')
+                    if(typeof self.props.onSuccess == 'function')
+                        self.props.onSuccess(json)
                 }
 
             }
@@ -110,15 +125,3 @@ var AJAXForm = React.createClass({
     }
 });
 
-React.render(
-    <AJAXForm action="/demo_form" method="post">
-        <Input type="text" name="first_name"/>
-        <div>
-            <span><Input type="text" name="last_name"/></span>
-        </div>
-        <Input type="text" name="email"/>
-        <Input type="text" name="email"/>
-        <TextArea name="text"></TextArea>
-        <Input type="submit" value="Submit"/>
-    </AJAXForm>,
-    document.getElementById('test_form'))
