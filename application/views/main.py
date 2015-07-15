@@ -1,13 +1,18 @@
+from application.utils.validator import Validator
 from flask import request, render_template
-from application import app
+from application.module import Module
+from flask.json import jsonify
 
-@app.route("/")
+main = Module('main', __name__)
+
+
+@main.get("/")
 def index():
     return render_template('index.html')
 
 
-@app.route("/session")
-@app.route("/session/<text>")
+@main.get("/session")
+@main.get("/session/<text>")
 def session_check(text=None):
     s = request.session
     if text:
@@ -16,6 +21,31 @@ def session_check(text=None):
     return "This is session check page.<br/>" \
            "Session text: %s" % s.text
 
-@app.route("/profile")
+
+@main.get("/profile")
 def profile():
     return render_template('profile/profile.html')
+
+
+@main.route("/login")
+def login():
+    return render_template('login/login.html')
+
+
+@main.route("/restore")
+def restore():
+    return render_template('login/restore.html')
+
+@main.route("/demo_form", methods=['POST'])
+def test():
+
+    v = Validator(request.form)
+    v.fields('email').email()
+    v.field('first_name').required()
+    v.field('text').required().length(max=6)
+
+    if v.is_valid():
+        return jsonify({'status': 'ok'})
+
+    return jsonify({'status': 'fail',
+            'errors': v.errors})

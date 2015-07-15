@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import imghdr
 from datetime import datetime
 import re
@@ -25,7 +26,7 @@ class Validator:
         return self.errors
 
     def is_valid(self):
-        return True if self.errors else False
+        return False if self.errors else True
 
 
 class Field:
@@ -82,19 +83,16 @@ class Field:
     def length(self, max=None, min=None, message=None):
         if max is not None and min is not None:
             for i, val in enumerate(self.val):
-                val = val.decode('utf-8')
                 code, message = get_message("string_not_in_range", message)
                 if len(val) < min or len(val) > max:
                     self.validator.add_error(self.name, message % {'min': min, 'max': max}, code, index=i)
         elif max is not None:
             for i, val in enumerate(self.val):
-                val = val.decode('utf-8')
                 code, message = get_message("string_too_long", message)
                 if len(val) > max:
                     self.validator.add_error(self.name, message % {'min': min, 'max': max}, code, index=i)
         elif min is not None:
             for i, val in enumerate(self.val):
-                val = val.decode('utf-8')
                 code, message = get_message("string_too_short", message)
                 if len(val) < min:
                     self.validator.add_error(self.name, message % {'min': min, 'max': max}, code, index=i)
