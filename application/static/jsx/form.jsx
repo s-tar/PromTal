@@ -4,7 +4,11 @@ var FieldError = React.createClass({
             return false
         else
             return(
-                <div className="error-wrapper"><div className="error">{this.props.text}</div></div>
+                <div className="alert alert-danger" role="alert">
+                  <span className="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span className="sr-only">Error:</span>
+                  {this.props.text}
+                </div>
             )
     }
 })

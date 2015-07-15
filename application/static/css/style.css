@@ -17,6 +17,9 @@ header {
 header .logo img {
   height: 30px;
 }
+
+
+/*
 .frame {
   background: #fff;
   -webkit-border-radius: 5px;
@@ -89,3 +92,4 @@ input[type=submit]:hover {
   -moz-border-radius: 0 3px 0 3px;
   border-radius: 0 3px 0 3px;
 }
+*/
