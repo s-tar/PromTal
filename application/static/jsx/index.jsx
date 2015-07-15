@@ -1,4 +1,13 @@
 React.render(
+    <AJAXForm action="/user/login" method="post" class="form-signin" onSuccess={wellDone}>
+        <Input type="text" name="login" placeholder="Логин" onChange={someChange}/>
+        <Input type="password" name="password" placeholder="Пароль" />
+        <Input type="submit" value="Вход"/>
+    </AJAXForm>,
+    document.getElementById('log_in_form'))
+
+
+React.render(
     <AJAXForm action="/user/login" method="post" onSuccess={wellDone}>
         <Input type="text" name="login" placeholder="Логин" onChange={someChange}/>
         <Input type="password" name="password" placeholder="Пароль" />
