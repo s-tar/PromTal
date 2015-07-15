@@ -1,15 +1,20 @@
 React.render(
-    <AJAXForm action="/demo_form" method="post" onSuccess={wellDone}>
-        <Input type="text" name="first_name"  onChange={someChange}/>
-        <div>
-            <span><Input type="text" name="last_name"/></span>
-        </div>
-        <Input type="text" name="email"/>
-        <Input type="text" name="email"/>
-        <TextArea name="text"></TextArea>
-        <Input type="submit" value="Submit"/>
+    <AJAXForm action="/user/login" method="post" onSuccess={wellDone}>
+        <Input type="text" name="login" placeholder="Логин" onChange={someChange}/>
+        <Input type="password" name="password" placeholder="Пароль" />
+        <Input type="submit" value="Вход"/>
     </AJAXForm>,
-    document.getElementById('test_form'))
+    document.getElementById('login_form'))
+
+
+React.render(
+    <AJAXForm action="/user/registration" method="post" onSuccess={wellDone}>
+        <Input type="text" name="login" placeholder="Логин" onChange={someChange}/>
+        <Input type="password" name="password" placeholder="Пароль" />
+        <Input type="password" name="repassword" placeholder="Повтор пароля" />
+        <Input type="submit" value="Регистрация"/>
+    </AJAXForm>,
+    document.getElementById('registration_form'))
 
 function someChange(){
     console.log('CHANGE')

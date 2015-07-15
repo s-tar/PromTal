@@ -36,6 +36,12 @@ def login():
 def restore():
     return render_template('login/restore.html')
 
+
+@main.route("/new_pass")
+def new_pass():
+    return render_template('login/new_pass.html')
+
+
 @main.route("/demo_form", methods=['POST'])
 def test():
 
