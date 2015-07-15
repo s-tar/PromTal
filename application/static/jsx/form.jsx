@@ -14,20 +14,16 @@ var Input = React.createClass({
         this.props.registerField(this)
         return {error: ''};
     },
-    onChange: function(onChnageFunc) {
-        var self = this
-        function _onChange() {
-            self.setState({error: ''})
-            if(typeof onChnageFunc == 'function')
-                onChnageFunc(self)
-        }
-        return _onChange
+    onChange: function(event) {
+        this.setState({error: ''})
+        if(typeof this.props.onChange == 'function')
+            this.props.onChange(event)
     },
     render: function() {
         var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <input {...this.props} onChange={this.onChange(this.props.onChange)}/>{error}
+                <input {...this.props} onChange={this.onChange}/>{error}
             </div>
         )
     }
@@ -38,20 +34,16 @@ var TextArea = React.createClass({
         this.props.registerField(this)
         return {error: ''};
     },
-    onChange: function(onChnageFunc) {
-        var self = this
-        function _onChange() {
-            self.setState({error: ''})
-            if(typeof onChnageFunc == 'function')
-                onChnageFunc(self)
-        }
-        return _onChange
+    onChange: function(event) {
+        this.setState({error: ''})
+        if(typeof this.props.onChange == 'function')
+            this.props.onChange(event)
     },
     render: function() {
         var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <textarea {...this.props} onChange={this.onChange(this.props.onChange)}>{this.props.children}</textarea>{error}
+                <textarea {...this.props} onChange={this.props.onChange}>{this.props.children}</textarea>{error}
             </div>
         )
     }
