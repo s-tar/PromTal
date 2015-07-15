@@ -50,12 +50,12 @@ var TextArea = React.createClass({
 });
 
 var AJAXForm = React.createClass({
-    fields: {},
     getInitialState: function() {
         return {errors: {}, data: {}};
     },
     registerField: function(name, index) {
         var self = this
+        self.fields = self.fields || {}
         function _registerField(field) {
             if(!!name) {
                 self.fields[name] = self.fields[name] || {}
@@ -66,14 +66,16 @@ var AJAXForm = React.createClass({
     },
     showErrors: function(errors) {
         for(var name in errors)
-            for(var i in errors[name])
-                this.fields[name][i].setState({error: errors[name][i][0].message})
+            for(var i in errors[name]) {
+                var field = this.fields[name] && this.fields[name][i]
+                if(!!field) field.setState({error: errors[name][i][0].message})
+            }
+
     },
     onSubmit: function(e) {
         e.preventDefault();
         var self = this
         var form = $(e.target)
-
         $.ajax({
             type: form.attr('method') || 'POST',
             url: form.attr('action') || '',
