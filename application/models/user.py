@@ -1,4 +1,4 @@
-from application import db
+from application.db import db
 
 
 class User(db.Model):
@@ -8,7 +8,7 @@ class User(db.Model):
     full_name = db.Column(db.String(64))
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
-    email = db.Column(db.String, unique=True)  # TODO Add constraint on length; can't be nullable in future
+    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)
 
