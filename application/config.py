@@ -3,7 +3,6 @@ class Config(object):
     SECRET_KEY = 'very-secret-key'
 
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/promtal"
-
     @staticmethod
     def init_app(app):
         pass
