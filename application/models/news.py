@@ -1,6 +1,6 @@
 from application.db import db
 from datetime import datetime
-
+from application.models.comment import Comment
 
 class NewsTagAssociation(db.Model):
     __tablename__ = 'news_tag_association'
@@ -27,7 +27,7 @@ class News(db.Model):
 
     author = db.relationship("User", backref="news")
     category = db.relationship("NewsCategory", backref="news")
-    tags = db.relationship("NewsTag", secondary="NewsTagAssociation", backref="news")
-    comments = db.relationship("Comment", secondary="NewsCommentAssociation", backref="news")
+    tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news")
+    comments = db.relationship("Comment", secondary="news_comment_association", backref="news")
 
 

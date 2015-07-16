@@ -1,3 +1,4 @@
+from application.models.user import User
 import os
 from application.utils.auth_middleware import AuthMiddleware
 

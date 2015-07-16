@@ -1,13 +1,13 @@
 """empty message
 
-Revision ID: 1a95a64e8c4
+Revision ID: 4a64396b1dc
 Revises: None
-Create Date: 2015-07-16 16:45:11.856168
+Create Date: 2015-07-16 17:14:05.489738
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '1a95a64e8c4'
+revision = '4a64396b1dc'
 down_revision = None
 
 from alembic import op
@@ -27,6 +27,18 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('login', sa.String(length=64), nullable=True),
+    sa.Column('full_name', sa.String(length=64), nullable=True),
+    sa.Column('mobile_phone', sa.String(), nullable=True),
+    sa.Column('inner_phone', sa.String(), nullable=True),
+    sa.Column('email', sa.String(), nullable=True),
+    sa.Column('birth_date', sa.Date(), nullable=True),
+    sa.Column('avatar', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('login')
     )
     op.create_table('comment',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -74,6 +86,7 @@ def downgrade():
     op.drop_table('news_comment_association')
     op.drop_table('news')
     op.drop_table('comment')
+    op.drop_table('users')
     op.drop_table('news_tag')
     op.drop_table('news_category')
     ### end Alembic commands ###
