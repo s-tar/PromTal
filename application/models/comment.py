@@ -5,7 +5,7 @@ from datetime import datetime
 class Comments(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     text = db.Column(db.Text())
     datetime = db.Column(db.DateTime, default=datetime.now)
 

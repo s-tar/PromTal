@@ -9,6 +9,7 @@ from application.config import config
 from application.module import Module
 from application.utils.session import Session
 from application.views import *
+from application.models import *
 
 
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
