@@ -2,6 +2,7 @@ from application.utils.validator import Validator
 from flask import request, render_template
 from application.module import Module
 from flask.json import jsonify
+from envelopes import Envelope, GMailSMTP
 
 main = Module('main', __name__)
 
@@ -34,6 +35,14 @@ def login():
 
 @main.route("/restore")
 def restore():
+    envelope = Envelope(
+        from_addr=(u'promtal.ua@gmail.com', u'From Example'),
+        to_addr=(u'mihailselezniov@yandex.ru', u'To Example'),
+        subject=u'Envelopes demo',
+        text_body=u"I'm a helicopter!"
+    )
+    gmail = GMailSMTP('promtal.ua@gmail.com', '314promtal.ua')
+    gmail.send(envelope)
     return render_template('login/restore.html')
 
 
