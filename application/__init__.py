@@ -3,8 +3,8 @@ from application.utils.auth_middleware import AuthMiddleware
 
 from flask import Flask, request
 from beaker.middleware import SessionMiddleware
-
 from application.db import db, redis
+from application.ldap import ldap
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
@@ -22,6 +22,7 @@ def create_app(config_name):
 
     db.init_app(app)
     redis.init_app(app)
+    ldap.init_app(app)
 
     from application import models
 
