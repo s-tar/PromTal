@@ -4,9 +4,12 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/promtal"
 
-    @staticmethod
-    def init_app(app):
-        pass
+    session = {
+        'session.type': 'file',
+        'session.cookie_expires': True,
+        'session.data_dir': './tmp/session',
+        'session.auto': True,
+    }
 
 
 class DevelopmentConfig(Config):
