@@ -28,7 +28,7 @@ def fill_db(config):
                     full_name=user_object.get('displayName', [''])[0],
                     mobile_phone=user_object.get('mobile', [''])[0],
                     inner_phone=user_object.get('telephoneNumber', [''])[0],
-                    email=user_object.get('email', [''])[0])
+                    email=user_object.get('mail', [''])[0])
         db.session.add(user)
     db.session.commit()
     logging.info("DB has been filled successfully.")
