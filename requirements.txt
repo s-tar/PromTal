@@ -16,4 +16,3 @@ itsdangerous==0.24
 ldap3==0.9.8.6
 psycopg2==2.6.1
 pyasn1==0.1.8
-
