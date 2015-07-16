@@ -18,8 +18,9 @@ class LDAP(object):
         if app is not None:
             self.init_app(app)
 
-    @staticmethod
-    def init_app(app):
+    def init_app(self, app):
+        self.app = app
+
         app.config.setdefault('LDAP_HOST', 'localhost')
         app.config.setdefault('LDAP_PORT', 389)
         app.config.setdefault('LDAP_SCHEMA', 'ldap')
@@ -38,9 +39,9 @@ class LDAP(object):
     def initialize(self):
         try:
             server = ldap3.Server('{0}://{1}:{2}'.format(
-                current_app.app.config['LDAP_SCHEMA'],
-                current_app.app.config['LDAP_HOST'],
-                current_app.app.config['LDAP_PORT']))
+                self.app.config['LDAP_SCHEMA'],
+                self.app.config['LDAP_HOST'],
+                self.app.config['LDAP_PORT']))
             return server
         except ldap3.LDAPExceptionError as e:
             raise LDAPException(self.error(e))

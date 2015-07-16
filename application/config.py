@@ -15,19 +15,21 @@ class Config:
                                                                         POSTGRESQL_DB_NAME)
 
     LDAP_SCHEMA = 'ldap'
-    LDAP_HOST = ''
+    LDAP_HOST = 'cirno.uaprom'
     LDAP_PORT = 389
-    LDAP_USERNAME = ''
-    LDAP_PASSWORD = ''
-    LDAP_BASE_DN = 'ou=,dc=,dc='
+    LDAP_USERNAME = 'cn=admin,dc=uaprom,dc=net'
+    LDAP_PASSWORD = None
+    LDAP_BASE_DN = 'ou=People,dc=uaprom,dc=net'
     LDAP_USER_OBJECT_DN = 'cn'
     LDAP_USER_OBJECT_FILTER = '(cn=*)'
     LDAP_USER_FIELD = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
 
-    @staticmethod
-    def init_app(app):
-        pass
-
+    session = {
+        'session.type': 'file',
+        'session.cookie_expires': True,
+        'session.data_dir': './tmp/session',
+        'session.auto': True
+    }
 
 class DevelopmentConfig(Config):
     DEBUG = True
