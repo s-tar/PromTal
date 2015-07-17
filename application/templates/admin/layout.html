@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PromTal Admin</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/main.css" >
+    <link rel="stylesheet" href="/static/css/style.css" >
+    <script src="/static/jsx/form.jsx" type="text/jsx"></script>
+</head>
+<body>
+    {% include 'admin/header.html' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 from application.utils.validator import Validator
-from flask import request, render_template
+from flask import request, render_template, redirect, url_for
 from application.module import Module
 from flask.json import jsonify
 
@@ -55,3 +55,8 @@ def test():
 
     return jsonify({'status': 'fail',
             'errors': v.errors})
+
+
+@main.route("/logout")
+def logout():
+    return redirect(url_for('index'))
