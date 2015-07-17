@@ -15,6 +15,7 @@ class Validator:
         val = self.data.get(item, None)
         return val if len(val) > 1 else val[0]
 
+
     def field(self, name):
         return Field(self, name)
 
@@ -46,11 +47,17 @@ class ValidData:
             val = val[0]
         return val
 
-    def list(self, item):
-        return list(self.__data.get(item))
+    def __getitem__(self, item):
+        return self.__data[item]
+
+    def __setitem__(self, key, value):
+        self.__data[key] = value
 
     def __repr__(self):
         return str(self.__data)
+
+    def list(self, item):
+        return list(self.__data.get(item))
 
 
 class Field:
@@ -173,7 +180,7 @@ class Field:
             if val is not None and val != "":
                 try:
                     val = val.strip()
-                    self.validator.valid_data[self.name][i] = datetime.strptime(val, format)
+                    self.validator.valid_data.list(self.name)[i] = datetime.strptime(val, format)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
             else:
