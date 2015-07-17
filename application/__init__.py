@@ -37,7 +37,7 @@ def create_app(config_name):
 
     @app.context_processor
     def inject_user():
-        return dict(currrent_user=get_user())
+        return dict(current_user=get_user())
 
     return app
 
