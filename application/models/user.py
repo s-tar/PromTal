@@ -1,5 +1,6 @@
 from application.db import db
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)  # TODO check, if autoincrement
@@ -13,3 +14,7 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
+
+    @classmethod
+    def get_by_id(cls, uid):
+        return cls.query.filter(User.id == uid).first()
