@@ -17,6 +17,10 @@ def get_user():
 
 
 def login(login, password):
+    #sid = request.cookies.get('sid', None)
+    #session = {'user': {'id': 818}}
+    #redis.set(sid, pickle.dumps(session))
+
     if ldap.bind_user(login, password):
         sid = request.cookies.get('sid', None)
         user = User.get_by_login(login)

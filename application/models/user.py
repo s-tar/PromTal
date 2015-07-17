@@ -1,5 +1,5 @@
 from application.db import db
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid1
 
 
@@ -19,15 +19,15 @@ class User(db.Model):
 
     @classmethod
     def get_by_id(cls, uid):
-        return cls.query.filter(User.id == uid).first()
+        return cls.query.filter_by(id=uid).first()
 
     @classmethod
     def get_by_email(cls, email):
-        return cls.query.filter(User.email == email).first()
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def get_by_login(cls, login):
-        return cls.query.filter(User.login == login).first()
+        return cls.query.filter_by(login=login).first()
 
 
 
@@ -54,5 +54,9 @@ class PasswordRestore(db.Model):
 
     @classmethod
     def is_valid_token(cls, token):
-        restore = cls.query.filter(PasswordRestore.token == token).first()
-        return token
+        expiration = datetime.now() - timedelta(days=1)
+        restore = cls.query.filter_by(token=token, is_active=True)
+        restore = restore.filter(PasswordRestore.datetime>=expiration)
+        restore = restore.first()
+        print(restore)
+        return restore

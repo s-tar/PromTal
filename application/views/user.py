@@ -53,11 +53,6 @@ def restore_post():
         user = User.get_by_email("taras@prom.ua")
         if user:
             token = PasswordRestore.add_token(user)
-
-            print("\n\n\n")
-            print(user.full_name)
-            print(token)
-            print("\n\n\n")
             send_mail_restore_pass(email, token)
         return jsonify({"status": "ok"})
     return jsonify(

@@ -2,6 +2,7 @@ from application.utils.validator import Validator
 from flask import request, render_template
 from application.module import Module
 from flask.json import jsonify
+from application.models.user import PasswordRestore
 
 main = Module('main', __name__)
 
@@ -39,7 +40,9 @@ def restore():
 
 @main.route("/restore_pass/<token>")
 def restore_pass(token):
-    
+    pass_restore = PasswordRestore.is_valid_token(token)
+    if not pass_restore:
+        return render_template('404.html')
     return render_template('login/restore.html')
 
 
