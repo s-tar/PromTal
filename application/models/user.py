@@ -25,6 +25,11 @@ class User(db.Model):
     def get_by_email(cls, email):
         return cls.query.filter(User.email == email).first()
 
+    @classmethod
+    def get_by_login(cls, login):
+        return cls.query.filter(User.login == login).first()
+
+
 
 class PasswordRestore(db.Model):
     __tablename__ = 'password_restore'

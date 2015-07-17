@@ -2,7 +2,7 @@ import pickle
 from application import redis
 from application.models.user import User
 from flask import request, g
-
+from application.ldap import ldap
 
 def get_user():
     if not g.get('user'):
@@ -16,13 +16,15 @@ def get_user():
     return g.user
 
 
-def login(user):
-    sid = request.cookies.get('sid', None)
-    uid = user and user.id or None
-    if sid and uid:
-        session = {'user': {'id': uid}}
-        redis.set(sid, pickle.dumps(session))
-        return True
+def login(login, password):
+    if ldap.bind_user(login, password):
+        sid = request.cookies.get('sid', None)
+        user = User.get_by_login(login)
+        uid = user and user.id or None
+        if sid and uid:
+            session = {'user': {'id': uid}}
+            redis.set(sid, pickle.dumps(session))
+            return True
     return False
 
 
