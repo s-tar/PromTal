@@ -1,5 +1,6 @@
 from application import Module
 from application.utils.validator import Validator
+from application.utils import auth
 from flask import request, render_template
 from flask.json import jsonify
 from application.mail_sender import send_mail
@@ -13,7 +14,12 @@ def login_post():
     v.field("login").required()
     v.field("password").required()
     if v.is_valid():
-        return jsonify({"status": "ok"})
+        login = v.valid_data.login
+        password = v.valid_data.password
+        if auth.service.login(login, password):
+            return jsonify({"status": "ok"})
+        else:
+            v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
 
     return jsonify(
         {"status": "fail",
