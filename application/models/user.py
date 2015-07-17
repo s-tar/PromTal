@@ -1,4 +1,5 @@
 from application.db import db
+from datetime import datetime
 
 
 class User(db.Model):
@@ -18,3 +19,17 @@ class User(db.Model):
     @classmethod
     def get_by_id(cls, uid):
         return cls.query.filter(User.id == uid).first()
+
+
+class PasswordRestore(db.Model):
+    __tablename__ = 'password_restore'
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    token = db.Column(db.String(64))
+    is_active = db.Column(db.Boolean, default=True)
+    datetime = db.Column(db.DateTime, default=datetime.now)
+
+    author = db.relationship("User", backref="password_restore")
+
+    def __repr__(self):
+        return "<PasswordRestore {token}>".format(token=self.token)
