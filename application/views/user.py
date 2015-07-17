@@ -2,6 +2,7 @@ from application import Module
 from application.utils.validator import Validator
 from flask import request, render_template
 from flask.json import jsonify
+from application.mail_sender import send_mail
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -31,6 +32,19 @@ def registration():
     if v.is_valid():
         return jsonify({"status": "ok"})
 
+    return jsonify(
+        {"status": "fail",
+         "errors": v.errors}
+    )
+
+@user.post('/restore')
+def restore_post():
+    v = Validator(request.form)
+    v.field("email").email().required()
+    if v.is_valid():
+        email = request.form.get("email")
+        send_mail(email)
+        return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",
          "errors": v.errors}
