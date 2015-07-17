@@ -8,8 +8,12 @@ import xml.etree.cElementTree as et
 class Validator:
     def __init__(self, data):
         self.data = dict(data)
-        self.valid_data = dict(data)
+        self.valid_data = ValidData(data)
         self.errors = {}
+
+    def __getattr__(self, item):
+        val = self.data.get(item, None)
+        return val if len(val) > 1 else val[0]
 
     def field(self, name):
         return Field(self, name)
@@ -27,6 +31,26 @@ class Validator:
 
     def is_valid(self):
         return False if self.errors else True
+
+
+class ValidData:
+    def __init__(self, data):
+        self.__dict__.update({'_ValidData__data': dict(data)})
+
+    def __setattr__(self, key, value):
+        self.__data.set(key, list(value))
+
+    def __getattr__(self, item):
+        val = self.__data.get(item)
+        if isinstance(val, list) and len(val) == 1:
+            val = val[0]
+        return val
+
+    def list(self, item):
+        return list(self.__data.get(item))
+
+    def __repr__(self):
+        return str(self.__data)
 
 
 class Field:
