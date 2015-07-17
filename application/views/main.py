@@ -37,6 +37,12 @@ def restore():
     return render_template('login/restore.html')
 
 
+@main.route("/restore_pass/<token>")
+def restore_pass(token):
+    
+    return render_template('login/restore.html')
+
+
 @main.route("/new_pass")
 def new_pass():
     return render_template('login/new_pass.html')

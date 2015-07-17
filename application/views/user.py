@@ -3,7 +3,8 @@ from application.utils.validator import Validator
 from application.utils import auth
 from flask import request, render_template
 from flask.json import jsonify
-from application.mail_sender import send_mail
+from application.mail_sender import send_mail_restore_pass
+from application.models.user import User, PasswordRestore
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -46,10 +47,18 @@ def registration():
 @user.post('/restore')
 def restore_post():
     v = Validator(request.form)
-    v.field("email").email().required()
+    #v.field("email").email().required()
     if v.is_valid():
         email = request.form.get("email")
-        send_mail(email)
+        user = User.get_by_email("taras@prom.ua")
+        if user:
+            token = PasswordRestore.add_token(user)
+
+            print("\n\n\n")
+            print(user.full_name)
+            print(token)
+            print("\n\n\n")
+            send_mail_restore_pass(email, token)
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",

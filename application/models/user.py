@@ -1,5 +1,6 @@
 from application.db import db
 from datetime import datetime
+from uuid import uuid1
 
 
 class User(db.Model):
@@ -21,8 +22,13 @@ class User(db.Model):
         return cls.query.filter(User.id == uid).first()
 
     @classmethod
+    def get_by_email(cls, email):
+        return cls.query.filter(User.email == email).first()
+
+    @classmethod
     def get_by_login(cls, login):
         return cls.query.filter(User.login == login).first()
+
 
 
 class PasswordRestore(db.Model):
@@ -37,3 +43,16 @@ class PasswordRestore(db.Model):
 
     def __repr__(self):
         return "<PasswordRestore {token}>".format(token=self.token)
+
+    @classmethod
+    def add_token(cls, user):
+        token = ''.join(str(uuid1()).split('-'))
+        pass_restore = PasswordRestore(author_id=user.id, token=token)
+        db.session.add(pass_restore)
+        db.session.commit()
+        return token
+
+    @classmethod
+    def is_valid_token(cls, token):
+        restore = cls.query.filter(PasswordRestore.token == token).first()
+        return token
