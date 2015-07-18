@@ -1,8 +1,9 @@
 from application.utils.validator import Validator
-from flask import request, render_template
+from flask import request, render_template, redirect
 from application.module import Module
 from flask.json import jsonify
 from application.models.user import PasswordRestore
+
 
 main = Module('main', __name__)
 
@@ -33,6 +34,14 @@ def login():
     return render_template('login/login.html')
 
 
+@main.route("/log_out")
+def log_out():
+
+    # Разлогинить пользователя
+
+    return redirect("/login")
+
+
 @main.route("/restore")
 def restore():
     return render_template('login/restore.html')
@@ -49,6 +58,11 @@ def restore_pass(token):
 @main.route("/new_pass")
 def new_pass():
     return render_template('login/new_pass.html')
+
+
+@main.route("/message/<msg>")
+def message(msg):
+    return render_template('message.html', msg=msg)
 
 
 @main.route("/demo_form", methods=['POST'])

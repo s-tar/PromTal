@@ -1,7 +1,7 @@
 from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
-from flask import request, render_template
+from flask import request, render_template, redirect
 from flask.json import jsonify
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
@@ -52,7 +52,7 @@ def restore_post():
     #v.field("email").email().required()
     if v.is_valid():
         email = request.form.get("email")
-        user = User.get_by_email("taras@prom.ua")
+        user = User.get_by_email(email)
         if user:
             token = PasswordRestore.add_token(user)
             send_mail_restore_pass(email, token)

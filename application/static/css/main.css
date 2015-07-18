@@ -110,3 +110,14 @@ a.logo {
 .form-signin input[type="password"] {
     margin-bottom: 0;
 }
+.message {
+    font-weight: bold;
+    font-size: 40px;
+    background-color: #666666;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: rgba(255,255,255,0.5) 0px 1px 1px;
+
+}

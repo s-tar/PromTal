@@ -7,5 +7,5 @@ React.render(
     document.getElementById('new_pass_form'))
 
 function wellDone(){
-    window.location.href = "/";
+    window.location.href = "/message/Вы сменили пароль";
 }
