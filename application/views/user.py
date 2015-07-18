@@ -27,6 +27,7 @@ def login_post():
          "errors": v.errors}
     )
 
+
 @user.post('/registration')
 def registration():
     v = Validator(request.form)
@@ -44,6 +45,7 @@ def registration():
          "errors": v.errors}
     )
 
+
 @user.post('/restore')
 def restore_post():
     v = Validator(request.form)
@@ -54,6 +56,25 @@ def restore_post():
         if user:
             token = PasswordRestore.add_token(user)
             send_mail_restore_pass(email, token)
+        return jsonify({"status": "ok"})
+    return jsonify(
+        {"status": "fail",
+         "errors": v.errors}
+    )
+
+
+@user.post('/new_pass')
+def new_pass_post():
+    v = Validator(request.form)
+
+    # Валидация паролей
+
+    if v.is_valid():
+        password_1 = request.form.get("password_1")
+        password_2 = request.form.get("password_2")
+
+        # Сохранение нового пароля
+
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",

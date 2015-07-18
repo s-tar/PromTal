@@ -43,7 +43,7 @@ def restore_pass(token):
     pass_restore = PasswordRestore.is_valid_token(token)
     if not pass_restore:
         return render_template('404.html')
-    return render_template('login/restore.html')
+    return render_template('login/new_pass.html')
 
 
 @main.route("/new_pass")

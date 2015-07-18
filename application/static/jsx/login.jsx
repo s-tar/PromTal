@@ -11,5 +11,5 @@ React.render(
     document.getElementById('log_in_form'))
 
 function wellDone(){
-    window.location.href = "/"
+    window.location.href = "/";
 }

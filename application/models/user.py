@@ -58,5 +58,4 @@ class PasswordRestore(db.Model):
         restore = cls.query.filter_by(token=token, is_active=True)
         restore = restore.filter(PasswordRestore.datetime>=expiration)
         restore = restore.first()
-        print(restore)
         return restore
