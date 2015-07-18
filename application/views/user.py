@@ -70,11 +70,14 @@ def new_pass_post():
     # Валидация паролей
 
     if v.is_valid():
+        #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
+        #if token_obj:# не удалять пока
         password_1 = request.form.get("password_1")
         password_2 = request.form.get("password_2")
 
         # Сохранение нового пароля
 
+        #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",

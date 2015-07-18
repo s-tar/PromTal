@@ -59,3 +59,12 @@ class PasswordRestore(db.Model):
         restore = restore.filter(PasswordRestore.datetime>=expiration)
         restore = restore.first()
         return restore
+
+    @classmethod
+    def deactivation_token(cls, token_obj):
+        tokens = cls.query.filter_by(author_id=token_obj.author_id).all()
+        for token in tokens:
+            token.is_active=False
+            db.session.add(token)
+        db.session.commit()
+
