@@ -13,6 +13,7 @@ class User(db.Model):
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)
+    skype = db.Column(db.String(64), unique=True)
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)

@@ -4,15 +4,15 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-    <h2>R2D2</h2>
-    <p>Astromech droid</p>
+    <h2>{% if current_user.full_name %}{{ current_user.full_name }}{% else %}R2D2{% endif %}</h2>
+    <p># Astromech droid</p>
     </div>
 </div>
 
 <div class="row">
   <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
     <p>
-      <img src="/static/img/r2-d2.jpg" class="img-thumbnail" alt="Cinque Terre" width="304" height="236">
+      <img src="{% if current_user.avatar %}{{ current_user.avatar }}{% else %}/static/img/r2-d2.jpg{% endif %}" class="img-thumbnail" alt="Cinque Terre" width="304" height="236">
     </p>
 
   </div>
@@ -20,24 +20,26 @@
     <table class="table table-striped">
         <tbody>
             <tr>
-                <td>Manager</td>
-                <td><span class="glyphicon glyphicon-user"></span> Anakin Skywalker</td>
+                <td># Manager</td>
+                <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
             </tr>
+
             <tr>
                 <td>Office Phone</td>
-                <td><span class="glyphicon glyphicon-home"></span> 333-444-555</td>
+                <td><span class="glyphicon glyphicon-home"></span> {% if current_user.inner_phone %}{{ current_user.inner_phone }}{% else %}????{% endif %}</td>
             </tr>
+
             <tr>
                 <td>Cell Phone</td>
-                <td><span class="glyphicon glyphicon-headphones"></span> 050-00-99-777</td>
+                <td><span class="glyphicon glyphicon-headphones"></span> {% if current_user.mobile_phone %}{{ current_user.mobile_phone }}{% else %}???-??-??-???{% endif %}</td>
             </tr>
             <tr>
                 <td>Email</td>
-                <td><span class="glyphicon glyphicon-envelope"></span> mail@mail</td>
+                <td><span class="glyphicon glyphicon-envelope"></span> {% if current_user.email %}{{ current_user.email }}{% else %}mail@mail{% endif %}</td>
             </tr>
             <tr>
-                <td>Twitter</td>
-                <td><span class="glyphicon glyphicon-link"></span> my_twitter</td>
+                <td>Skype</td>
+                <td><span class="glyphicon glyphicon-link"></span> {% if current_user.skype %}{{ current_user.skype }}{% else %}skype{% endif %}</td>
             </tr>
         </tbody>
     </table>
