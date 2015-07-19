@@ -1,14 +1,13 @@
-from application.models.user import User
 import os
-from application.utils.auth_middleware import AuthMiddleware
+from flask import Flask, g
 
-from flask import Flask, request
-from beaker.middleware import SessionMiddleware
 from application.db import db, redis
 from application.ldap import ldap
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
+from application.utils.auth.service import get_user
+from application.utils.auth.middleware import AuthMiddleware
 from application.views import *
 from application.models import *
 
@@ -34,4 +33,9 @@ def create_app(config_name):
     # for rule in app.url_map.iter_rules():
     #     print(rule, rule.methods)
 
+    @app.context_processor
+    def inject_user():
+        return dict(current_user=get_user())
+
     return app
+

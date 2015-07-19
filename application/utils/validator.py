@@ -15,6 +15,7 @@ class Validator:
         val = self.data.get(item, None)
         return val if len(val) > 1 else val[0]
 
+
     def field(self, name):
         return Field(self, name)
 
@@ -46,11 +47,17 @@ class ValidData:
             val = val[0]
         return val
 
-    def list(self, item):
-        return list(self.__data.get(item))
+    def __getitem__(self, item):
+        return self.__data[item]
+
+    def __setitem__(self, key, value):
+        self.__data[key] = value
 
     def __repr__(self):
         return str(self.__data)
+
+    def list(self, item):
+        return self.__data.get(item)
 
 
 class Field:
@@ -73,10 +80,10 @@ class Field:
         code, message = get_message("not_integer", message)
         for i, val in enumerate(self.val):
             if nullable and val is "":
-                self.validator.valid_data[self.name][i] = None
+                self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
-                    self.validator.valid_data[self.name][i] = int(val)
+                    self.validator.valid_data.list(self.name)[i] = int(val)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
         return self
@@ -85,10 +92,10 @@ class Field:
         code, message = get_message("not_float", message)
         for i, val in enumerate(self.val):
             if nullable and val is "":
-                self.validator.valid_data[self.name][i] = None
+                self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
-                    self.validator.valid_data[self.name][i] = float(val)
+                    self.validator.valid_data.list(self.name)[i] = float(val)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
         return self
@@ -97,11 +104,11 @@ class Field:
         code, message = get_message("not_boolean", message)
         for i, val in enumerate(self.val):
             if nullable and (val is "" or val is None):
-                self.validator.valid_data[self.name][i] = None
+                self.validator.valid_data.list(self.name)[i] = None
             elif str(val).lower() in ['none', '', 'false', '0']:
-                self.validator.valid_data[self.name][i] = False
+                self.validator.valid_data.list(self.name)[i] = False
             else:
-                self.validator.valid_data[self.name][i] = True
+                self.validator.valid_data.list(self.name)[i] = True
         return self
 
     def length(self, max=None, min=None, message=None):
@@ -162,7 +169,7 @@ class Field:
             if val is not None:
                 val = val.strip()
                 if re.match(r"[^@]+@[^@]+\.[^@]+", val):
-                    self.validator.valid_data[self.name][i] = val
+                    self.validator.valid_data.list(self.name)[i] = val
                 else:
                     self.validator.add_error(self.name, message, code, index=i)
         return self
@@ -173,11 +180,11 @@ class Field:
             if val is not None and val != "":
                 try:
                     val = val.strip()
-                    self.validator.valid_data[self.name][i] = datetime.strptime(val, format)
+                    self.validator.valid_data.list(self.name)[i] = datetime.strptime(val, format)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
             else:
-                self.validator.valid_data[self.name][i] = None
+                self.validator.valid_data.list(self.name)[i] = None
         return self
 
 
