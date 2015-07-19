@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<script>window.onload=function(){$(function(){$("#datepicker").datepicker();});}</script>
+<form action="/user/edit_profile" method="post">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <h2><input class="full_name_input form-control" type="text" name="full_name" value="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></h2>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <p>
+          <img src="{% if current_user.avatar %}{{ current_user.avatar }}{% else %}/static/img/r2-d2.jpg{% endif %}" class="img-thumbnail" alt="Cinque Terre" width="300" height="236">
+        </p>
+
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <td>Office Phone</td>
+                    <td><input class="form-control" type="text" name="inner_phone" value="{% if current_user.inner_phone %}{{ current_user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
+                </tr>
+                <tr>
+                    <td>Birth date</td>
+                    <td><input id="datepicker" class="form-control" type="text" name="birth_date" value="{% if current_user.birth_date %}{{ current_user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
+                </tr>
+                <tr>
+                    <td>Cell Phone</td>
+                    <td><input class="form-control" type="text" name="mobile_phone" value="{% if current_user.mobile_phone %}{{ current_user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><input class="form-control" type="text" name="email" value="{% if current_user.email %}{{ current_user.email }}{% else %}{% endif %}" placeholder="mail@mail"/></td>
+                </tr>
+                <tr>
+                    <td>Skype</td>
+                    <td><input class="form-control" type="text" name="skype" value="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
+                </tr>
+                <tr>
+                    <td><a href="/message/ну ты и лошара" class="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                    <td><input class="btn btn-lg btn-primary btn-block" type="submit" value="Сохранить"/></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div class="col-xs-12 col-sm-3 col-md-4 col-lg-5">
+      </div>
+    </div>
+</form>
+
+
+{% endblock %}

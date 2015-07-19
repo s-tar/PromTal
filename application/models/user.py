@@ -1,5 +1,5 @@
 from application.db import db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from uuid import uuid1
 
 
@@ -30,6 +30,29 @@ class User(db.Model):
     def get_by_login(cls, login):
         return cls.query.filter_by(login=login).first()
 
+    @classmethod
+    def edit_user(cls, uid, full_name=full_name,
+                            mobile_phone=mobile_phone,
+                            inner_phone=inner_phone,
+                            email=email,
+                            birth_date=birth_date,
+                            skype=skype):
+        u = cls.query.filter_by(id=uid).first()
+        if u:
+            u.full_name = full_name
+            u.mobile_phone = mobile_phone
+            u.inner_phone = inner_phone
+            u.email = email
+            u.birth_date = birth_date
+            u.skype = skype
+            db.session.add(u)
+            db.session.commit()
+        return u
+
+    @property
+    def age(self):
+        today, born = date.today(), self.birth_date
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 
 class PasswordRestore(db.Model):

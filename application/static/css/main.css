@@ -119,5 +119,7 @@ a.logo {
     background-clip: text;
     color: transparent;
     text-shadow: rgba(255,255,255,0.5) 0px 1px 1px;
-
+}
+.full_name_input {
+    width: 270px;
 }

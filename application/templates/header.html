@@ -14,10 +14,11 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="{% if request.path in ['/profile', '/login', '/restore', '/new_pass', '/log_out'] %}active{% endif %} dropdown">
+        <li class="{% if request.path in ['/profile', '/edit_profile', '/login', '/restore', '/new_pass', '/log_out'] %}active{% endif %} dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All links <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/profile">Profile</a></li>
+            <li><a href="/edit_profile">Edit Profile</a></li>
             <li><a href="/login">Log in</a></li>
             <li><a href="/restore">Restore Pass</a></li>
             <li><a href="/new_pass">New Pass</a></li>

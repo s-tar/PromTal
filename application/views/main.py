@@ -29,6 +29,11 @@ def profile():
     return render_template('profile/profile.html')
 
 
+@main.get("/edit_profile")
+def edit_profile():
+    return render_template('profile/edit_profile.html')
+
+
 @main.route("/login")
 def login():
     return render_template('login/login.html')
@@ -67,14 +72,11 @@ def message(msg):
 
 @main.route("/demo_form", methods=['POST'])
 def test():
-
     v = Validator(request.form)
     v.fields('email').email()
     v.field('first_name').required()
     v.field('text').required().length(max=6)
-
     if v.is_valid():
         return jsonify({'status': 'ok'})
-
     return jsonify({'status': 'fail',
             'errors': v.errors})
