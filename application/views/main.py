@@ -1,7 +1,8 @@
-from application.utils.validator import Validator
 from flask import request, render_template, redirect
-from application.module import Module
 from flask.json import jsonify
+
+from application.utils.validator import Validator
+from application.module import Module
 from application.models.user import PasswordRestore
 
 
