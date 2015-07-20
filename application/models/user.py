@@ -82,16 +82,15 @@ class PasswordRestore(db.Model):
     @classmethod
     def is_valid_token(cls, token):
         expiration = datetime.now() - timedelta(days=1)
-        restore = cls.query.filter_by(token=token, is_active=True)
-        restore = restore.filter(PasswordRestore.datetime>=expiration)
-        restore = restore.first()
-        return restore
+        restore_pass = cls.query.filter(PasswordRestore.token == token,
+                                   PasswordRestore.is_active == True,
+                                   PasswordRestore.datetime >= expiration).first()
+        return restore_pass
 
     @classmethod
     def deactivation_token(cls, token_obj):
-        tokens = cls.query.filter_by(author_id=token_obj.author_id).all()
+        tokens = cls.query.filter(PasswordRestore.author_id == token_obj.author_id).all()
         for token in tokens:
-            token.is_active=False
-            db.session.add(token)
+            token.is_active = False
         db.session.commit()
 

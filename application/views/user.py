@@ -50,7 +50,9 @@ def registration():
 @user.post('/restore')
 def restore_post():
     v = Validator(request.form)
-    #v.field("email").email().required()
+
+    # Валидация полей
+    
     if v.is_valid():
         email = request.form.get("email")
         user = User.get_by_email(email)
@@ -65,8 +67,10 @@ def restore_post():
 
 @user.post('/edit_profile')
 def edit_profile_post():
-    print("\n\n\n", auth.service.get_user().id, "\n\n\n")
     v = Validator(request.form)
+
+    # Валидация полей
+
     if v.is_valid():
         full_name = request.form.get("full_name")
         birth_date = datetime.strptime(request.form.get("birth_date"), "%d.%m.%Y")
@@ -81,11 +85,6 @@ def edit_profile_post():
             email=email,
             birth_date=birth_date,
             skype=skype)
-        #email = request.form.get("email")
-        #user = User.get_by_email(email)
-        #if user:
-        #    token = PasswordRestore.add_token(user)
-        #    send_mail_restore_pass(email, token)
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",
@@ -101,12 +100,16 @@ def new_pass_post():
     # Валидация паролей
 
     if v.is_valid():
+        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
         #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
         #if token_obj:# не удалять пока
         password_1 = request.form.get("password_1")
         password_2 = request.form.get("password_2")
 
         # Сохранение нового пароля
+        print("\n\n\n")
+        print(restore_pass.id)
+        print(restore_pass.author)
 
         #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
