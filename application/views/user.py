@@ -7,7 +7,47 @@ from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
 
+
 user = Module('user', __name__, url_prefix='/user')
+
+
+@user.get("/profile")
+def profile():
+    return render_template('profile/profile.html')
+
+
+@user.get("/edit_profile")
+def edit_profile():
+    return render_template('profile/edit_profile.html')
+
+
+@user.route("/login")
+def login():
+    return render_template('login/login.html')
+
+
+@user.route("/log_out")
+def log_out():
+    auth.service.logout()
+    return redirect("/login")
+
+
+@user.route("/restore")
+def restore():
+    return render_template('login/restore.html')
+
+
+@user.route("/restore_pass/<token>")
+def restore_pass(token):
+    pass_restore = PasswordRestore.is_valid_token(token)
+    if not pass_restore:
+        return render_template('404.html')
+    return render_template('login/new_pass.html', token=pass_restore.token)
+
+
+@user.route("/new_pass")
+def new_pass():
+    return render_template('login/new_pass.html')
 
 
 @user.post('/login')
