@@ -123,3 +123,6 @@ a.logo {
 .full_name_input {
     width: 270px;
 }
+.ninja {
+    display: none;
+}
