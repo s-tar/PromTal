@@ -38,6 +38,10 @@ header .logo img {
   float: right;
   margin-top: 10px;
 }
+input,
+textarea {
+  display: inline-block !important;
+}
 .error-wrapper {
   display: inline-block;
   width: 0;
