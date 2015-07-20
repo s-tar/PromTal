@@ -1,4 +1,4 @@
-from application import Module
+from application import Module, ldap
 from application.utils.validator import Validator
 from application.utils import auth
 from flask import request, render_template, redirect, url_for
@@ -147,9 +147,12 @@ def new_pass_post():
         password_2 = request.form.get("password_2")
 
         # Сохранение нового пароля
-        print("\n\n\n")
-        print(restore_pass.id)
-        print(restore_pass.author)
+        # print("\n\n\n")
+        # print(restore_pass.id)
+        # print(restore_pass.author)
+
+        # Changing user password
+        result = ldap.change_password(restore_pass.author.login, password_1)
 
         #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
