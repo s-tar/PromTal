@@ -31,6 +31,7 @@ class Config:
     LDAP_BASE_DN = 'ou=People,dc=uaprom,dc=net'
     LDAP_USER_OBJECT_DN = 'cn={}'
     LDAP_USER_OBJECT_FILTER = '(cn=*)'
+    LDAP_USER_PASSWORD_FIELD = 'userPassword'
     LDAP_USER_FIELD = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
 
     session = {
