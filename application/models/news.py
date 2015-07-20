@@ -1,5 +1,5 @@
 from application.db import db
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from application.models.comment import Comment
 
 class NewsTagAssociation(db.Model):
@@ -23,11 +23,23 @@ class News(db.Model):
     text = db.Column(db.Text())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('news_category.id'))
-    datetime = db.Column(db.DateTime, default=datetime.now)
+    datetime = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    comments_count = db.Column(db.Integer)
+    likes_count = db.Column(db.Integer)
 
     author = db.relationship("User", backref="news")
     category = db.relationship("NewsCategory", backref="news")
     tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news")
     comments = db.relationship("Comment", secondary="news_comment_association", backref="news")
 
+    def formatted_datetime(self):
+        if self.datetime.date() == datetime.today().date():
+            return "Сегодня в %s" % self.datetime.strftime('%H:%M')
+        if self.datetime.date() == date.today() - timedelta(1):
+            return "Вчера в %s" % self.datetime.strftime('%H:%M')
+        return self.datetime.strftime('%d.%m.%y')
+
+    @classmethod
+    def all(cls):
+        return cls.query.order_by(News.datetime.desc()).all()
 

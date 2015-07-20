@@ -10,9 +10,9 @@ from application.models.user import PasswordRestore
 main = Module('main', __name__)
 
 
-@main.get("/")
-def index():
-    return render_template('index.html')
+# @main.get("/")
+# def index():
+#     return render_template('index.html')
 
 
 @main.get("/session")
