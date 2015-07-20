@@ -17,9 +17,6 @@ header {
 header .logo img {
   height: 30px;
 }
-
-
-/*
 .frame {
   background: #fff;
   -webkit-border-radius: 5px;
@@ -43,34 +40,7 @@ header .logo img {
 }
 input,
 textarea {
-  background: #fff;
-  border: 1px solid #eee;
-  border-bottom-color: #ccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  margin: 0;
-  margin-bottom: 2px;
-  outline: none;
-  width: 250px;
-  color: #333;
-  padding: 10px;
-}
-input:focus,
-textarea:focus {
-  border-color: #f38630;
-}
-input[type=button],
-input[type=submit] {
-  background: #fa6900;
-  color: #fff;
-  text-transform: uppercase;
-  border: 0 none;
-  width: auto;
-}
-input[type=button]:hover,
-input[type=submit]:hover {
-  background: #f38630;
+  display: inline-block !important;
 }
 .error-wrapper {
   display: inline-block;
@@ -80,7 +50,7 @@ input[type=submit]:hover {
   pointer-events: none;
 }
 .error-wrapper .error {
-  font-size: 0.7em;
+  font-size: 0.9em;
   position: absolute;
   white-space: nowrap;
   top: 0;
@@ -92,4 +62,3 @@ input[type=submit]:hover {
   -moz-border-radius: 0 3px 0 3px;
   border-radius: 0 3px 0 3px;
 }
-*/

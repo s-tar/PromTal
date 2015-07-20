@@ -1,3 +1,4 @@
+from application.utils import auth
 from flask import request, render_template, redirect
 from flask.json import jsonify
 
@@ -42,9 +43,7 @@ def login():
 
 @main.route("/log_out")
 def log_out():
-
-    # Разлогинить пользователя
-
+    auth.service.logout()
     return redirect("/login")
 
 

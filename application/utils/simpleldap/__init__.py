@@ -18,9 +18,8 @@ class LDAP(object):
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app):
-        self.app = app
-
+    @staticmethod
+    def init_app(app):
         app.config.setdefault('LDAP_HOST', 'localhost')
         app.config.setdefault('LDAP_PORT', 389)
         app.config.setdefault('LDAP_SCHEMA', 'ldap')
@@ -39,9 +38,9 @@ class LDAP(object):
     def initialize(self):
         try:
             server = ldap3.Server('{0}://{1}:{2}'.format(
-                self.app.config['LDAP_SCHEMA'],
-                self.app.config['LDAP_HOST'],
-                self.app.config['LDAP_PORT']))
+                current_app.config['LDAP_SCHEMA'],
+                current_app.config['LDAP_HOST'],
+                current_app.config['LDAP_PORT']))
             return server
         except ldap3.LDAPExceptionError as e:
             raise LDAPException(self.error(e))
@@ -51,8 +50,8 @@ class LDAP(object):
         try:
             conn = ldap3.Connection(
                 server=server,
-                user=self.app.config['LDAP_USERNAME'],
-                password=self.app.config['LDAP_PASSWORD'],
+                user=current_app.config['LDAP_USERNAME'],
+                password=current_app.config['LDAP_PASSWORD'],
                 authentication=ldap3.SIMPLE)
             conn.bind()
             return conn
@@ -61,6 +60,7 @@ class LDAP(object):
 
     def bind_user(self, username, password):
         user_dn = self.get_object_details(username, dn_only=True)
+        print(user_dn)
         if user_dn is None:
             return
         try:
@@ -74,8 +74,10 @@ class LDAP(object):
         except ldap3.LDAPExceptionError:
             return
 
-    def get_object_details(self, user, dn_only=False):
-        return user
+    def get_object_details(self, username, dn_only=False):
+        if dn_only:
+            return current_app.config['LDAP_USER_OBJECT_DN'].format(username) + \
+                   ',' + current_app.config['LDAP_BASE_DN']
 
     @staticmethod
     def error(e):
