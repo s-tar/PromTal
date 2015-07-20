@@ -1,9 +1,8 @@
 from application.models.user import User
 import os
-from application.utils.auth_middleware import AuthMiddleware
+from application.utils.auth.middleware import AuthMiddleware
 
-from flask import Flask, request
-from beaker.middleware import SessionMiddleware
+from flask import Flask
 from application.db import db, redis
 from application.ldap import ldap
 from application.config import config
