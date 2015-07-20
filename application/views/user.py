@@ -1,8 +1,10 @@
 from application import Module
 from application.utils.validator import Validator
-from flask import request, render_template
+from application.utils import auth
+from flask import request, render_template, redirect
 from flask.json import jsonify
-from application.mail_sender import send_mail
+from application.mail_sender import send_mail_restore_pass
+from application.models.user import User, PasswordRestore
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -13,12 +15,18 @@ def login_post():
     v.field("login").required()
     v.field("password").required()
     if v.is_valid():
-        return jsonify({"status": "ok"})
+        login = v.valid_data.login
+        password = v.valid_data.password
+        if auth.service.login(login, password):
+            return jsonify({"status": "ok"})
+        else:
+            v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
 
     return jsonify(
         {"status": "fail",
          "errors": v.errors}
     )
+
 
 @user.post('/registration')
 def registration():
@@ -37,13 +45,39 @@ def registration():
          "errors": v.errors}
     )
 
+
 @user.post('/restore')
 def restore_post():
     v = Validator(request.form)
-    v.field("email").email().required()
+    #v.field("email").email().required()
     if v.is_valid():
         email = request.form.get("email")
-        send_mail(email)
+        user = User.get_by_email(email)
+        if user:
+            token = PasswordRestore.add_token(user)
+            send_mail_restore_pass(email, token)
+        return jsonify({"status": "ok"})
+    return jsonify(
+        {"status": "fail",
+         "errors": v.errors}
+    )
+
+
+@user.post('/new_pass')
+def new_pass_post():
+    v = Validator(request.form)
+
+    # Валидация паролей
+
+    if v.is_valid():
+        #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
+        #if token_obj:# не удалять пока
+        password_1 = request.form.get("password_1")
+        password_2 = request.form.get("password_2")
+
+        # Сохранение нового пароля
+
+        #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",

@@ -9,5 +9,5 @@ function someChange(){
     console.log('CHANGE')
 }
 function wellDone(){
-    console.log( 'DONE!')
+    window.location.href = "/message/Вам отправлен email";
 }

@@ -11,4 +11,4 @@ def admin_index():
 
 @admin.route("/logout")
 def logout():
-    return redirect(url_for('main.index'))
+    return redirect(url_for('admin.index'))
