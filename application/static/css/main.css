@@ -126,3 +126,7 @@ a.logo {
 .ninja {
     display: none;
 }
+.drop-down-pass {
+    cursor: pointer;
+    color: rgb(51, 122, 183);
+}

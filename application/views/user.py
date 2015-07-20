@@ -1,7 +1,7 @@
 from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
-from flask import request, render_template, redirect
+from flask import request, render_template, redirect, url_for
 from flask.json import jsonify
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
@@ -29,7 +29,7 @@ def login():
 @user.route("/log_out")
 def log_out():
     auth.service.logout()
-    return redirect("/login")
+    return redirect(url_for('user.login'))
 
 
 @user.route("/restore")

@@ -124,3 +124,32 @@ var AJAXForm = React.createClass({
     }
 });
 
+var DropDownPass = React.createClass({
+
+    getInitialState: function(){
+        return { display_inputs: 'none', drop_row: 'down' };
+    },
+
+    clicked: function(){
+        if(this.state.display_inputs == 'none') {
+            this.setState({display_inputs: 'block', drop_row: 'up'});
+        } else {
+            this.setState({display_inputs: 'none', drop_row: 'down'});
+        }
+        
+    },
+    
+    render: function() {
+        var self = this;
+
+        var divInputs = {display: this.state.display_inputs,};
+        var classRow = "glyphicon glyphicon-menu-" + this.state.drop_row;
+        return (
+            <div>
+                <div className="drop-down-pass" onClick={self.clicked.bind(self)}>Сменить <span className={classRow}></span></div>
+                <div style={divInputs}>Input</div>
+            </div>
+        );
+
+    }
+});
