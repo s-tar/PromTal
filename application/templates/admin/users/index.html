@@ -1,37 +1,44 @@
 {% extends "admin/layout.html" %}
+{% import "admin/_macros.html" as macros %}
 
-{% block title %}Index{% endblock %}
-{% block nav %}
-{% endblock %}
+{% block title %}Users{% endblock %}
 {% block content %}
 {{ super() }}
-<div class="container">
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Users</div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Birth date</th>
-                <th>Cell phone</th>
-                <th>Inner phone</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+<div class="container-fluid">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">Users</div>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
                 <tr>
-                    <td>{{ user.full_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.birth_date }}</td>
-                    <td>{{ user.mobile_phone }}</td>
-                    <td>{{ user.inner_phone }}</td>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Birth date</th>
+                    <th>Cell phone</th>
+                    <th>Inner phone</th>
+                    <th>Manage</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.birth_date }}</td>
+                        <td>{{ user.mobile_phone }}</td>
+                        <td>{{ user.inner_phone }}</td>
+                        <td>Edit Del</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, 'admin.users_index') }}
 </div>
+{% endif %}
 </div>
 
 {% endblock %}

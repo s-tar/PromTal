@@ -10,13 +10,18 @@
       <ul class="nav navbar-nav">
         <li><a href="/admin/users">Users </a></li>
         <li><a href="/admin/news">News </a></li>
-        <li class="{% if request.path in ['/profile', '/restore', '/log_out'] %}active{% endif %} dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All links <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/profile">Profile</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a class="dropdown-toggle" id="settings" role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Account settings
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="settings">
+            <li><a href="/profile">My profile</a></li>
+            <li><a href="#">Restore password</a></li>
             <li class="divider"></li>
-            <li><a href="/restore">Restore Pass</a></li>
-            <li><a href="/log_out">Log out</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </li>
       </ul>
