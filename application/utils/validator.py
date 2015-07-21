@@ -69,6 +69,13 @@ class Field:
         if not isinstance(self.val, list):
             self.val = [self.val]
 
+    @property
+    def value(self):
+        if self.as_list:
+            return self.val
+        else:
+            return self.val[0]
+
     def required(self, message=None):
         code, message = get_message("required", message)
         for i, val in enumerate(self.val):
@@ -187,6 +194,12 @@ class Field:
                 self.validator.valid_data.list(self.name)[i] = None
         return self
 
+    def equal(self, field, message=None):
+        code, message = get_message("equal", message)
+        if self.value != field.value:
+            self.validator.add_error(self.name, message % {field: field.name}, code)
+        return self
+
 
 def get_message(code, message):
     messages = {
@@ -200,7 +213,8 @@ def get_message(code, message):
         'not_image': 'Файл не является картинкой',
         'is_not_svg': 'Файл не является SVG картинкой',
         'wrong_email_format': 'Введен неверный адрес электронной почты',
-        'wrong_datetime_format': 'Неверный формат'
+        'wrong_datetime_format': 'Неверный формат',
+        'equal': "Должно повторять значение поля %(field)s"
     }
     if message is None:
         message = messages[code]
