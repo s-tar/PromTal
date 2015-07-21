@@ -1,5 +1,7 @@
 
 class Config:
+
+    CSRF_ENABLED = True
     SECRET_KEY = 'very-secret-key'
 
     POSTGRESQL_HOST = 'localhost'

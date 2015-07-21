@@ -1,7 +1,10 @@
-from flask import render_template, request, current_app
+from flask import render_template, request, current_app, flash, url_for
 
 from application.views.admin.main import admin
 from application.models.user import User
+from application.forms.admin.user import EditUserForm
+from application.db import db
+from werkzeug.utils import redirect
 
 
 @admin.get('/users')
@@ -14,5 +17,36 @@ def users_index():
         error_out=False
     )
     users = pagination.items
-    return render_template('admin/users/index.html', users=users,
-                           pagination=pagination)
+    return render_template(
+        'admin/users/index.html',
+        users=users,
+        pagination=pagination
+    )
+
+
+@admin.get('/users/edit/<int:id>')
+@admin.post('/users/edit/<int:id>')
+def edit_user_profile(id):
+    user = User.get_by_id(id)
+    form = EditUserForm()
+    if form.validate_on_submit():
+        user.full_name = form.full_name.data
+        user.mobile_phone = form.mobile_phone.data
+        user.inner_phone = form.inner_phone.data
+        user.birth_date = form.birth_date.data
+        user.avatar = form.avatar.data
+        user.skype = form.skype.data
+        db.session.add(user)
+        flash('The profile has been updated.')
+        return redirect(url_for('.user', username=user.full_name))
+    form.full_name.data = user.full_name
+    form.mobile_phone.data = user.mobile_phone
+    form.inner_phone.data = user.inner_phone
+    form.birth_date.data = user.birth_date
+    form.avatar.data = user.avatar
+    form.skype.data = user.skype
+    return render_template(
+        'admin/users/edit_user_profile.html',
+        form=form,
+        user=user
+    )
