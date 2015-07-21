@@ -41,6 +41,9 @@ class Config:
         'session.auto': True,
     }
 
+    ADMIN_USERS_PER_PAGE = 20
+    ADMIN_NEWS_PER_PAGE = 20
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
