@@ -138,7 +138,7 @@ var DropDownPass = React.createClass({
         }
         
     },
-    
+
     render: function() {
         var self = this;
 
@@ -147,7 +147,110 @@ var DropDownPass = React.createClass({
         return (
             <div>
                 <div className="drop-down-pass" onClick={self.clicked.bind(self)}>Сменить <span className={classRow}></span></div>
-                <div style={divInputs}>Input</div>
+                <div style={divInputs}>
+                    <p><input name="password_old" className="form-control" type="text" placeholder="Старый пароль"/></p>
+                    <NewPass />
+                </div>
+            </div>
+        );
+
+    }
+});
+
+var NewPass = React.createClass({
+
+    getInitialState: function(){
+        return { password_1: '', password_2: '',
+                 eye_1_password: 'password', eye_2_password: 'password',
+                 eye_1_status: 'close', eye_2_status: 'close',
+                 border_1_Color: '', border_2_Color: '',
+                 colors: ["#f00", "#c06", "#f60", "#3c0", "#3f0"]};
+    },
+
+    password1Change: function(e){
+        this.setState({password_1:e.target.value, border_1_Color:'red'});
+        var password = e.target.value;
+        var self = this;
+        set_color = function(num_color) {
+            self.setState({border_1_Color:self.state.colors[num_color]});
+        }
+        if (password.match(/[a-z]/)) {
+            set_color(0);
+        }
+        if (password.match(/[A-Z]/)) {
+            set_color(1);
+        }
+        if (password.match(/\d+/)) {
+            set_color(2);
+        }
+        if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
+            set_color(2);
+        }
+        if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~]/)) {
+            set_color(3);
+        }
+        if (password.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/)) {
+            set_color(3);
+        }
+        if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
+            set_color(3);
+        }
+        if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) {
+            set_color(3);
+        }
+        if (password.match(/([a-zA-Z0-9].*[!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~].*[a-zA-Z0-9])/)) {
+            set_color(4);
+        }
+    },
+
+    password2Change: function(e){
+        this.setState({password_2:e.target.value});
+        var password = e.target.value;
+        var self = this;
+        set_color = function(num_color) {
+            self.setState({border_2_Color:self.state.colors[num_color]});
+        }
+        if (password === self.state.password_1) {
+            set_color(3);
+        } else {
+            set_color(0);
+        }
+
+    },
+
+    clickedEye1: function(){
+        if(this.state.eye_1_status == 'close') {
+            this.setState({eye_1_status: 'open', eye_1_password: 'text'});
+        } else {
+            this.setState({eye_1_status: 'close', eye_1_password: 'password'});
+        }
+    },
+
+    clickedEye2: function(){
+        if(this.state.eye_2_status == 'close') {
+            this.setState({eye_2_status: 'open', eye_2_password: 'text'});
+        } else {
+            this.setState({eye_2_status: 'close', eye_2_password: 'password'});
+        }
+    },
+
+    render: function() {
+        var self = this;
+        var classEye = "eye-pass glyphicon glyphicon-eye-";
+        var classEye1 = classEye + this.state.eye_1_status;
+        var classEye2 = classEye + this.state.eye_2_status;
+        var styleInput1 = {borderColor: this.state.border_1_Color,};
+        var styleInput2 = {borderColor: this.state.border_2_Color,};
+        return (
+            <div>
+                <div className="form-pass">
+                    <input name="password_1" className="form-control" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
+                    <span className={classEye1} onClick={self.clickedEye1}></span>
+                </div>
+                <div className="form-pass form-pass2">
+                    <input name="password_2" className="form-control" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
+                    <span className={classEye2} onClick={self.clickedEye2}></span>
+                </div>
             </div>
         );
 

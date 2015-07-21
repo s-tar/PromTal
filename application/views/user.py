@@ -125,6 +125,16 @@ def edit_profile_post():
             email=email,
             birth_date=birth_date,
             skype=skype)
+
+        password_old = request.form.get("password_old")
+        password_1 = request.form.get("password_1")
+        password_2 = request.form.get("password_2")
+
+        if password_old:
+            print("\n\n\n", password_old, password_1)
+
+            # Смена пароля тут
+
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",
