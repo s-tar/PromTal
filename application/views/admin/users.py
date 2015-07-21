@@ -1,10 +1,9 @@
-from flask import render_template, request, current_app, flash, url_for
+from flask import render_template, request, current_app, flash, url_for, redirect
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application.db import db
-from werkzeug.utils import redirect
 
 
 @admin.get('/users')
@@ -38,7 +37,7 @@ def edit_user_profile(id):
         user.skype = form.skype.data
         db.session.add(user)
         flash('The profile has been updated.')
-        return redirect(url_for('.user', username=user.full_name))
+        return redirect(url_for('admin.users_index'))
     form.full_name.data = user.full_name
     form.mobile_phone.data = user.mobile_phone
     form.inner_phone.data = user.inner_phone
@@ -50,3 +49,11 @@ def edit_user_profile(id):
         form=form,
         user=user
     )
+
+
+@admin.get('/users/delete/<int:id>')
+def delete_user_profile(id):
+    user = User.get_by_id(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('admin.users_index'))

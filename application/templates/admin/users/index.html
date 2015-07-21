@@ -29,7 +29,10 @@
                         <td>{{ user.login }}</td>
                         <td>{{ user.mobile_phone }}</td>
                         <td>{{ user.inner_phone }}</td>
-                        <td>Edit Del</td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i>Edit</span></a><br/>
+                            <a href="{{ url_for('admin.delete_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span>Delete</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

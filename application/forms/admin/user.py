@@ -10,6 +10,6 @@ class EditUserForm(Form):
     mobile_phone = StringField('Мобильный номер', validators=[DataRequired()])
     inner_phone = StringField('Внутренний номер', validators=[DataRequired()])
     birth_date = DateField('Дата рождения', validators=[DataRequired()])
-    avatar = FileField('Фото', validators=[DataRequired(), Regexp('\.(jpg|png|jpeg|gif)$')])
+    avatar = FileField('Фото', validators=[DataRequired(), Regexp(r'\.(jpg|png|jpeg|gif)$')])
     skype = StringField('Skype', validators=[DataRequired()])
     submit = SubmitField('Сохранить')
