@@ -37,10 +37,8 @@ React.render(
                     <tr>
                         <td>Смена пароля</td>
                         <td>
-                            <div id="drop_down_pass"></div>
-                            <p><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="Старый пароль"/></p>
-                            <p><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="Новый пароль"/></p>
-                            <p><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="Повторить новый пароль"/></p>
+                            <DropDownPass />
+                            
                         </td>
                     </tr>
                     <tr>
@@ -60,9 +58,6 @@ function wellDone(){
     window.location.href = "{{ url_for('user.profile') }}";
 }
 
-React.render(
-    <DropDownPass />,
-    document.getElementById('drop_down_pass'))
 </script>
 <script>
 window.onload = function () {

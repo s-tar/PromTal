@@ -138,7 +138,7 @@ var DropDownPass = React.createClass({
         }
         
     },
-    
+
     render: function() {
         var self = this;
 
@@ -147,7 +147,33 @@ var DropDownPass = React.createClass({
         return (
             <div>
                 <div className="drop-down-pass" onClick={self.clicked.bind(self)}>Сменить <span className={classRow}></span></div>
-                <div style={divInputs}>Input</div>
+                <div style={divInputs}>
+                    <p><input name="password_old" className="form-control" type="text" placeholder="Старый пароль"/></p>
+                    <NewPass />
+                </div>
+            </div>
+        );
+
+    }
+});
+
+var NewPass = React.createClass({
+
+    getInitialState: function(){
+        return { };
+    },
+
+    clicked: function(){
+        
+    },
+
+    render: function() {
+        var self = this;
+
+        return (
+            <div>
+                <p><input name="password_1" className="form-control" type="text" placeholder="Новый пароль"/></p>
+                <p><input name="password_2" className="form-control" type="text" placeholder="Повторить новый пароль"/></p>
             </div>
         );
 
