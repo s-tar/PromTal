@@ -1,5 +1,6 @@
 import os
-from flask import Flask, g
+
+from flask import Flask
 
 from application.db import db, redis
 from application.ldap import ldap
