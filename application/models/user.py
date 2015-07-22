@@ -1,6 +1,7 @@
 from application.db import db
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from sqlalchemy import func
 
 
 class User(db.Model):
