@@ -32,7 +32,6 @@ class LDAP(object):
         app.config.setdefault('LDAP_USER_PASSWORD_FIELD', 'userPassword')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
 
-
         for option in ['USERNAME', 'PASSWORD', 'BASE_DN']:
             if app.config['LDAP_{0}'.format(option)] is None:
                 raise LDAPException('LDAP_{0} cannot be None!'.format(option))
@@ -62,7 +61,6 @@ class LDAP(object):
 
     def bind_user(self, username, password):
         user_dn = self.get_object_details(username, dn_only=True)
-        print(user_dn)
         if user_dn is None:
             return
         try:
@@ -92,7 +90,6 @@ class LDAP(object):
             return result
         except ldap3.LDAPExceptionError as e:
             raise LDAPException(self.error(e))
-
 
     @staticmethod
     def error(e):

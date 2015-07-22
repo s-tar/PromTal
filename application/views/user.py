@@ -1,4 +1,4 @@
-from application import Module, ldap
+from application import Module, ldap, db
 from application.utils.validator import Validator
 from application.utils import auth
 from flask import request, render_template, redirect, url_for
@@ -113,11 +113,11 @@ def restore_post():
          "errors": v.errors}
     )
 
+
 @user.post('/edit_profile')
 def edit_profile_post():
+    current_user = auth.service.get_user()
     v = Validator(request.form)
-
-    # Валидация полей
 
     if v.is_valid():
         full_name = request.form.get("full_name")
@@ -126,29 +126,20 @@ def edit_profile_post():
         inner_phone = request.form.get("inner_phone")
         email = request.form.get("email")
         skype = request.form.get("skype")
-        User.edit_user(auth.service.get_user().id,
-            full_name=full_name,
-            mobile_phone=mobile_phone,
-            inner_phone=inner_phone,
-            email=email,
-            birth_date=birth_date,
-            skype=skype)
 
-        password_old = request.form.get("password_old")
-        password_1 = request.form.get("password_1")
-        password_2 = request.form.get("password_2")
-
-        if password_old:
-            print("\n\n\n", password_old, password_1)
-
-            # Смена пароля тут
+        User.edit_user(current_user.id,
+                       full_name=full_name,
+                       mobile_phone=mobile_phone,
+                       inner_phone=inner_phone,
+                       email=email,
+                       birth_date=birth_date,
+                       skype=skype)
 
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",
          "errors": v.errors}
     )
-
 
 
 @user.post('/new_pass')

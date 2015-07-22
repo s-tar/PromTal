@@ -11,9 +11,10 @@
         <table class="table table-bordered table-hover table-striped">
             <thead>
                 <tr>
+                    <th>ID </th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Birth date</th>
+                    <th>Login</th>
                     <th>Cell phone</th>
                     <th>Inner phone</th>
                     <th>Manage</th>
@@ -22,23 +23,27 @@
             <tbody>
                 {% for user in users %}
                     <tr>
+                        <td>{{ user.id }}</td>
                         <td>{{ user.full_name }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.birth_date }}</td>
+                        <td>{{ user.login }}</td>
                         <td>{{ user.mobile_phone }}</td>
                         <td>{{ user.inner_phone }}</td>
-                        <td>Edit Del</td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i>Edit</span></a><br/>
+                            <a href="{{ url_for('admin.delete_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span>Delete</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, 'admin.users_index') }}
-</div>
-{% endif %}
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'admin.users_index') }}
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

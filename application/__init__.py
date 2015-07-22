@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_bootstrap import Bootstrap
 
 from application.db import db, redis
 from application.ldap import ldap
@@ -22,6 +23,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     app.wsgi_app = AuthMiddleware(app.wsgi_app)
 
+    Bootstrap(app)
     db.init_app(app)
     redis.init_app(app)
     ldap.init_app(app)
