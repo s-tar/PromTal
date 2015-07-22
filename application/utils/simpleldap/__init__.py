@@ -6,7 +6,6 @@ from flask import current_app
 
 class LDAP(object):
     def __init__(self, app=None):
-        self.app = app
         if app is not None:
             self.init_app(app)
 
@@ -115,4 +114,4 @@ class LDAP(object):
                     return response[0]['dn']
                 return {'dn': response[0]['dn'], 'attributes': response[0]['attributes']}
         except ldap3.LDAPExceptionError as e:
-            raise e
+            raise e  # TODO add appropriate processing
