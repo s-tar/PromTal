@@ -161,3 +161,27 @@ def new_pass_post():
         {"status": "fail",
          "errors": v.errors}
     )
+
+
+@user.post('/change_password')
+def change_password():
+    current_user = auth.service.get_user()
+    v = Validator(request.form)
+
+    v.field('password_old').required()
+    v.field('password_1').required()
+    v.field('password_2').required()
+    v.field('password_2').equal(v.field('password_1'))
+
+    if v.is_valid():
+        old_password = request.form.get("password_old")
+        new_password = request.form.get("password_1")
+
+        # TODO processing LDAP exceptions
+        result = ldap.modify_password(current_user.login, old_password, new_password)
+
+        return jsonify({"status": "ok"})
+    return jsonify(
+        {"status": "fail",
+         "errors": v.errors}
+    )
