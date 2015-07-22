@@ -1,8 +1,10 @@
 import pickle
 from application import redis
 from application.models.user import User
+from application.utils.auth.user import User as AuthUser
 from flask import request, g
 from application.ldap import ldap
+
 
 def get_user():
     if not g.get('user'):
@@ -12,15 +14,11 @@ def get_user():
         if session is not None:
             session = pickle.loads(session)
             uid = session.get('user', {}).get('id', None)
-        g.user = User.get_by_id(uid)
+        g.user = User.get_by_id(uid) or AuthUser()
     return g.user
 
 
 def login(login, password):
-    #sid = request.cookies.get('sid', None)
-    #session = {'user': {'id': 818}}
-    #redis.set(sid, pickle.dumps(session))
-
     if ldap.bind_user(login, password):
         sid = request.cookies.get('sid', None)
         user = User.get_by_login(login)
@@ -41,3 +39,5 @@ def logout():
         if user:
             user['id'] = None
             redis.set(sid, pickle.dumps(session))
+
+

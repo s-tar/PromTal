@@ -31,10 +31,9 @@ class Config:
     LDAP_USERNAME = 'cn=admin,dc=uaprom,dc=net'
     LDAP_PASSWORD = '3q1ID69g0fJVHoJp'
     LDAP_BASE_DN = 'ou=People,dc=uaprom,dc=net'
-    LDAP_USER_OBJECT_DN = 'cn={}'
-    LDAP_USER_OBJECT_FILTER = '(cn=*)'
+    LDAP_USER_OBJECT_FILTER = '(cn=%s)'
     LDAP_USER_PASSWORD_FIELD = 'userPassword'
-    LDAP_USER_FIELD = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
+    LDAP_USER_FIELDS = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
 
     session = {
         'session.type': 'file',
@@ -45,6 +44,10 @@ class Config:
 
     ADMIN_USERS_PER_PAGE = 20
     ADMIN_NEWS_PER_PAGE = 20
+
+    files = {
+        'path': './application/files'
+    }
 
 
 class DevelopmentConfig(Config):

@@ -2,28 +2,76 @@ input,
 textarea {
   display: inline-block !important;
 }
-/*input, textarea*/
-/*background: #FFFFFF*/
-/*border: 1px solid #EEEEEE*/
-/*border-bottom-color: #cccccc*/
-/*-border-radius(3px)*/
-/*margin: 0*/
-/*margin-bottom: 2px*/
-/*outline: none*/
-/*width: 250px*/
-/*color: #333;*/
-/*padding: 10px*/
-/*&:focus*/
-/*border-color: #F38630*/
-/*input[type=button],*/
-/*input[type=submit]*/
-/*background: #FA6900*/
-/*color: white*/
-/*text-transform: uppercase*/
-/*border: 0 none*/
-/*width: auto*/
-/*&:hover*/
-/*background: #F38630*/
+.mce-tinymce {
+  display: inline-block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.edit-wrapper {
+  white-space: nowrap;
+}
+textarea.editor {
+  margin-bottom: 50px;
+  min-height: 600px;
+  display: none !important;
+}
+.custom-form {
+  padding: 0px 20px;
+  padding-bottom: 20px;
+  float: left;
+  width: 100%;
+}
+.custom-form textarea {
+  min-height: 100px;
+}
+.custom-form input,
+.custom-form textarea {
+  background: #fff;
+  border: 1px solid #eee;
+  border-bottom-color: #ccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin: 0;
+  margin-bottom: 4px;
+  outline: none;
+  color: #333;
+  padding: 10px;
+  width: 100%;
+  resize: vertical;
+}
+.custom-form input:focus,
+.custom-form textarea:focus {
+  border-color: #fd8a16;
+}
+.custom-form .button,
+.custom-form input[type=button],
+.custom-form input[type=submit] {
+  display: inline-block;
+  background: #fd8a16;
+  color: #fff;
+  text-transform: uppercase;
+  border: 0 none;
+  width: auto;
+  float: right;
+  margin-top: 20px;
+  margin-left: 10px;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 12px 15px 10px;
+}
+.custom-form .button:hover,
+.custom-form input[type=button]:hover,
+.custom-form input[type=submit]:hover {
+  background: #fd9e3f;
+}
+.custom-form .field-label {
+  color: #777;
+  width: 100%;
+  padding: 5px;
+}
 .error-wrapper {
   display: inline-block;
   width: 0;
