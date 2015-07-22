@@ -58,6 +58,11 @@ def new_pass():
     return render_template('login/new_pass.html')
 
 
+@user.route("/edit_pass")
+def edit_pass():
+    return render_template('login/edit_pass.html')
+
+
 @user.post('/login')
 def login_post():
     v = Validator(request.form)
@@ -164,6 +169,26 @@ def new_pass_post():
         result = ldap.change_password(restore_pass.author.login, password_1)
 
         #PasswordRestore.deactivation_token(token_obj) # не удалять пока
+        return jsonify({"status": "ok"})
+    return jsonify(
+        {"status": "fail",
+         "errors": v.errors}
+    )
+
+@user.post('/edit_pass')
+def edit_pass_post():
+    v = Validator(request.form)
+
+    # Валидация паролей
+
+    if v.is_valid():
+        password_old = request.form.get("password_old")
+        password_1 = request.form.get("password_1")
+        password_2 = request.form.get("password_2")
+
+        # Сохранение нового пароля
+        print("\n\n\n", password_old, password_1, password_2)
+
         return jsonify({"status": "ok"})
     return jsonify(
         {"status": "fail",

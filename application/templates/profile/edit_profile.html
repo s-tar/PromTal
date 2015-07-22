@@ -5,15 +5,13 @@
 React.render(
     <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" onSuccess={wellDone}>
         <div className="row">
-          <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h2><input className="full_name_input form-control" type="text" name="full_name" defaultValue="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></h2>
-            </div>
-        </div>
-
-        <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
                 <tbody>
+                    <tr>
+                        <td>Full name</td>
+                        <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
+                    </tr>
                     <tr>
                         <td>Office Phone</td>
                         <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if current_user.inner_phone %}{{ current_user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
@@ -33,12 +31,6 @@ React.render(
                     <tr>
                         <td>Skype</td>
                         <td><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
-                    </tr>
-                    <tr>
-                        <td>Смена пароля</td>
-                        <td>
-                            <DropDownPass />
-                        </td>
                     </tr>
                     <tr>
                         <td><a href="/message/ну ты и лошара" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
