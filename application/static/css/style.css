@@ -26,6 +26,8 @@ header .logo img {
   -moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   -ms-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
+  margin: 5px 10px;
+  overflow: hidden;
 }
 .login-frame,
 .registration-frame {
@@ -38,27 +40,45 @@ header .logo img {
   float: right;
   margin-top: 10px;
 }
-input,
-textarea {
-  display: inline-block !important;
+.user-icon {
+  width: 50px;
+  height: 50px;
+  -webkit-border-radius: 999px;
+  -moz-border-radius: 999px;
+  border-radius: 999px;
+  background-position: center center;
+  background-size: cover;
+  background-image: url("/static/img/no-photo-s.png");
+  cursor: pointer;
 }
-.error-wrapper {
+h3.title {
+  margin: 0;
+  padding: 15px 20px;
+  color: #fd8a16;
+}
+h3.title a {
+  color: #fd8a16;
+  text-decoration: none;
+/*border-bottom: 1px solid #f6f6f6*/
+}
+h3.title a:hover {
+  text-decoration: underline;
+}
+.button {
   display: inline-block;
-  width: 0;
-  vertical-align: top;
-  position: relative;
-  pointer-events: none;
-}
-.error-wrapper .error {
-  font-size: 0.9em;
-  position: absolute;
-  white-space: nowrap;
-  top: 0;
-  right: 0;
-  background-color: rgba(255,0,0,0.65);
-  padding: 1px 5px;
+  background: #fd8a16;
   color: #fff;
-  -webkit-border-radius: 0 3px 0 3px;
-  -moz-border-radius: 0 3px 0 3px;
-  border-radius: 0 3px 0 3px;
+  text-transform: uppercase;
+  border: 0 none;
+  width: auto;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 12px 15px 10px;
+}
+.button:hover {
+  text-decoration: none;
+  color: #fff;
+  background: #fd9e3f;
 }

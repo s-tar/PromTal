@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+<div class="col-sm-6 col-sm-offset-3">
+<div class="news-list">
+    {% for n in news %}
+    <article class="frame">
+        <div class="edit-buttons">
+            <a href="/news/edit/{{ n.id }}"><span class="fa fa-edit"></span></a>
+        </div>
+        <h3 class="title"><a href="/news/{{ n.id }}">{{ n.title or '' }}</a></h3>
+        <div class="text">{{ n.announcement|safe or '' }}</div>
+        <div class="datetime">{{ n.formatted_datetime() or '' }}</div>
+        <div class="footer">
+            <div class="author">
+                <div class="user-icon" onClick="window.location.href='/profile/{{ n.author.id }}'" {% if n.author.photo_s %}style="background-image: url('{{ n.author.photo_s or '' }}')"{% endif %} title="{{ n.author.full_name or '' }}"></div>
+                <div class="comments">
+                    <span class="fa fa-comments-o"></span>{{ n.comments_count or 0}}
+                </div>
+                <div class="likes">
+                    <span class="fa fa-heart"></span>{{ n.likes_count or 0 }}
+                </div>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+</div>
+<div class="col-sm-3">
+    <a href="/news/new" class="button new">Новая новость</a>
+</div>
+</div>
+{% endblock %}

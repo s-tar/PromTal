@@ -15,6 +15,8 @@ header
   background: #FFFFFF
   -border-radius(5px)
   -box-shadow 0px 1px 2px 0px rgba(0,0,0,0.1)
+  margin: 5px 10px
+  overflow: hidden
 .login-frame, .registration-frame
   margin: 10px
   padding: 10px
@@ -22,5 +24,37 @@ header
   input[type=submit]
     float: right
     margin-top: 10px
+.user-icon
+  width: 50px
+  height: 50px
+  -border-radius 999px
+  background-position: center center
+  background-size: cover
+  background-image: url('/static/img/no-photo-s.png')
+  cursor: pointer
 
-@import 'form'
+h3.title
+  margin: 0
+  padding: 15px 20px
+  color: #fd8a16
+h3.title a
+  color: #fd8a16
+  text-decoration: none
+  &:hover
+    text-decoration: underline
+  /*border-bottom: 1px solid #f6f6f6*/
+
+.button
+  display: inline-block
+  background: #fd8a16
+  color: white
+  text-transform: uppercase
+  border: 0 none
+  width: auto
+  text-decoration: none
+  -border-radius(3px)
+  padding: 12px 15px 10px
+  &:hover
+    text-decoration: none
+    color: white
+    background: #fd9e3f

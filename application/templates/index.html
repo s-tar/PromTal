@@ -4,11 +4,24 @@
 <div class="text-center message">Превед Медвед</div>
 <div class="text-center message">Тут будет лента новостей</div>
 
-<!--script src="/static/jsx/index.jsx" type="text/jsx"></script>
+
+<div id="registration_form"></div>
+<script src="/static/jsx/index.jsx" type="text/jsx">
+React.render(
+    <AJAXForm action="/user/registration" method="post" onSuccess={wellDone}>
+        <Input type="text" name="login" placeholder="Логин" onChange={someChange}/>
+        <Input type="password" name="password" placeholder="Пароль" />
+        <Input type="password" name="repassword" placeholder="Повтор пароля" />
+        <Input type="submit" value="Регистрация"/>
+    </AJAXForm>,
+    document.getElementById('registration_form'))
+</script>
+
+
 <div class="frame login-frame">
     <div id="login_form"></div>
 </div>
 <div class="frame registration-frame">
     <div id="registration_form"></div>
-</div-->
+</div
 {% endblock %}
