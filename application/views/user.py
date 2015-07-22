@@ -16,6 +16,14 @@ def profile():
     return render_template('profile/profile.html')
 
 
+@user.get("/profile/<user_id>")
+def profile_id(user_id):
+    user = User.get_by_id(user_id)
+    if not user:
+        return render_template('404.html')
+    return render_template('profile/profile_id.html', user=user)
+
+
 @user.get("/edit_profile")
 def edit_profile():
     return render_template('profile/edit_profile.html')
