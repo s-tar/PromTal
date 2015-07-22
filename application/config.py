@@ -45,6 +45,10 @@ class Config:
     ADMIN_USERS_PER_PAGE = 20
     ADMIN_NEWS_PER_PAGE = 20
 
+    files = {
+        'path': './application/files'
+    }
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -1,9 +1,10 @@
 from application.db import db
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from application.utils.auth.user import User as AuthUser
 
 
-class User(db.Model):
+class User(db.Model, AuthUser):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)  # TODO check, if autoincrement
     login = db.Column(db.String(64), unique=True)
@@ -13,6 +14,8 @@ class User(db.Model):
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)
+    photo = db.Column(db.String(255), nullable=True)
+    photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
 
     def __repr__(self):
