@@ -16,6 +16,14 @@ def profile():
     return render_template('profile/profile.html')
 
 
+@user.get("/profile/<user_id>")
+def profile_id(user_id):
+    user = User.get_by_id(user_id)
+    if not user:
+        return render_template('404.html')
+    return render_template('profile/profile_id.html', user=user)
+
+
 @user.get("/edit_profile")
 def edit_profile():
     return render_template('profile/edit_profile.html')
@@ -48,6 +56,11 @@ def restore_pass(token):
 @user.route("/new_pass")
 def new_pass():
     return render_template('login/new_pass.html')
+
+
+@user.route("/edit_pass")
+def edit_pass():
+    return render_template('login/edit_pass.html')
 
 
 @user.post('/login')
@@ -163,8 +176,8 @@ def new_pass_post():
     )
 
 
-@user.post('/change_password')
-def change_password():
+@user.post('/edit_pass')
+def edit_pass_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
 
