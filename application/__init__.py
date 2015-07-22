@@ -14,6 +14,7 @@ from application.models import *
 
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+files_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'files')
 
 
 def create_app(config_name):

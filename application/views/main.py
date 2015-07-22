@@ -74,9 +74,11 @@ def message(msg):
 def test():
     v = Validator(request.form)
     v.fields('email').email()
-    v.field('first_name').required()
+    v.field('first_name').integer()
     v.field('text').required().length(max=6)
+    v.field('image').image()
     if v.is_valid():
         return jsonify({'status': 'ok'})
+
     return jsonify({'status': 'fail',
             'errors': v.errors})

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+<div class="col-sm-6 col-sm-offset-3">
+<div class="news-one">
+    <article class="frame">
+        <div class="edit-buttons">
+            <a href="/news/edit/{{ news.id }}"><span class="fa fa-edit"></span></a>
+        </div>
+        <h3 class="title">{{ news.title or '' }}</h3>
+        <div class="text">{{ news.text|safe or '' }}</div>
+        <div class="datetime">{{ news.formatted_datetime() or '' }}</div>
+        <div class="footer">
+            <div class="author">
+                <div class="user-icon" onClick="window.location.href='/profile/{{ news.author.id }}'" {% if news.author.photo_s %}style="background-image: url('{{ n.author.photo_s or '' }}')"{% endif %} title="{{ news.author.full_name or '' }}"></div>
+                <div class="comments">
+                    <span class="fa fa-comments-o"></span>{{ news.comments_count or 0}}
+                </div>
+                <div class="likes">
+                    <span class="fa fa-heart"></span>{{ news.likes_count or 0 }}
+                </div>
+            </div>
+        </div>
+    </article>
+</div>
+</div>
+</div>
+{% endblock %}

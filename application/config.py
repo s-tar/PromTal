@@ -40,6 +40,10 @@ class Config:
         'session.auto': True,
     }
 
+    files = {
+        'path': './application/files'
+    }
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

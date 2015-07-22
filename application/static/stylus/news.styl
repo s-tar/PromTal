@@ -1,12 +1,22 @@
-.news-list
-  .title
+.edit-buttons
+  position: absolute
+  top: 0
+  right: 0
+  font-size: 1.5em
+  padding: 10px
+  display: none
+.news-list, .news-one
+  article
     margin: 0
-    padding: 15px 20px
-    color: #fd8a16
-    /*border-bottom: 1px solid #f6f6f6*/
+    margin-bottom: 5px
+    position: relative
+    &:hover
+      .edit-buttons
+        display: block
   .text
     padding: 0px 20px
   .datetime
+    clear: both
     text-align: right
     padding: 5px 20px
     color: #aaaaaa
@@ -35,3 +45,8 @@
       color: #e7422c
     .comments
       color: #779dca
+
+.news-form
+  .title
+    border-bottom: 1px solid #f6f6f6
+    margin-bottom: 10px
