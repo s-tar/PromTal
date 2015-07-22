@@ -9,9 +9,9 @@ logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 def get_users_objects(connection, config):
     connection.search(search_base=config['LDAP_BASE_DN'],
-                      search_filter=config['LDAP_USER_OBJECT_FILTER'],
+                      search_filter=config['LDAP_USER_OBJECT_FILTER'] % '*',
                       search_scope=ldap3.SUBTREE,
-                      attributes=config['LDAP_USER_FIELD'])
+                      attributes=config['LDAP_USER_FIELDS'])
     for user_object in connection.response:
         yield user_object['attributes']
 

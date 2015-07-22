@@ -31,8 +31,8 @@ class Config:
     LDAP_USERNAME = 'cn=admin,dc=uaprom,dc=net'
     LDAP_PASSWORD = '3q1ID69g0fJVHoJp'
     LDAP_BASE_DN = 'ou=People,dc=uaprom,dc=net'
-    LDAP_USER_OBJECT_DN = 'cn={}'
-    LDAP_USER_OBJECT_FILTER = '(cn=*)'
+    LDAP_OBJECT_DN = 'distinguishedName'
+    LDAP_USER_OBJECT_FILTER = '(cn=%s)'
     LDAP_USER_PASSWORD_FIELD = 'userPassword'
     LDAP_USER_FIELD = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
 

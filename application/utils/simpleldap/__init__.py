@@ -18,9 +18,9 @@ class LDAP(object):
         app.config.setdefault('LDAP_USERNAME', None)
         app.config.setdefault('LDAP_PASSWORD', None)
         app.config.setdefault('LDAP_BASE_DN', None)
-        app.config.setdefault('LDAP_OBJECTS_DN', 'distinguishedName')
         app.config.setdefault('LDAP_USER_FIELDS', [])
-        app.config.setdefault('LDAP_USER_OBJECT_FILTER', '(objectClass=*)')
+        app.config.setdefault('LDAP_OBJECT_DN', 'distinguishedName')
+        app.config.setdefault('LDAP_USER_OBJECT_FILTER', '(cn=%s)')
         app.config.setdefault('LDAP_USER_PASSWORD_FIELD', 'userPassword')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
 
@@ -49,7 +49,7 @@ class LDAP(object):
             conn.bind()
             return conn
         except ldap3.LDAPExceptionError as e:
-            raise e  # TODO add appropriate processing
+            return  # TODO add appropriate processing
 
     def bind_user(self, username, password, get_connection=False):
         user_dn = self.get_object_details(username, dn_only=True)
@@ -80,6 +80,7 @@ class LDAP(object):
                     current_app.config['LDAP_USER_PASSWORD_FIELD']: [(ldap3.MODIFY_REPLACE, new_password)]
                 }
             )
+            conn.unbind()
             return result
         except ldap3.LDAPExceptionError as e:
             raise e  # TODO add appropriate processing
@@ -88,13 +89,30 @@ class LDAP(object):
         try:
             conn = self.bind_user(username, old_password, get_connection=True)
             user_dn = self.get_object_details(username)
-            mod = ModifyPassword(conn, user_dn, old_password, new_password)
-            mod.send()
+            modification = ModifyPassword(conn, user_dn, old_password, new_password)
+            modification.send()
+            conn.unbind()
         except ldap3.LDAPExceptionError as e:
             raise e  # TODO add appropriate processing
 
     def get_object_details(self, username, dn_only=False):
-        # TODO add functionality to the method depended on db_only flag
-        if dn_only:
-            return current_app.config['LDAP_USER_OBJECT_DN'].format(username) + \
-                   ',' + current_app.config['LDAP_BASE_DN']
+        filter = None
+        attributes = None
+        if username is not None:
+            if not dn_only:
+                attributes = current_app.config['LDAP_USER_FIELDS']
+            filter = current_app.config['LDAP_USER_OBJECT_FILTER'] % username
+        conn = self.bind()
+        try:
+            conn.search(search_base=current_app.config['LDAP_BASE_DN'],
+                        search_filter=filter,
+                        search_scope=ldap3.SUBTREE,
+                        attributes=attributes)
+            response = conn.response
+            conn.unbind()
+            if response:
+                if dn_only:
+                    return response[0]['dn']
+                return {'dn': response[0]['dn'], 'attributes': response[0]['attributes']}
+        except ldap3.LDAPExceptionError as e:
+            raise e

@@ -76,28 +76,8 @@ def login_post():
         else:
             v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
 
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
-
-
-@user.post('/registration')
-def registration():
-    v = Validator(request.form)
-    v.field("login").required()
-    v.field("password").required()
-    v.field("password").required().length(min=5, message="Длина пароля не менее %(min)d символов")
-    if v.data.get("password") != v.data.get("repassword"):
-        v.add_error('password', 'Пароли не совпадают', 'wrong_repassword')
-
-    if v.is_valid():
-        return jsonify({"status": "ok"})
-
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
 
 
 @user.post('/restore')
@@ -113,16 +93,40 @@ def restore_post():
             token = PasswordRestore.add_token(user)
             send_mail_restore_pass(email, token)
         return jsonify({"status": "ok"})
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@user.post('/new_pass')
+def new_pass_post():
+    v = Validator(request.form)
+
+    v.field('password_1').required()
+    v.field('password_2').required()
+    v.field('password_2').equal(v.field('password_1'))
+
+    if v.is_valid():
+        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
+        #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
+        #if token_obj:# не удалять пока
+        new_password = request.form.get("password_1")
+
+        # TODO processing LDAP exceptions
+        ldap.restore_password(restore_pass.author.login, new_password)
+
+        #PasswordRestore.deactivation_token(token_obj) # не удалять пока
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
 
 
 @user.post('/edit_profile')
 def edit_profile_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
+
+    v.field('full_name').required()
+    v.field('email').required()
 
     if v.is_valid():
         full_name = request.form.get("full_name")
@@ -141,39 +145,8 @@ def edit_profile_post():
                        skype=skype)
 
         return jsonify({"status": "ok"})
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
-
-
-@user.post('/new_pass')
-def new_pass_post():
-    v = Validator(request.form)
-
-    # Валидация паролей
-
-    if v.is_valid():
-        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
-        #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
-        #if token_obj:# не удалять пока
-        password_1 = request.form.get("password_1")
-        password_2 = request.form.get("password_2")
-
-        # Сохранение нового пароля
-        # print("\n\n\n")
-        # print(restore_pass.id)
-        # print(restore_pass.author)
-
-        # Changing user password
-        result = ldap.change_password(restore_pass.author.login, password_1)
-
-        #PasswordRestore.deactivation_token(token_obj) # не удалять пока
-        return jsonify({"status": "ok"})
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
 
 
 @user.post('/edit_pass')
@@ -191,10 +164,8 @@ def edit_pass_post():
         new_password = request.form.get("password_1")
 
         # TODO processing LDAP exceptions
-        result = ldap.modify_password(current_user.login, old_password, new_password)
+        ldap.modify_password(current_user.login, old_password, new_password)
 
         return jsonify({"status": "ok"})
-    return jsonify(
-        {"status": "fail",
-         "errors": v.errors}
-    )
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
