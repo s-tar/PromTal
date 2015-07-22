@@ -29,6 +29,7 @@ class LDAP(object):
         app.config.setdefault('LDAP_OBJECTS_DN', 'distinguishedName')
         app.config.setdefault('LDAP_USER_FIELDS', [])
         app.config.setdefault('LDAP_USER_OBJECT_FILTER', '(objectClass=*)')
+        app.config.setdefault('LDAP_USER_PASSWORD_FIELD', 'userPassword')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
 
         for option in ['USERNAME', 'PASSWORD', 'BASE_DN']:
@@ -60,7 +61,6 @@ class LDAP(object):
 
     def bind_user(self, username, password):
         user_dn = self.get_object_details(username, dn_only=True)
-        print(user_dn)
         if user_dn is None:
             return
         try:
@@ -78,6 +78,18 @@ class LDAP(object):
         if dn_only:
             return current_app.config['LDAP_USER_OBJECT_DN'].format(username) + \
                    ',' + current_app.config['LDAP_BASE_DN']
+
+    def change_password(self, username, new_password):
+        try:
+            conn = self.bind()
+            user_dn = self.get_object_details(username, dn_only=True)
+            result = conn.modify(
+                dn=user_dn,
+                changes={current_app.config['LDAP_USER_PASSWORD_FIELD']: [(ldap3.MODIFY_REPLACE, new_password)]}
+            )
+            return result
+        except ldap3.LDAPExceptionError as e:
+            raise LDAPException(self.error(e))
 
     @staticmethod
     def error(e):

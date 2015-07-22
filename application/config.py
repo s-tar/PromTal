@@ -1,5 +1,7 @@
 
 class Config:
+
+    CSRF_ENABLED = True
     SECRET_KEY = 'very-secret-key'
 
     POSTGRESQL_HOST = 'localhost'
@@ -31,6 +33,7 @@ class Config:
     LDAP_BASE_DN = 'ou=People,dc=uaprom,dc=net'
     LDAP_USER_OBJECT_DN = 'cn={}'
     LDAP_USER_OBJECT_FILTER = '(cn=*)'
+    LDAP_USER_PASSWORD_FIELD = 'userPassword'
     LDAP_USER_FIELD = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
 
     session = {
@@ -39,6 +42,9 @@ class Config:
         'session.data_dir': './tmp/session',
         'session.auto': True,
     }
+
+    ADMIN_USERS_PER_PAGE = 20
+    ADMIN_NEWS_PER_PAGE = 20
 
     files = {
         'path': './application/files'

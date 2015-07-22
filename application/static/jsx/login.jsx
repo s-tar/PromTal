@@ -7,7 +7,7 @@ React.render(
             <Input type="checkbox" value="remember-me"/>
             Remember me
         </label>
-        <a href="/restore" className="pull-right need-help">Забыли пароль? </a><span className="clearfix"></span>
+        <a href="/user/restore" className="pull-right need-help">Забыли пароль? </a><span className="clearfix"></span>
     </AJAXForm>,
     document.getElementById('log_in_form'))
 

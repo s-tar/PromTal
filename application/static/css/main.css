@@ -126,3 +126,19 @@ a.logo {
 .ninja {
     display: none;
 }
+.drop-down-pass {
+    cursor: pointer;
+    color: rgb(51, 122, 183);
+}
+.eye-pass {
+    position: absolute;
+    top: 11px;
+    left: -20px;
+    cursor: pointer;
+}
+.form-pass {
+    position: relative;
+}
+.form-pass2 {
+    margin-top: -1px;
+}
