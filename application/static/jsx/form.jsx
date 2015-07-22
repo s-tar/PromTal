@@ -1,54 +1,45 @@
 var FieldError = React.createClass({
+    getInitialState: function() {
+        this.props.registerError(this);
+        return {text: ''}
+    },
     render: function() {
-        if(!this.props.text)
+        if(!this.state.text)
             return false
         else
             return(
-               <div className='error-wrapper'><div className="error">{this.props.text}</div></div>
-                //<div className="alert alert-danger" role="alert">
-                //  <span className="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                //  <span className="sr-only">Error:</span>
-                //  {this.props.text}
-                //</div>
+               <div className='error-wrapper'><div className="error">{this.state.text}</div></div>
             )
     }
 })
 
 var Input = React.createClass({
-    getInitialState: function() {
-        this.props.registerField(this)
-        return {error: ''};
-    },
     onChange: function(event) {
-        this.setState({error: ''})
+        this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
     },
     render: function() {
-        var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <input {...this.props} onChange={this.onChange}/>{error}
+                <input {...this.props} onChange={this.onChange}/>
+                <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
     }
 });
 
 var TextArea = React.createClass({
-    getInitialState: function() {
-        this.props.registerField(this)
-        return {error: ''};
-    },
     onChange: function(event) {
-        this.setState({error: ''})
+        this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
     },
     render: function() {
-        var error = !this.state.error ? '' : <FieldError text={this.state.error}/>
         return(
             <div className="field-wrapper">
-                <textarea {...this.props} onChange={this.props.onChange}>{this.props.children}</textarea>{error}
+                <textarea {...this.props} onChange={this.props.onChange}>{this.props.children}</textarea>
+                <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
     }
@@ -58,22 +49,22 @@ var AJAXForm = React.createClass({
     getInitialState: function() {
         return {errors: {}, data: {}};
     },
-    registerField: function(name, index) {
+    registerError: function(name, index) {
         var self = this
         self.fields = self.fields || {}
-        function _registerField(field) {
+        function _registerError(field) {
             if(!!name) {
                 self.fields[name] = self.fields[name] || {}
                 self.fields[name][index] = field
             }
         }
-        return _registerField
+        return _registerError
     },
     showErrors: function(errors) {
         for(var name in errors)
             for(var i in errors[name]) {
                 var field = this.fields[name] && this.fields[name][i]
-                if(!!field) field.setState({error: errors[name][i][0].message})
+                if(!!field) field.setState({text: errors[name][i][0].message})
             }
 
     },
@@ -109,7 +100,9 @@ var AJAXForm = React.createClass({
             var name = child.props.name
             counter[name] = counter[name] || 0
             var index = counter[name]++
-            var clone = React.addons.cloneWithProps(child, {registerField: self.registerField(name, index)});
+            var clone = React.addons.cloneWithProps(child, {
+                registerError: self.registerError(name, index)
+            });
 
             if(!!clone.props.children)
                 clone.props.children = self.childrenWithErrors(root, clone)
