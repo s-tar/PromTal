@@ -1,0 +1,61 @@
+.comments {
+  padding: 0;
+  padding-top: 5px;
+  list-style: none;
+  padding-left: 10px;
+}
+.comments ul {
+  list-style: none;
+  padding-left: 40px;
+}
+.comments .comment {
+  position: relative;
+}
+.comments .comment .user-icon {
+  position: absolute;
+}
+.comments .comment .message {
+  padding: 5px 10px;
+  margin-left: 60px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  min-height: 50px;
+  position: relative;
+  overflow: visible;
+}
+.comments .comment .message .datetime {
+  color: #aaa;
+  font-size: 0.8em;
+  padding-left: 10px;
+}
+.comments .comment .message .arrow {
+  position: absolute;
+  color: #fff;
+  left: -0.35em;
+  font-size: 1.3em;
+  top: 5px;
+}
+.comments .quotes ul {
+  padding-left: 20px;
+}
+.comments .quotes .comment .user-icon {
+  width: 30px;
+  height: 30px;
+}
+.comments .quotes .comment .message {
+  margin-left: 40px;
+  min-height: 30px;
+}
+.comments .quotes .comment .message .arrow {
+  top: 5px;
+}
+/*.comments*/
+/*border-radius 5px*/
+/*margin: 0px 10px*/
+/*margin-top: -10px*/
+/*background: #FFFFFF*/
+/*padding: 10px*/
+/*.comment .text*/
+/*-box-shadow none*/
+/*border-bottom: 1px solid #f6f6f6*/

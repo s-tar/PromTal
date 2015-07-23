@@ -32,19 +32,12 @@ class News(db.Model, Mixin):
     author = db.relationship("User", backref="news")
     category = db.relationship("NewsCategory", backref="news")
     tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news")
-    comments = db.relationship("Comment", secondary="news_comment_association", backref="news")
+    comments = db.relationship("Comment", secondary="news_comment_association", order_by=Comment.datetime.desc(), backref="news")
 
     @property
     def announcement(self):
         parts = self.text.split('<!-- page break -->')
         return parts[0]
-
-    def formatted_datetime(self):
-        if self.datetime.date() == datetime.today().date():
-            return "Сегодня в %s" % self.datetime.strftime('%H:%M')
-        if self.datetime.date() == date.today() - timedelta(1):
-            return "Вчера в %s" % self.datetime.strftime('%H:%M')
-        return self.datetime.strftime('%d.%m.%y')
 
 
 

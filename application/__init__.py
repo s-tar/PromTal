@@ -1,3 +1,4 @@
+from datetime import datetime, date, timedelta
 import os
 
 from flask import Flask, render_template
@@ -36,6 +37,24 @@ def create_app(config_name):
 
     # for rule in app.url_map.iter_rules():
     #     print(rule, rule.methods)
+
+    @app.template_filter('datetime')
+    def format_datetime(value, time=True):
+        time_str = "в %s" % value.strftime('%H:%M') if time else ''
+        date_str = ''
+        if value.date() == datetime.today().date():
+            date_str = "Сегодня"
+        elif value.date() == date.today() - timedelta(1):
+            date_str = "Вчера"
+        else:
+            date_str = value.strftime('%d.%m.%y')
+        return ' '.join((date_str, time_str))
+
+        if format == 'full':
+            format="EEEE, d. MMMM y 'at' HH:mm"
+        elif format == 'medium':
+            format="EE dd.MM.y HH:mm"
+        return babel.format_datetime(value, format)
 
     @app.errorhandler(404)
     def page_not_found(e):

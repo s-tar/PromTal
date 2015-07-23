@@ -1,0 +1,54 @@
+@import 'mixins'
+
+
+.comments
+  padding: 0
+  padding-top: 5px
+  list-style: none
+  padding-left: 10px
+  ul
+    list-style: none
+    padding-left: 40px
+  .comment
+    position: relative
+    .user-icon
+      position: absolute
+    .message
+      padding: 5px 10px
+      margin-left: 60px
+      -border-radius 3px
+      min-height: 50px
+      position: relative
+      overflow: visible
+      .datetime
+        color: #aaa
+        font-size: 0.8em
+        padding-left: 10px
+      .arrow
+        position: absolute
+        color: #fff
+        left: -0.35em
+        font-size: 1.3em
+        top: 5px
+  .quotes
+    ul
+      padding-left: 20px
+    .comment
+      .user-icon
+        width: 30px
+        height: 30px
+      .message
+        margin-left: 40px
+        min-height: 30px
+        .arrow
+          top: 5px
+
+/*.comments*/
+  /*border-radius 5px*/
+  /*margin: 0px 10px*/
+  /*margin-top: -10px*/
+  /*background: #FFFFFF*/
+  /*padding: 10px*/
+  /*.comment .text*/
+    /*-box-shadow none*/
+    /*border-bottom: 1px solid #f6f6f6*/

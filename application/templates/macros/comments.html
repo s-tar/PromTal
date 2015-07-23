@@ -1,0 +1,22 @@
+{% import "macros/user.html" as user %}
+{% macro show(comments, level=0) %}
+    <ul class="comments">
+    {% for comment in comments recursive%}
+    <li class="comment">
+        {{ user.icon(comment.author) }}
+        <div class="message frame">
+            <div class="fa fa-caret-left arrow"></div>
+            <div class="header">
+                <a href='/user/profile/{{ comment.author.id }}'>{{ comment.author.full_name }}</a>
+                <span class="datetime">{{ comment.datetime|datetime }}</span>
+            </div>
+            <div class="text">{{ comment.text }}</div>
+            <div class="footer"></div>
+        </div>
+        {%- if comment.quotes -%}
+            <ul class="quotes depth-{{ loop.depth0 }}">{{ loop(comment.quotes) }}</ul>
+        {%- endif %}
+    </li>
+    {% endfor %}
+    </ul>
+{% endmacro %}
