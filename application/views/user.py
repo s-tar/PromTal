@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-
+from application.bl.user import restore_password, modify_password
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -109,9 +109,9 @@ def new_pass_post():
         if not restore_pass:
             abort(404)
         new_password = request.form.get("password_1")
-        # TODO processing LDAP exceptions
-        ldap.restore_password(restore_pass.author.login, new_password)
+        restore_password(restore_pass.author.login, new_password)
         PasswordRestore.deactivation_token(restore_pass)
+
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -163,8 +163,8 @@ def edit_pass_post():
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
-        # TODO processing LDAP exceptions
-        ldap.modify_password(current_user.login, old_password, new_password)
+        modify_password(current_user.login, old_password, new_password)
+
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})

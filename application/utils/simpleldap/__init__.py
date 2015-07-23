@@ -1,9 +1,12 @@
+import hashlib
+
 import ldap3
 from ldap3.extend.standard.modifyPassword import ModifyPassword
 
 from flask import current_app
 
 
+# TODO hash password
 class LDAP(object):
     def __init__(self, app=None):
         if app is not None:
@@ -25,7 +28,7 @@ class LDAP(object):
 
         for option in ['USERNAME', 'PASSWORD', 'BASE_DN']:
             if app.config['LDAP_{0}'.format(option)] is None:
-                raise Exception("")  # TODO add appropriate processing
+                raise ldap3.LDAPDefinitionError('LDAP_{0} cannot be None!'.format(option))
 
     def initialize(self):
         try:
@@ -38,8 +41,8 @@ class LDAP(object):
             raise e  # TODO add appropriate processing
 
     def bind(self):
-        server = self.initialize()
         try:
+            server = self.initialize()
             conn = ldap3.Connection(
                 server=server,
                 user=current_app.config['LDAP_USERNAME'],
@@ -94,15 +97,17 @@ class LDAP(object):
         except ldap3.LDAPExceptionError as e:
             raise e  # TODO add appropriate processing
 
+    def add_user(self, data):
+        pass
+
     def get_object_details(self, username, dn_only=False):
         filter = None
         attributes = None
-        if username is not None:
-            if not dn_only:
-                attributes = current_app.config['LDAP_USER_FIELDS']
-            filter = current_app.config['LDAP_USER_OBJECT_FILTER'] % username
-        conn = self.bind()
+        if not dn_only:
+            attributes = current_app.config['LDAP_USER_FIELDS']
+        filter = current_app.config['LDAP_USER_OBJECT_FILTER'] % username
         try:
+            conn = self.bind()
             conn.search(search_base=current_app.config['LDAP_BASE_DN'],
                         search_filter=filter,
                         search_scope=ldap3.SUBTREE,
