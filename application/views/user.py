@@ -6,7 +6,7 @@ from flask.json import jsonify
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-
+from application.bl.user import restore_password, modify_password
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -110,9 +110,7 @@ def new_pass_post():
         #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
         #if token_obj:# не удалять пока
         new_password = request.form.get("password_1")
-
-        # TODO processing LDAP exceptions
-        ldap.restore_password(restore_pass.author.login, new_password)
+        restore_password(restore_pass.author.login, new_password)
 
         #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
@@ -162,9 +160,7 @@ def edit_pass_post():
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
-
-        # TODO processing LDAP exceptions
-        ldap.modify_password(current_user.login, old_password, new_password)
+        modify_password(current_user.login, old_password, new_password)
 
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
