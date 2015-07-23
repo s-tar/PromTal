@@ -6,7 +6,12 @@ $( window ).load(function() {
         tinymce.init({
             selector:'textarea.editor',
             height : 200,
-            plugins : 'code pagebreak image',
+            plugins : [
+                "pagebreak",
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
             pagebreak_separator: "<!-- page break -->",
             file_picker_callback: function(callback, value, meta) {
                 // Provide file and text for the link dialog

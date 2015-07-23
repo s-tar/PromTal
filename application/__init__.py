@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 
 from application.db import db, redis
@@ -36,6 +36,10 @@ def create_app(config_name):
 
     # for rule in app.url_map.iter_rules():
     #     print(rule, rule.methods)
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('404.html'), 404
 
     @app.context_processor
     def inject_user():
