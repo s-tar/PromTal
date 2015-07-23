@@ -5,7 +5,8 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h2>{% if current_user.full_name %}{{ current_user.full_name }}{% else %}R2D2{% endif %}</h2>
     <p># Astromech droid</p>
-    <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a>
+    <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a> &nbsp; 
+    <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Edit Password</a>
     </div>
 </div>
 
