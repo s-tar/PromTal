@@ -24,8 +24,10 @@
             </div>
         </div>
     </article>
+    {{ comments.new(current_user, news.__tablename__, news.id) }}
     {{ comments.show(news.comments) }}
 </div>
 </div>
 </div>
+
 {% endblock %}

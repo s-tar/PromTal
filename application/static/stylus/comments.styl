@@ -6,6 +6,7 @@
   padding-top: 5px
   list-style: none
   padding-left: 10px
+  margin-bottom: 0px
   ul
     list-style: none
     padding-left: 40px
@@ -20,6 +21,8 @@
       min-height: 50px
       position: relative
       overflow: visible
+      .text
+        white-space: pre-wrap
       .datetime
         color: #aaa
         font-size: 0.8em
@@ -52,3 +55,44 @@
   /*.comment .text*/
     /*-box-shadow none*/
     /*border-bottom: 1px solid #f6f6f6*/
+
+.comments.new
+  .user-icon
+    /*width: 40px*/
+    /*height: 40px*/
+    margin-top: -5px
+  .message
+    padding: 0
+    min-height: 39px
+  form
+    padding: 0
+    float: none
+    text-align: right
+    position: relative
+    .wrapper
+      position: relative
+      padding-right: 40px
+  textarea
+    border: 0 none
+    min-height: 39px
+    height: 39px
+    margin-bottom: -5px
+    -border-radius 3px 0 0 3px
+    padding-top: 12px
+    resize: none
+    overflow: hidden
+  .send
+    outline: none
+    padding: 0
+    margin: 0
+    top: 0
+    right: 0
+    position: absolute
+    width: 40px
+    height: 100%
+    background: #fd8a16
+    color: white
+    border: 0 none
+    -border-radius 0 3px 3px 0
+    text-align: center
+    font-size: 1.2em

@@ -1,5 +1,8 @@
 var base_url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
+function locationReload(){
+    window.location.reload();
+}
 $( window ).load(function() {
     setTimeout(function(){
         $('textarea.autosize').textareaAutoSize();

@@ -1,3 +1,4 @@
+from datetime import datetime
 import uuid
 import os
 from application import Module
@@ -14,7 +15,10 @@ def get(filepath):
     path = os.path.join(application.files_folder, os.path.dirname(filepath))
     name = os.path.basename(filepath)
     full_path = os.path.join(path, name)
-    # os.system('touch %s' % full_path) #Update modified date
+    mdate = datetime.fromtimestamp(os.stat(full_path).st_mtime)
+    delta = datetime.now().date() - mdate.date()
+    if delta.days > 0:
+        os.system('touch %s' % full_path)   # Update modified date
     if os.path.exists(full_path):
         return send_from_directory(path, name)
     else:

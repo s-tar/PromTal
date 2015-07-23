@@ -3,6 +3,7 @@
   padding-top: 5px;
   list-style: none;
   padding-left: 10px;
+  margin-bottom: 0px;
 }
 .comments ul {
   list-style: none;
@@ -23,6 +24,9 @@
   min-height: 50px;
   position: relative;
   overflow: visible;
+}
+.comments .comment .message .text {
+  white-space: pre-wrap;
 }
 .comments .comment .message .datetime {
   color: #aaa;
@@ -59,3 +63,52 @@
 /*.comment .text*/
 /*-box-shadow none*/
 /*border-bottom: 1px solid #f6f6f6*/
+.comments.new .user-icon {
+/*width: 40px*/
+/*height: 40px*/
+  margin-top: -5px;
+}
+.comments.new .message {
+  padding: 0;
+  min-height: 39px;
+}
+.comments.new form {
+  padding: 0;
+  float: none;
+  text-align: right;
+  position: relative;
+}
+.comments.new form .wrapper {
+  position: relative;
+  padding-right: 40px;
+}
+.comments.new textarea {
+  border: 0 none;
+  min-height: 39px;
+  height: 39px;
+  margin-bottom: -5px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+  padding-top: 12px;
+  resize: none;
+  overflow: hidden;
+}
+.comments.new .send {
+  outline: none;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  right: 0;
+  position: absolute;
+  width: 40px;
+  height: 100%;
+  background: #fd8a16;
+  color: #fff;
+  border: 0 none;
+  -webkit-border-radius: 0 3px 3px 0;
+  -moz-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
+  text-align: center;
+  font-size: 1.2em;
+}

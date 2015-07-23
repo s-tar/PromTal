@@ -20,3 +20,32 @@
     {% endfor %}
     </ul>
 {% endmacro %}
+
+{% macro new(current_user, entity_name=None, entity_id=None, quote_for=None) %}
+    {% if current_user.is_authorized() and ((entity_name and entity_id) or quote_for) %}
+    <ul class="comments new">
+        <li class="comment">
+            {{ user.icon(current_user) }}
+            <div class="message frame">
+                <div class="fa fa-caret-left arrow"></div>
+                <div class="text" id="new_comment_form">
+                    <script type="text/jsx">
+                        React.render(
+                            <AJAXForm className="custom-form" action="/comment/new" method="post" onSuccess={locationReload}>
+                                <div className="wrapper">
+                                    <input type="hidden" name="entity_name" value="{{ entity_name or ''}}"/>
+                                    <input type="hidden" name="entity_id" value="{{ entity_id or ''}}"/>
+                                    <input type="hidden" name="quote_for" value="{{ quote_for or ''}}"/>
+                                    <TextArea name="comment" className="autosize" placeholder="Оставить комментарий"></TextArea>
+                                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                </div>
+                            </AJAXForm>,
+                            document.getElementById('new_comment_form'))
+                        </script>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+    {% endif %}
+{% endmacro %}
