@@ -41,7 +41,9 @@ class User(db.Model, AuthUser):
                             inner_phone=inner_phone,
                             email=email,
                             birth_date=birth_date,
-                            skype=skype):
+                            skype=skype,
+                            photo=photo,
+                            photo_s=photo_s):
         u = cls.query.filter_by(id=uid).first()
         if u:
             u.full_name = full_name
@@ -50,6 +52,10 @@ class User(db.Model, AuthUser):
             u.email = email
             u.birth_date = birth_date
             u.skype = skype
+            if photo:
+                u.photo = photo
+            if photo_s:
+                u.photo_s = photo_s
             db.session.add(u)
             db.session.commit()
         return u

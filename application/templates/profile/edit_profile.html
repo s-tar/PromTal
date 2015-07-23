@@ -3,7 +3,7 @@
 
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" onSuccess={wellDone}>
+    <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
         <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
@@ -11,6 +11,10 @@ React.render(
                     <tr>
                         <td>Full name</td>
                         <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
+                    </tr>
+                    <tr>
+                        <td>Avatar</td>
+                        <td><Input className="form-control" type="file" name="file" /></td>
                     </tr>
                     <tr>
                         <td>Office Phone</td>
