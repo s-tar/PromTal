@@ -6,6 +6,12 @@ from application.forms.admin.user import EditUserForm
 from application.db import db
 
 
+@admin.get('/users_list')
+def users_list():
+    users = User.query.order_by(User.full_name.asc()).all()
+    return render_template('admin/users/users.html', users=users)
+
+
 @admin.get('/users')
 def users_index():
     users = User.query.order_by(User.full_name.asc())

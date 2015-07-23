@@ -1,7 +1,7 @@
 from application import Module, ldap, db
 from application.utils.validator import Validator
 from application.utils import auth
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, abort
 from flask.json import jsonify
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
@@ -20,7 +20,7 @@ def profile():
 def profile_id(user_id):
     user = User.get_by_id(user_id)
     if not user:
-        return render_template('404.html')
+        abort(404)
     return render_template('profile/profile_id.html', user=user)
 
 
@@ -49,7 +49,7 @@ def restore():
 def restore_pass(token):
     pass_restore = PasswordRestore.is_valid_token(token)
     if not pass_restore:
-        return render_template('404.html')
+        abort(404)
     return render_template('login/new_pass.html', token=pass_restore.token)
 
 
@@ -75,7 +75,6 @@ def login_post():
             return jsonify({"status": "ok"})
         else:
             v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
-
     return jsonify({"status": "fail",
                     "errors": v.errors})
 
@@ -83,9 +82,9 @@ def login_post():
 @user.post('/restore')
 def restore_post():
     v = Validator(request.form)
-
-    # Валидация полей
-    
+    v.field('password_1').required()
+    v.field('password_2').required()
+    v.field('password_2').equal(v.field('password_1'))
     if v.is_valid():
         email = request.form.get("email")
         user = User.get_by_email(email)
@@ -100,19 +99,17 @@ def restore_post():
 @user.post('/new_pass')
 def new_pass_post():
     v = Validator(request.form)
-
     v.field('password_1').required()
     v.field('password_2').required()
     v.field('password_2').equal(v.field('password_1'))
-
     if v.is_valid():
         restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
-        #token_obj = PasswordRestore.is_valid_token("44a8c92e2d1b11e58f9228d24470c3ec") # не удалять пока
-        #if token_obj:# не удалять пока
+        if not restore_pass:
+            abort(404)
         new_password = request.form.get("password_1")
         restore_password(restore_pass.author.login, new_password)
+        PasswordRestore.deactivation_token(restore_pass)
 
-        #PasswordRestore.deactivation_token(token_obj) # не удалять пока
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -122,10 +119,8 @@ def new_pass_post():
 def edit_profile_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
-
     v.field('full_name').required()
     v.field('email').required()
-
     if v.is_valid():
         full_name = request.form.get("full_name")
         birth_date = datetime.strptime(request.form.get("birth_date"), "%d.%m.%Y")
@@ -133,7 +128,6 @@ def edit_profile_post():
         inner_phone = request.form.get("inner_phone")
         email = request.form.get("email")
         skype = request.form.get("skype")
-
         User.edit_user(current_user.id,
                        full_name=full_name,
                        mobile_phone=mobile_phone,
@@ -141,7 +135,6 @@ def edit_profile_post():
                        email=email,
                        birth_date=birth_date,
                        skype=skype)
-
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -151,12 +144,10 @@ def edit_profile_post():
 def edit_pass_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
-
     v.field('password_old').required()
     v.field('password_1').required()
     v.field('password_2').required()
     v.field('password_2').equal(v.field('password_1'))
-
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
