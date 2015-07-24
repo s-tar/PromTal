@@ -72,10 +72,15 @@ var AJAXForm = React.createClass({
         e.preventDefault();
         var self = this
         var form = $(e.target)
+        console.log(form[0])
+        var data = new FormData(form[0])
         $.ajax({
             type: form.attr('method') || 'POST',
             url: form.attr('action') || '',
-            data: form.serialize(),
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
 
             success: function(json) {
                 self.showErrors(json.errors)
