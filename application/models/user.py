@@ -5,20 +5,28 @@ from sqlalchemy import func
 from application.utils.auth.user import User as AuthUser
 
 
+class UserGroupAssociation(db.Model):
+    __tablename__ = "user_group_association"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
+
 
 class User(db.Model, AuthUser):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)  # TODO check, if autoincrement
+    id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True)
     full_name = db.Column(db.String(64))
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
-    avatar = db.Column(db.String, nullable=True)
+    avatar = db.Column(db.String, nullable=True)  # TODO delete this field
     photo = db.Column(db.String(255), nullable=True)
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
+
+    groups = db.relationship("Group", secondary="user_group_association", backref="users")
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
