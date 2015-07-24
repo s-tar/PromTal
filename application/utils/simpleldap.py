@@ -146,7 +146,7 @@ class LDAP(object):
         try:
             conn = self.bind()
             conn.search(search_base=current_app.config['LDAP_GROUP_BASE_DN'],
-                        search_filter='(member=*)',  # TODO FILTER DOESN'T WORk
+                        search_filter='(member={})'.format(user_dn),
                         search_scope=ldap3.SUBTREE,
                         attributes=current_app.config['LDAP_GROUP_FIELDS'])
             for group in conn.response:
