@@ -1,6 +1,6 @@
 from application.db import db
 from datetime import datetime, date, timedelta
-from application.models.comment import Comment
+from application.models.comment import Comment, HasComments
 from application.models.mixin import Mixin
 
 
@@ -11,7 +11,7 @@ class NewsTagAssociation(db.Model):
     tag_id = db.Column(db.Integer, db.ForeignKey('news_tag.id'))
 
 
-class News(db.Model, Mixin):
+class News(db.Model, Mixin, HasComments):
     __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key=True) 
     title = db.Column(db.String(255))
@@ -26,19 +26,16 @@ class News(db.Model, Mixin):
     category = db.relationship("NewsCategory", backref="news")
     tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news")
 
-    __comments = None
-
-    @property
-    def comments(self):
-        if self.__comments is None:
-            self.__comments = Comment.get_for(self.__tablename__, self.id)
-        print('---------->', self.__comments)
-        return self.__comments
-
     @property
     def announcement(self):
         parts = self.text.split('<!-- page break -->')
         return parts[0]
 
+    def after_add_comment(self, comment=None):
+        print(self.id)
+        self.comments_count += 1
+        db.session.commit()
+
+News.init_comments()
 
 

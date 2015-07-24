@@ -24,8 +24,10 @@
             </div>
         </div>
     </article>
-    {{ comments.new(current_user, news.__tablename__, news.id) }}
-    {{ comments.show(news.comments) }}
+    <div id="news_comments"></div>
+
+    {{ comments.new(current_user, news.entity.name, news.entity.id) }}
+    {{ comments.show(news.comments_all) }}
 </div>
 </div>
 </div>

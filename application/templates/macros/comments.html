@@ -1,7 +1,7 @@
 {% import "macros/user.html" as user %}
-{% macro show(comments, level=0) %}
+{% macro show(comments, parent=None) %}
     <ul class="comments">
-    {% for comment in comments recursive%}
+    {% for comment in comments[parent] recursive%}
     <li class="comment">
         {{ user.icon(comment.author) }}
         <div class="message frame">
@@ -13,8 +13,8 @@
             <div class="text">{{ comment.text }}</div>
             <div class="footer"></div>
         </div>
-        {%- if comment.quotes -%}
-            <ul class="quotes depth-{{ loop.depth0 }}">{{ loop(comment.quotes) }}</ul>
+        {%- if comments[comment.id] -%}
+            <ul class="quotes depth-{{ loop.depth0 }}">{{ loop(comments[comment.id]|reverse) }}</ul>
         {%- endif %}
     </li>
     {% endfor %}

@@ -9,68 +9,78 @@ module = Module('comment', __name__, url_prefix='/comment')
 
 
 @module.post("/new")
-def new_comment():
+@module.post("/edit/<int:id>")
+def new_comment(id=None):
+    user = auth.service.get_user()
     v = Validator(request.form)
-    v.field('entity_id').integer(nullable=True)
     v.field('comment').required()
     if v.is_valid():
-        if save_comment(v.valid_data):
-            return jsonify({'status': 'ok'})
+        if not id:
+            v.field('entity_name').required()
+            v.field('entity_id').integer(nullable=True).required()
+        print(id, v.errors)
+        if v.is_valid() and user.is_authorized():
+            data = v.valid_data
+            if not id:
+                comment = Comment()
+                comment.author_id = user.id
+                comment.entity = data.entity_name
+                comment.entity_id = data.entity_id
+            else:
+                comment = Comment.get(id)
 
-    v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
+            if comment:
+                comment.text = data.comment
+
+                db.session.add(comment)
+                db.session.commit()
+
+                entity = comment.get_entity()
+                if entity:
+                    entity.after_add_comment(comment)
+                return jsonify({'status': 'ok'})
+
+        v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
     return jsonify({'status': 'fail',
                     'errors': v.errors})
 
 
 @module.post("/quote/new")
-def new_quote():
-    v = Validator(request.form)
-    v.field('quote_for').integer()
-    v.field('comment').required()
-    if v.is_valid():
-        if save_comment(v.valid_data):
-            return jsonify({'status': 'ok'})
-
-    v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
-    return jsonify({'status': 'fail',
-                    'errors': v.errors})
-
-
-@module.post("/edit")
-def edit_comment():
-    v = Validator(request.form)
-    v.field('id').integer()
-    v.field('comment').required()
-    if v.is_valid():
-        if save_comment(v.valid_data):
-            return jsonify({'status': 'ok'})
-
-    v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
-    return jsonify({'status': 'fail',
-                    'errors': v.errors})
-
-
-def save_comment(data):
+@module.post("/quote/edit/<int:id>")
+def save_quote(id=None):
     user = auth.service.get_user()
-    id = data.id or None
-    entity = data.entity_name or None
-    entity_id = data.entity_id or None
-    quote_for = data.quote_for or None
-    if user.is_authorized() and (id or quote_for or (entity and entity_id)):
+    v = Validator(request.form)
+    v.field('comment').required()
+    if v.is_valid():
         if not id:
-            comment = Comment()
-            comment.entity = entity
-            comment.entity_id = entity_id
-            comment.quote_for_id = quote_for
-            comment.author_id = user.id
-        else:
-            comment = Comment.get(id)
-            if not comment:
-                return False
+            v.field('quote_for').integer().required()
 
-        comment.text = data.comment
+        if v.is_valid() and user.is_authorized():
+            data = v.valid_data
+            comment = None
+            if not id:
+                quote_for = Comment.get(v.valid_data.quote_for)
+                if quote_for:
+                    comment = Comment()
+                    comment.author_id = user.id
+                    comment.quote_for = quote_for
+                    comment.entity = quote_for.entity
+                    comment.entity_id = quote_for.entity_id
+            else:
+                comment = Comment.get(id)
 
-        db.session.add(comment)
-        db.session.commit()
-        return True
-    return False
+            if comment:
+                comment.text = data.comment
+
+                db.session.add(comment)
+                db.session.commit()
+
+                entity = comment.get_entity()
+                if entity:
+                    entity.after_add_comment(comment)
+                return jsonify({'status': 'ok'})
+
+        v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
+
+    return jsonify({'status': 'fail',
+                    'errors': v.errors})

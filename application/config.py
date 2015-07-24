@@ -10,6 +10,7 @@ class Config:
     POSTGRESQL_PASSWORD = 'postgres'
     POSTGRESQL_DB_NAME = 'promtal'
 
+    # SQLALCHEMY_ECHO=True
     SQLALCHEMY_DATABASE_URI = "postgresql://{0}:{1}@{2}:{3}/{4}".format(POSTGRESQL_USERNAME,
                                                                         POSTGRESQL_PASSWORD,
                                                                         POSTGRESQL_HOST,
