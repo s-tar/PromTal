@@ -1,13 +1,12 @@
 import logging
 import sys
-import ldap3
 
 from application import db, ldap, create_app
 from application.models.user import User
 from application.models.group import Group
 
 
-logging.basicConfig(format='%(message)s', level=logging.INFO)
+logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 
 def fill_db():
@@ -24,6 +23,8 @@ def fill_db():
         for group_attr in ldap.get_all_groups():
             group = Group(name=group_attr.get('cn', [''])[0])
             db.session.add(group)
+    else:
+        logging.error("Wrong argument passed.")
     db.session.commit()
     logging.info("DB has been filled successfully.")
 
