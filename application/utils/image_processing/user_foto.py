@@ -4,6 +4,14 @@ from PIL import Image
 #sudo apt-get install libjpeg-dev
 #pip install -I pillow
 
+
+class NotImage(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
 def makedirs(path_list):
     path_new = ''
     for path in path_list:
@@ -11,6 +19,14 @@ def makedirs(path_list):
         if not os.path.isdir(path_new):
             os.mkdir(path_new)
     return path_new
+
+
+def delete_files(path_walk):
+    for root, dirs, files in os.walk(path_walk):
+        for name in files:
+            fullname = os.path.join(root, name)
+            os.remove(fullname)
+
 
 def imageResize(data, output_size):
     image = Image.open(data)
@@ -30,10 +46,18 @@ def imageResize(data, output_size):
     new_size = tuple(map(int, new_size))
     return image.resize(new_size,Image.ANTIALIAS)
 
-def save_user_fotos(file, current_user):
-    im = Image.open(file)
-    path_list = "application", "files", "users", str(current_user.id)
-    path = makedirs(path_list)
+
+def save_user_fotos(file, current_user, avatar=False):
+    try:
+        im = Image.open(file)
+    except OSError:
+        raise NotImage('Not image')
+    path_list = ["application", "files", "users", str(current_user.id)]
+    if avatar:
+        path_list.append("avatar")
+    path_walk = makedirs(path_list)
+    if avatar:
+        delete_files(path_walk)
     uid = ''.join(str(uuid1()).split('-'))
     name = "{}_{}".format(uid, file.filename)
     name_s = "{}_s_{}".format(uid, file.filename)
@@ -41,7 +65,7 @@ def save_user_fotos(file, current_user):
     output_size_s = 50, 50
     def save_resize_foto(file, output_size, name):
         im = imageResize(file, output_size)
-        img_path = os.path.join(path, name)
+        img_path = os.path.join(path_walk, name)
         im = im.save(img_path, 'JPEG', quality=85)
     save_resize_foto(file, output_size, name)
     save_resize_foto(file, output_size_s, name_s)

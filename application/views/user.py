@@ -1,7 +1,7 @@
 from application import Module, ldap, db
 from application.utils.validator import Validator
 from application.utils import auth
-from application.utils.image_processing.user_foto import save_user_fotos
+from application.utils.image_processing.user_foto import save_user_fotos, NotImage
 from flask import request, render_template, redirect, url_for, abort
 from flask.json import jsonify
 from werkzeug.utils import secure_filename
@@ -126,8 +126,8 @@ def edit_profile_post():
     file = request.files["file"]
     if bool(file.filename):
         try:
-            name, name_s = save_user_fotos(file, current_user)
-        except:
+            name, name_s = save_user_fotos(file, current_user, avatar=True)
+        except NotImage:
             v.add_error('file', 'Это не картинка')
     if v.is_valid():
         full_name = request.form.get("full_name")

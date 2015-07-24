@@ -14,7 +14,7 @@ React.render(
                     </tr>
                     <tr>
                         <td>Avatar</td>
-                        <td><Input className="form-control" type="file" name="file" /></td>
+                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
                     </tr>
                     <tr>
                         <td>Office Phone</td>
@@ -57,8 +57,14 @@ function wellDone(){
 window.onload = function () {
     $(document).on("focus", ".datepicker", function(){
         $(this).datepicker();  
-    })
-}</script>
+    });
+    
+    function funcfilestyle() {
+      $(":file").filestyle({buttonBefore: true});
+    }
+    setTimeout(funcfilestyle, 200);
+};
+</script>
 
 <div id="edit_profile_form"></div>
 {% endblock %}
