@@ -32,7 +32,7 @@ class News(db.Model, Mixin, HasComments):
         return parts[0]
 
     def after_add_comment(self, comment=None):
-        self.comments_count += 1
+        self.comments_count = (self.comments_count or 0) + 1
         db.session.commit()
 
 News.init_comments()
