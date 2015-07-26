@@ -31,15 +31,7 @@
                 <div class="text" id="new_comment_form">
                     <script type="text/jsx">
                         React.render(
-                            <AJAXForm className="custom-form" action="/comment/new" method="post" onSuccess={locationReload}>
-                                <div className="wrapper">
-                                    <input type="hidden" name="entity_name" value="{{ entity_name or ''}}"/>
-                                    <input type="hidden" name="entity_id" value="{{ entity_id or ''}}"/>
-                                    <input type="hidden" name="quote_for" value="{{ quote_for or ''}}"/>
-                                    <TextArea name="comment" className="autosize" placeholder="Оставить комментарий"></TextArea>
-                                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
-                                </div>
-                            </AJAXForm>,
+                            <NewComment entity="{{ entity_name or ''}}" entity_id="{{ entity_id or ''}}" quote_for="{{ quote_for or ''}}" />,
                             document.getElementById('new_comment_form'))
                         </script>
                 </div>

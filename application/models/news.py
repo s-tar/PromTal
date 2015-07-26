@@ -19,8 +19,8 @@ class News(db.Model, Mixin, HasComments):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('news_category.id'))
     datetime = db.Column(db.DateTime, default=datetime.now)
-    comments_count = db.Column(db.Integer)
-    likes_count = db.Column(db.Integer)
+    comments_count = db.Column(db.Integer, default=0)
+    likes_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="news")
     category = db.relationship("NewsCategory", backref="news")
@@ -32,7 +32,6 @@ class News(db.Model, Mixin, HasComments):
         return parts[0]
 
     def after_add_comment(self, comment=None):
-        print(self.id)
         self.comments_count += 1
         db.session.commit()
 

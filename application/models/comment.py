@@ -18,19 +18,13 @@ class Comment(db.Model, Mixin):
 
 
     @staticmethod
-    def get_for(entity, lazy=True):
-        name = entity.__tablename__
-        id = entity.id
+    def get_for(entity, entity_id, lazy=True):
         if lazy:
-            return Comment.query.filter(Comment.entity == name, Comment.entity_id == id, Comment.quote_for is None)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None)\
                 .order_by(Comment.datetime.desc()).all()
         else:
-            comments = Comment.query.filter(Comment.entity == name, Comment.entity_id == id)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id)\
                 .order_by(Comment.datetime.desc()).all()
-            d = defaultdict(list)
-            for c in comments:
-                d[c.quote_for_id].append(c)
-            return d
 
     def get_entity(self):
         return Comment.get_entities().get(self.entity, {}).get(self.entity_id)
@@ -45,18 +39,22 @@ class HasComments:
     __entities__ = {}
 
     @property
+    def entity(self):
+        return {'name': self.__tablename__, 'id': self.id}
+
+    @property
     def comments_all(self):
-        return Comment.get_for(self, lazy=False)
+        return Comment.get_for(self.entity['name'], self.entity['id'], lazy=False)
 
     @property
     def comments(self):
         if self.__comments is None:
-            self.__comments = Comment.get_for(self)
+            comments = Comment.get_for(self.entity['name'], self.entity['id'])
+            d = defaultdict(list)
+            for c in comments:
+                d[c.quote_for_id].append(c)
+            self.__comments = comments
         return self.__comments
-
-    @property
-    def entity(self):
-        return {'name': self.__tablename__, 'id': self.id}
 
     @classmethod
     def init_comments(cls):

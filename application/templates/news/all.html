@@ -16,9 +16,7 @@
         <div class="footer">
             <div class="author">
                 {{ user.icon(n.author) }}
-                <div class="comments-counter">
-                    <span class="fa fa-comments-o"></span>{{ n.comments_count or 0}}
-                </div>
+                <div class="comments-counter" data-count="{{ n.comments_count or 0}}" data-entity="{{ n.entity.name }}" data-entity-id="{{ n.entity.id }}"></div>
                 <div class="likes">
                     <span class="fa fa-heart"></span>{{ n.likes_count or 0 }}
                 </div>

@@ -40,21 +40,17 @@ def create_app(config_name):
 
     @app.template_filter('datetime')
     def format_datetime(value, time=True):
-        time_str = "в %s" % value.strftime('%H:%M') if time else ''
+        time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
         if value.date() == datetime.today().date():
-            date_str = "Сегодня"
+            date_str = ' '.join(("Сегодня", time_str))
         elif value.date() == date.today() - timedelta(1):
-            date_str = "Вчера"
+            date_str = ' '.join(("Вчера", time_str))
         else:
             date_str = value.strftime('%d.%m.%y')
-        return ' '.join((date_str, time_str))
+            date_str = ' '.join((date_str, time_str)) if time else date_str
 
-        if format == 'full':
-            format="EEEE, d. MMMM y 'at' HH:mm"
-        elif format == 'medium':
-            format="EE dd.MM.y HH:mm"
-        return babel.format_datetime(value, format)
+        return date_str
 
     @app.errorhandler(404)
     def page_not_found(e):

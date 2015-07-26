@@ -1,3 +1,5 @@
+from collections import defaultdict
+import json
 from application import Module, db
 from application.models.comment import Comment
 from application.utils import auth
@@ -18,7 +20,6 @@ def new_comment(id=None):
         if not id:
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
-        print(id, v.errors)
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
             if not id:
@@ -38,7 +39,8 @@ def new_comment(id=None):
                 entity = comment.get_entity()
                 if entity:
                     entity.after_add_comment(comment)
-                return jsonify({'status': 'ok'})
+                return jsonify({'status': 'ok',
+                                'comment': get_comment_json(comment)})
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
     return jsonify({'status': 'fail',
@@ -78,9 +80,31 @@ def save_quote(id=None):
                 entity = comment.get_entity()
                 if entity:
                     entity.after_add_comment(comment)
-                return jsonify({'status': 'ok'})
+                return jsonify({'status': 'ok',
+                                'comment': get_comment_json(comment)})
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
 
     return jsonify({'status': 'fail',
                     'errors': v.errors})
+
+@module.get('/<entity>/<int:entity_id>/json/all')
+def json_all_comments(entity, entity_id):
+    comments = Comment.get_for(entity, entity_id, lazy=False)
+    comments = {'data': [get_comment_json(comment) for comment in comments] }
+    return jsonify(comments)
+
+
+def get_comment_json(comment):
+    if comment:
+        author = {
+            'id': comment.author.id,
+            'full_name': comment.author.full_name,
+            'photo': comment.author.photo,
+            'photo_s': comment.author.photo_s,
+        }
+        d = comment.as_dict()
+        d['author'] = author
+        return d
+
+    return {}

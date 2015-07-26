@@ -15,19 +15,22 @@
         <div class="footer">
             <div class="author">
                 {{ user.icon(news.author) }}
-                <div class="comments-counter">
-                    <span class="fa fa-comments-o"></span>{{ news.comments_count or 0}}
-                </div>
+                <div class="comments-counter" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
                 <div class="likes">
                     <span class="fa fa-heart"></span>{{ news.likes_count or 0 }}
                 </div>
             </div>
         </div>
     </article>
-    <div id="news_comments"></div>
-
     {{ comments.new(current_user, news.entity.name, news.entity.id) }}
-    {{ comments.show(news.comments_all) }}
+    <div id="comments"></div>
+    <script type="text/jsx">
+        React.render(
+            <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
+            document.getElementById('comments'))
+    </script>
+    <!--{{ comments.new(current_user, news.entity.name, news.entity.id) }}-->
+    <!--{{ comments.show(news.comments_all) }}-->
 </div>
 </div>
 </div>
