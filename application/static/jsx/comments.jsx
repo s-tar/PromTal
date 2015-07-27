@@ -249,7 +249,7 @@ var Comment = React.createClass({
                 <div className="message frame">
                     <div className="fa fa-caret-left arrow"></div>
                     <div className="header">
-                        <a href='/user/profile/{comment.author.id}'>{comment.author.full_name}</a>
+                        <a href={'/user/profile/'+comment.author.id}>{comment.author.full_name}</a>
                         <span className="datetime">{niceDateFormat(comment.datetime)}</span>
                         {answerButton}
                     </div>
