@@ -1,12 +1,14 @@
 from application import Module, ldap, db
 from application.utils.validator import Validator
 from application.utils import auth
+from application.utils.image_processing.user_foto import save_user_fotos, NotImage
 from flask import request, render_template, redirect, url_for, abort
 from flask.json import jsonify
+from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-
+from application.bl.user import restore_password, modify_password
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -107,9 +109,9 @@ def new_pass_post():
         if not restore_pass:
             abort(404)
         new_password = request.form.get("password_1")
-        # TODO processing LDAP exceptions
-        ldap.restore_password(restore_pass.author.login, new_password)
+        restore_password(restore_pass.author.login, new_password)
         PasswordRestore.deactivation_token(restore_pass)
+
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -120,7 +122,13 @@ def edit_profile_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
     v.field('full_name').required()
-    v.field('email').required()
+    v.field('email').email().required()
+    file = request.files["file"]
+    if bool(file.filename):
+        try:
+            name, name_s = save_user_fotos(file, current_user, avatar=True)
+        except NotImage:
+            v.add_error('file', 'Это не картинка')
     if v.is_valid():
         full_name = request.form.get("full_name")
         birth_date = datetime.strptime(request.form.get("birth_date"), "%d.%m.%Y")
@@ -128,13 +136,17 @@ def edit_profile_post():
         inner_phone = request.form.get("inner_phone")
         email = request.form.get("email")
         skype = request.form.get("skype")
+        photo = name or None
+        photo_s = name_s or None
         User.edit_user(current_user.id,
                        full_name=full_name,
                        mobile_phone=mobile_phone,
                        inner_phone=inner_phone,
                        email=email,
                        birth_date=birth_date,
-                       skype=skype)
+                       skype=skype,
+                       photo=photo,
+                       photo_s=photo_s)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -151,8 +163,8 @@ def edit_pass_post():
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
-        # TODO processing LDAP exceptions
-        ldap.modify_password(current_user.login, old_password, new_password)
+        modify_password(current_user.login, old_password, new_password)
+
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})

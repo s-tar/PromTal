@@ -102,6 +102,7 @@ var AJAXForm = React.createClass({
             cache: false,
             contentType: false,
             processData: false,
+
             success: function(json) {
                 self.showErrors(json.errors)
                 if(json.status == 'ok'){
