@@ -26,98 +26,12 @@ def profile_id(user_id):
     return render_template('profile/profile_id.html', user=user)
 
 
-@user.get("/edit_profile")
+@user.get("/profile/edit")
 def edit_profile():
     return render_template('profile/edit_profile.html')
 
 
-@user.route("/login")
-def login():
-    return render_template('login/login.html')
-
-
-@user.route("/log_out")
-def log_out():
-    auth.service.logout()
-    return redirect(url_for('user.login'))
-
-
-@user.route("/restore")
-def restore():
-    return render_template('login/restore.html')
-
-
-@user.route("/restore_pass/<token>")
-def restore_pass(token):
-    pass_restore = PasswordRestore.is_valid_token(token)
-    if not pass_restore:
-        abort(404)
-    return render_template('login/new_pass.html', token=pass_restore.token)
-
-
-@user.route("/new_pass")
-def new_pass():
-    return render_template('login/new_pass.html')
-
-
-@user.route("/edit_pass")
-def edit_pass():
-    return render_template('login/edit_pass.html')
-
-
-@user.post('/login')
-def login_post():
-    v = Validator(request.form)
-    v.field("login").required()
-    v.field("password").required()
-    if v.is_valid():
-        login = v.valid_data.login
-        password = v.valid_data.password
-        if auth.service.login(login, password):
-            return jsonify({"status": "ok"})
-        else:
-            v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.post('/restore')
-def restore_post():
-    v = Validator(request.form)
-    v.field('password_1').required()
-    v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'))
-    if v.is_valid():
-        email = request.form.get("email")
-        user = User.get_by_email(email)
-        if user:
-            token = PasswordRestore.add_token(user)
-            send_mail_restore_pass(email, token)
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.post('/new_pass')
-def new_pass_post():
-    v = Validator(request.form)
-    v.field('password_1').required()
-    v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'))
-    if v.is_valid():
-        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
-        if not restore_pass:
-            abort(404)
-        new_password = request.form.get("password_1")
-        restore_password(restore_pass.author.login, new_password)
-        PasswordRestore.deactivation_token(restore_pass)
-
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.post('/edit_profile')
+@user.post('/profile/edit')
 def edit_profile_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
@@ -152,7 +66,91 @@ def edit_profile_post():
                     "errors": v.errors})
 
 
-@user.post('/edit_pass')
+@user.route("/login")
+def login():
+    return render_template('login/login.html')
+
+
+@user.post('/login')
+def login_post():
+    v = Validator(request.form)
+    v.field("login").required()
+    v.field("password").required()
+    if v.is_valid():
+        login = v.valid_data.login
+        password = v.valid_data.password
+        if auth.service.login(login, password):
+            return jsonify({"status": "ok"})
+        else:
+            v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@user.route("/log_out")
+def log_out():
+    auth.service.logout()
+    return redirect(url_for('user.login'))
+
+
+@user.route("/password/restore")
+def restore():
+    return render_template('login/restore.html')
+
+
+@user.post('/password/restore')
+def restore_post():
+    v = Validator(request.form)
+    v.field('email').required().email()
+    if v.is_valid():
+        email = request.form.get("email")
+        user = User.get_by_email(email)
+        if user:
+            token = PasswordRestore.add_token(user)
+            send_mail_restore_pass(email, token)
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@user.route("/password/restore/<token>")
+def restore_pass(token):
+    pass_restore = PasswordRestore.is_valid_token(token)
+    if not pass_restore:
+        abort(404)
+    return render_template('login/new_pass.html', token=pass_restore.token)
+
+
+@user.route("/password/new")
+def new_pass():
+    return render_template('login/new_pass.html')
+
+
+@user.post('/password/new')
+def new_pass_post():
+    v = Validator(request.form)
+    v.field('password_1').required()
+    v.field('password_2').required()
+    v.field('password_2').equal(v.field('password_1'))
+    if v.is_valid():
+        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
+        if not restore_pass:
+            abort(404)
+        new_password = request.form.get("password_1")
+        restore_password(restore_pass.author.login, new_password)
+        PasswordRestore.deactivation_token(restore_pass)
+
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@user.route("/password/change")
+def edit_pass():
+    return render_template('login/edit_pass.html')
+
+
+@user.post('/password/change')
 def edit_pass_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)

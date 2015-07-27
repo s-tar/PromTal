@@ -2,7 +2,7 @@ from flask import render_template, request, current_app, flash, url_for, redirec
 
 from application.views.admin.main import admin
 from application.models.user import User
-from application.forms.admin.user import EditUserForm
+from application.forms.admin.user import EditUserForm, AddUserForm
 from application.db import db
 
 
@@ -63,3 +63,12 @@ def delete_user_profile(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('admin.users_index'))
+
+
+@admin.get('/users/add')
+def add_user_profile():
+    form = AddUserForm()
+    return render_template(
+        'admin/users/add_user_profile.html',
+        form=form
+    )

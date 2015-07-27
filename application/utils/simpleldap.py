@@ -103,20 +103,23 @@ class LDAP(object):
         except ldap3.LDAPExceptionError as e:
             raise e  # TODO add appropriate processing
 
-    def add_user(self, userdata):
+    def add_user(self,
+                 user,
+                 attributes,
+                 objectclasses=('puppetClient', 'top', 'inetOrgPerson')):
         try:
             conn = self.bind()
-            conn.add(dn=userdata['dn'],
+            conn.add(dn=user,
+                     object_class=objectclasses,
                      attributes={
-                         'objectClass': ['puppetClient', 'top', 'inetOrgPerson'],  # TODO enable to choose in the admin page
-                         'cn': userdata['login'],
-                         'displayName': userdata['name'] + ' ' + userdata['surname'],
-                         'givenName':  userdata['name'],
-                         'sn': userdata['surname'],
-                         'mail': userdata['email'],
-                         'mobile': userdata['mobile_phone'],
-                         'telephoneNumber': userdata['inner_phone'],
-                         'departmentNumber': userdata['department'],
+                         'cn': user,
+                         'displayName': attributes['name'] + ' ' + attributes['surname'],
+                         'givenName':  attributes['name'],
+                         'sn': attributes['surname'],
+                         'mail': attributes['email'],
+                         'mobile': attributes['mobile_phone'],
+                         'telephoneNumber': attributes['inner_phone'],
+                         'departmentNumber': attributes['department'],
                          'puppetClass': ['workstation'],
                          'environment': ['workstation'],
                          'description': 'no description'

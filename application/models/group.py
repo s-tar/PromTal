@@ -7,6 +7,6 @@ class Group(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
 
-    def __str__(self):
-        return "<Group {name}>".format(self.name)
+    def __repr__(self):
+        return "<Group {name}>".format(name=self.name)
 

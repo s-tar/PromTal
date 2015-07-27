@@ -20,7 +20,9 @@ class AddUserForm(Form):
     surname = StringField("Фамилия", validators=[DataRequired(), Length(0, 32)])
     email = StringField("Email", validators=[DataRequired(), Email()])
     login = StringField("Логин", validators=[DataRequired()])
-    groups = SelectMultipleField("Группы", validators=[DataRequired()], choices=None)  # TODO Add choices from DB
+    groups = SelectMultipleField("Группы",
+                                 validators=[DataRequired()],
+                                 choices=[(group.id, group.name) for group in Group.query.order_by('name')])  # TODO Add choices from DB
     mobile_phone = StringField("Моб. тел.", validators=[DataRequired()])
     save = SubmitField("Сохранить")
     cancel = SubmitField("Отмена")

@@ -18,9 +18,9 @@ def generate_password(length=8):
     return password
 
 
-def generate_inner_number(already_used_numbers, init=0, length=4):
+def generate_inner_number(already_used_numbers, init=6000, length=4):
     all_numbers = set()
     for number in range(init, int('9' * length)):
         all_numbers.add(number)
     unused_numbers = all_numbers - already_used_numbers
-    return random.choice(unused_numbers)
+    return random.choice(tuple(unused_numbers))

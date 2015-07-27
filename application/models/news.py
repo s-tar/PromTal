@@ -2,7 +2,8 @@ from application.db import db
 from datetime import datetime, date, timedelta
 from application.models.comment import Comment
 from application.models.mixin import Mixin
-
+from application.models.news_category import NewsCategory
+from application.models.news_tag import NewsTag
 
 class NewsTagAssociation(db.Model):
     __tablename__ = 'news_tag_association'
