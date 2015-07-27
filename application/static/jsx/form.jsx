@@ -29,6 +29,22 @@ var Input = React.createClass({
     }
 });
 
+var Select = React.createClass({
+    onChange: function(event) {
+        this.refs.error.setState({text: ''})
+        if(typeof this.props.onChange == 'function')
+            this.props.onChange(event)
+    },
+    render: function() {
+        return(
+            <div className="field-wrapper">
+                <select {...this.props} onChange={this.onChange}>{this.props.children}</select>
+                <FieldError ref='error' registerError={this.props.registerError}/>
+            </div>
+        )
+    }
+});
+
 var TextArea = React.createClass({
     updateHeight: function(){
         if(this.props.autosize){

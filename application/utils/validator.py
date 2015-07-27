@@ -67,8 +67,7 @@ class Field:
         self.val = self.validator.data.get(self.name)
         if not isinstance(self.val, list):
             self.val = [self.val]
-
-        self.validator.valid_data[name] = [v.strip().strip('\n').strip('\r') for v in self.val]
+        self.validator.valid_data[name] = [v.strip().strip('\n').strip('\r') for v in self.val if v]
 
     @property
     def value(self):
