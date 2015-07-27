@@ -23,6 +23,7 @@ class News(db.Model, Mixin, HasComments):
     datetime = db.Column(db.DateTime, default=datetime.now)
     comments_count = db.Column(db.Integer, default=0)
     likes_count = db.Column(db.Integer, default=0)
+    views_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="news")
     category = db.relationship("NewsCategory", backref="news")
@@ -32,6 +33,10 @@ class News(db.Model, Mixin, HasComments):
     def announcement(self):
         parts = self.text.split('<!-- page break -->')
         return parts[0]
+
+    def increment_views(self):
+        self.views_count = (self.views_count or 0) + 1
+        db.session.commit()
 
     def after_add_comment(self, comment=None):
         self.comments_count = (self.comments_count or 0) + 1

@@ -15,10 +15,9 @@
         <div class="footer">
             <div class="author">
                 {{ user.icon(news.author) }}
-                <div class="comments-counter" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
-                <div class="likes">
-                    <span class="fa fa-heart"></span>{{ news.likes_count or 0 }}
-                </div>
+                <div class="comments-counter" title="Комментарии" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
+                <div class="likes" title="Понравилось"><span class="fa fa-heart"></span>{{ news.likes_count or 0 }}</div>
+                <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
         </div>
     </article>
