@@ -32,6 +32,15 @@
         </div>
     </div>
     {% include 'footer.html' %}
+    <script>
+        var current_user = {
+            id: {{ current_user.id or 0 }},
+            full_name: '{{ current_user.full_name or '' }}',
+            photo: '{{ current_user.photo or '' }}',
+            photo_s: '{{ current_user.photo_s or '' }}',
+            is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }}
+        }
+    </script>
     <script src="/static/js/lib/jquery-ui.js"></script>
     <script src="/static/js/lib/bootstrap.js"></script>
     <script src="/static/js/lib/jquery.textarea_autosize.js"></script>

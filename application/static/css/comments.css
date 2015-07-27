@@ -25,6 +25,13 @@
   position: relative;
   overflow: visible;
 }
+.comments .comment .message:hover .answer-button {
+  display: block;
+}
+.comments .comment .message .answer-button {
+  float: right;
+  display: none;
+}
 .comments .comment .message .text {
   white-space: pre-wrap;
 }
@@ -40,18 +47,26 @@
   font-size: 1.3em;
   top: 5px;
 }
-.comments .quotes ul {
+.comments .comments.new {
+  padding-top: 0px;
+}
+.comments .quotes ul,
+.comments .comments.new ul {
   padding-left: 20px;
 }
-.comments .quotes .comment .user-icon {
+.comments .quotes .comment .user-icon,
+.comments .comments.new .comment .user-icon {
   width: 30px;
   height: 30px;
+  margin-top: 0px;
 }
-.comments .quotes .comment .message {
+.comments .quotes .comment .message,
+.comments .comments.new .comment .message {
   margin-left: 40px;
   min-height: 30px;
 }
-.comments .quotes .comment .message .arrow {
+.comments .quotes .comment .message .arrow,
+.comments .comments.new .comment .message .arrow {
   top: 5px;
 }
 /*.comments*/
@@ -63,6 +78,10 @@
 /*.comment .text*/
 /*-box-shadow none*/
 /*border-bottom: 1px solid #f6f6f6*/
+.comments .comments.new .user-icon {
+  width: 40px;
+  height: 40px;
+}
 .comments.new .user-icon {
 /*width: 40px*/
 /*height: 40px*/

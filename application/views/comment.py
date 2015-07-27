@@ -12,10 +12,10 @@ module = Module('comment', __name__, url_prefix='/comment')
 
 @module.post("/new")
 @module.post("/edit/<int:id>")
-def new_comment(id=None):
+def save_comment(id=None):
     user = auth.service.get_user()
     v = Validator(request.form)
-    v.field('comment').required()
+    v.field('comment').required(message="Напишите хоть что-нибудь...")
     if v.is_valid():
         if not id:
             v.field('entity_name').required()
@@ -52,7 +52,7 @@ def new_comment(id=None):
 def save_quote(id=None):
     user = auth.service.get_user()
     v = Validator(request.form)
-    v.field('comment').required()
+    v.field('comment').required(message="Напишите хоть что-нибудь")
     if v.is_valid():
         if not id:
             v.field('quote_for').integer().required()

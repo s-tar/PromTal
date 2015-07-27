@@ -21,6 +21,11 @@
       min-height: 50px
       position: relative
       overflow: visible
+      &:hover .answer-button
+        display: block
+      .answer-button
+        float: right
+        display: none
       .text
         white-space: pre-wrap
       .datetime
@@ -33,13 +38,16 @@
         left: -0.35em
         font-size: 1.3em
         top: 5px
-  .quotes
+  .comments.new
+    padding-top: 0px
+  .quotes, .comments.new
     ul
       padding-left: 20px
     .comment
       .user-icon
         width: 30px
         height: 30px
+        margin-top: 0px
       .message
         margin-left: 40px
         min-height: 30px
@@ -55,7 +63,10 @@
   /*.comment .text*/
     /*-box-shadow none*/
     /*border-bottom: 1px solid #f6f6f6*/
-
+.comments .comments.new
+  .user-icon
+    width: 40px
+    height: 40px
 .comments.new
   .user-icon
     /*width: 40px*/

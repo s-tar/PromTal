@@ -100,11 +100,13 @@ var CommentsCounter = React.createClass({
         var entity = this.props.entity
         var entity_id = this.props.entity_id
         var storage = CommentStorageFactory.get(entity, entity_id)
+
         if(!storage.comments_count)storage.comments_count = this.props.count
-        commentsStream.subscribe(function(data){
-            if( data.action == 'update' && data.entity == entity && data.entity_id == entity_id ) {
+        commentsStream.filter(function(data){ return data.action == 'update' &&
+                data.entity == entity &&
+                data.entity_id == entity_id })
+            .subscribe(function(data){
                 self.setState({count: storage.getCommentsCount()});
-            }
         })
     },
     render: function() {
@@ -120,29 +122,66 @@ var NewComment = React.createClass({
     onSuccess: function(data){
         var storage = CommentStorageFactory.get(this.props.entity, this.props.entity_id)
         this.setState({text: ''})
+        if(!!this.props.root)
+            this.props.root.showAnswerForm(null)
         storage.add(data.comment)
     },
     onChange: function(e){
         this.setState({text: e.target.value})
     },
+    onKeyDown: function(e){
+        if(e.key == 'Enter' && e.ctrlKey) {
+            var form = this.refs.form
+            e['target'] = form.getDOMNode()
+            form.onSubmit(e)
+        }
+
+    },
     render: function() {
+        if(!current_user.is_authorized) return(false)
+        if(!!(this.props.entity && this.props.entity_id) || !!this.props.quote_for)
+
+        var action = '/comment/new'
+        if(!!this.props.quote_for)
+            action = '/comment/quote/new'
+
         return(
-            <AJAXForm className="custom-form" action="/comment/new" method="post" onSuccess={this.onSuccess}>
-                <div className="wrapper">
-                    <input type="hidden" name="entity_name" value={this.props.entity}/>
-                    <input type="hidden" name="entity_id" value={this.props.entity_id}/>
-                    <input type="hidden" name="quote_for" value={this.props.quote_for}/>
-                    <TextArea name="comment" autosize={true} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
-                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
-                </div>
-            </AJAXForm>
+            <ul className="comments new">
+                <li className="comment">
+                    <UserIcon user={current_user}/>
+                    <div className="message frame">
+                        <div className="fa fa-caret-left arrow"></div>
+                        <div className="text">
+                            <AJAXForm ref='form' className="custom-form" action={action} method="post" onSuccess={this.onSuccess}>
+                                <div className="wrapper">
+                                    <input type="hidden" name="entity_name" value={this.props.entity}/>
+                                    <input type="hidden" name="entity_id" value={this.props.entity_id}/>
+                                    <input type="hidden" name="quote_for" value={this.props.quote_for}/>
+                                    <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
+                                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                </div>
+                            </AJAXForm>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         )
+        return(false)
     }
 })
 
 var Comments = React.createClass({
     getInitialState: function() {
-        return {comments: []}
+        return {
+            comments: [],
+            quote_form_for: null
+        }
+    },
+    showAnswerForm: function(comment){
+        if(!!comment)
+            this.setState({quote_form_for: comment.id})
+        else
+            this.setState({quote_form_for: null})
     },
     componentWillMount: function(){
         var self = this
@@ -150,31 +189,37 @@ var Comments = React.createClass({
         var entity_id = this.props.entity_id
         var storage = CommentStorageFactory.get(entity, entity_id)
         storage.load();
-        commentsStream.subscribe(function(data){
-            if( data.action == 'update' && data.entity == entity && data.entity_id == entity_id ) {
+        commentsStream.filter(function(data){ return data.action == 'update' &&
+                data.entity == entity &&
+                data.entity_id == entity_id })
+            .subscribe(function(data){
                 self.setState({comments: storage.getAll()});
-            }
         })
         self.setState({comments: storage.getAll()});
     },
     render: function() {
         var className = (this.props.className || '') + ' comments'
+        var self = this
         return(
-            <ul className={className}>
-                {this.state.comments.map(function(comment) {
-                    return <Comment comment={comment}/>;
-                })}
-            </ul>
+            <div>
+                <NewComment entity={this.props.entity} entity_id={this.props.entity_id} root={this}/>
+                <ul className={className}>
+                    {this.state.comments.map(function(comment) {
+                        return <Comment comment={comment} root={self}/>;
+                    })}
+                </ul>
+            </div>
         )
     }
 })
 
 var Quotes = React.createClass({
     render: function() {
+        var self = this
         return(
             <ul className='quotes'>
                 {this.props.comments.map(function(comment) {
-                    return <Comment comment={comment}/>;
+                    return <Comment comment={comment} root={self.props.root}/>;
                 })}
             </ul>
         )
@@ -182,9 +227,22 @@ var Quotes = React.createClass({
 })
 
 var Comment = React.createClass({
+    getInitialState: function(){
+        return {'showQuoteForm': false }
+    },
+    showQuoteForm: function(e){
+        e.preventDefault()
+        this.props.root.showAnswerForm(this.props.comment)
+    },
     render: function() {
         var comment = this.props.comment
         var storage = CommentStorageFactory.get(comment.entity, comment.entity_id)
+        var quoteForm = this.props.root.state.quote_form_for == comment.id ?
+            <NewComment entity={comment.entity} entity_id={comment.entity_id} quote_for={comment.id} root={this.props.root}/> : ''
+
+        var answerButton = current_user.is_authorized && current_user.id != comment.author.id ?
+            <a href="#" className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
+
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -193,11 +251,13 @@ var Comment = React.createClass({
                     <div className="header">
                         <a href='/user/profile/{comment.author.id}'>{comment.author.full_name}</a>
                         <span className="datetime">{niceDateFormat(comment.datetime)}</span>
+                        {answerButton}
                     </div>
                     <div className="text">{comment.text}</div>
                     <div className="footer"></div>
                 </div>
-                <Quotes comments={storage.getQuotes(comment.id)}/>
+                <Quotes comments={storage.getQuotes(comment.id)} root={this.props.root}/>
+                {quoteForm}
             </li>
         )
     }

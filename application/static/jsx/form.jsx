@@ -55,11 +55,13 @@ var TextArea = React.createClass({
     },
     componentDidMount() {
         this.updateHeight()
+        if(this.props.focus)
+            this.refs.textarea.getDOMNode().focus()
     },
     render: function() {
         return(
             <div className="field-wrapper">
-                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyDown} onChange={this.onChange}>{this.props.children}</textarea>
+                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp} onChange={this.onChange}>{this.props.children}</textarea>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
