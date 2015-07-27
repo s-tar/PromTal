@@ -1,7 +1,6 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #eee !important;
 }
 
 * {
@@ -110,7 +109,7 @@ a.logo {
 .form-signin input[type="password"] {
     margin-bottom: 0;
 }
-.message {
+.body-message {
     font-weight: bold;
     font-size: 40px;
     background-color: #666666;

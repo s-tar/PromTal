@@ -1,0 +1,43 @@
+{% import "macros/user.html" as user %}
+{% macro show(comments, parent=None) %}
+    <ul class="comments">
+    {% for comment in comments[parent] recursive%}
+    <li class="comment">
+        {{ user.icon(comment.author) }}
+        <div class="message frame">
+            <div class="fa fa-caret-left arrow"></div>
+            <div class="header">
+                <a href='/user/profile/{{ comment.author.id }}'>{{ comment.author.full_name }}</a>
+                <span class="datetime">{{ comment.datetime|datetime }}</span>
+            </div>
+            <div class="text">{{ comment.text }}</div>
+            <div class="footer"></div>
+        </div>
+        {%- if comments[comment.id] -%}
+            <ul class="quotes depth-{{ loop.depth0 }}">{{ loop(comments[comment.id]|reverse) }}</ul>
+        {%- endif %}
+    </li>
+    {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro new(current_user, entity_name=None, entity_id=None, quote_for=None) %}
+    {% if current_user.is_authorized() and ((entity_name and entity_id) or quote_for) %}
+    <ul class="comments new">
+        <li class="comment">
+            {{ user.icon(current_user) }}
+            <div class="message frame">
+                <div class="fa fa-caret-left arrow"></div>
+                <div class="text" id="new_comment_form">
+                    <script type="text/jsx">
+                        React.render(
+                            <NewComment entity="{{ entity_name or ''}}" entity_id="{{ entity_id or ''}}" quote_for="{{ quote_for or ''}}" />,
+                            document.getElementById('new_comment_form'))
+                        </script>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+    {% endif %}
+{% endmacro %}

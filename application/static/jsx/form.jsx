@@ -30,15 +30,38 @@ var Input = React.createClass({
 });
 
 var TextArea = React.createClass({
+    updateHeight: function(){
+        if(this.props.autosize){
+            var dom = this.refs.textarea.getDOMNode();
+            dom.style.height = 0
+            dom.style.height =  dom.offsetHeight+ (dom.scrollHeight - dom.offsetHeight)+'px'
+        }
+    },
+    onKeyDown: function(event){
+        if(typeof this.props.onKeyDown == 'function')
+            this.props.onKeyDown(event)
+        this.updateHeight()
+    },
+    onKeyUp: function(event){
+        if(typeof this.props.onKeyUp == 'function')
+            this.props.onKeyUp(event)
+        this.updateHeight()
+    },
     onChange: function(event) {
         this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
+        this.updateHeight()
+    },
+    componentDidMount() {
+        this.updateHeight()
+        if(this.props.focus)
+            this.refs.textarea.getDOMNode().focus()
     },
     render: function() {
         return(
             <div className="field-wrapper">
-                <textarea {...this.props} onChange={this.props.onChange}>{this.props.children}</textarea>
+                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp} onChange={this.onChange}>{this.props.children}</textarea>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
@@ -71,13 +94,11 @@ var AJAXForm = React.createClass({
     onSubmit: function(e) {
         e.preventDefault();
         var self = this
-        var form = $(e.target)
-        console.log(form[0])
-        var data = new FormData(form[0])
+        var form = e.target;
         $.ajax({
-            type: form.attr('method') || 'POST',
-            url: form.attr('action') || '',
-            data: data,
+            type: form.getAttribute('method') || 'POST',
+            url: form.getAttribute('action') || '',
+            data: new FormData(form),
             cache: false,
             contentType: false,
             processData: false,

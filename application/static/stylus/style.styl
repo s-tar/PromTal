@@ -1,16 +1,26 @@
 @import 'mixins'
 
 html, body
-  height: 100%
+  min-height: 100%
 body
   font-size: 12px
-  background-color:#eeeeee
+  background-color:#eee
+  padding-bottom: 100px
 header
   background: #FFFFFF
   padding: 10px 0px
   -box-shadow 0px 0px 2px 0px rgba(0,0,0,0.2)
   .logo img
     height: 30px
+/* ------------------------ BOOTSTRAP FIX ------------------------------ */
+.navbar.navbar-default
+  background: #fff
+  -border-radius 0
+  border-bottom: 1px solid #EEEEEE
+  /*box-shadow 0px 0px 2px 0px rgba(0,0,0,.2)*/
+body
+  background: #f6f6f6 !important
+/* --------------------------------------------------------------------- */
 .frame
   background: #FFFFFF
   -border-radius(5px)
@@ -32,6 +42,7 @@ header
   background-size: cover
   background-image: url('/static/img/no-photo-s.png')
   cursor: pointer
+  background-color: white
 
 h3.title
   margin: 0
@@ -45,6 +56,7 @@ h3.title a
   /*border-bottom: 1px solid #f6f6f6*/
 
 .button
+  float: none
   display: inline-block
   background: #fd8a16
   color: white
