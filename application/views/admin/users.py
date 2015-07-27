@@ -1,10 +1,10 @@
-from flask import render_template, request, current_app, flash, url_for, redirect
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import admin
 from application.models.user import User
-from application.forms.admin.user import EditUserForm, AddUserForm
+from application.forms.admin.user import EditUserForm
 from application.db import db
-
+from application.utils.validator import Validator
 
 @admin.get('/users_list')
 def users_list():
@@ -66,9 +66,31 @@ def delete_user_profile(id):
 
 
 @admin.get('/users/add')
-def add_user_profile():
-    form = AddUserForm()
-    return render_template(
-        'admin/users/add_user_profile.html',
-        form=form
-    )
+def add_user():
+    return render_template('admin/users/add_user_profile.html')
+
+
+@admin.post('/users/add')
+def add_user_post():
+    v = Validator(request.form)
+    v.field('name').required()
+    v.field('surname').required()
+    v.field('email').required().email()
+    v.field('login').required()
+    v.field('department').required()
+    v.field('groups').required()
+    v.field('mobile_phone').required()
+    if v.is_valid():
+        data = {
+            'name': request.form.name,
+            'surname': request.form.surname,
+            'email': request.form.email,
+            'login': request.form.login,
+            'department': request.form.department,
+            'groups': request.form.groups,
+            'mobile_phone': request.form.mobile_phone
+        }
+        # TODO add processing of form data
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})

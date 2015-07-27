@@ -106,13 +106,14 @@ class LDAP(object):
     def add_user(self,
                  user,
                  attributes,
-                 objectclasses=('puppetClient', 'top', 'inetOrgPerson')):
+                 object_classes=('puppetClient', 'top', 'inetOrgPerson')):
         try:
             conn = self.bind()
-            conn.add(dn=user,
-                     object_class=objectclasses,
+            conn.add(dn="cn={0},{1}".format(user, current_app.config['LDAP_USER_BASE_DN']),  # TODO Remove hard-code
+                     object_class=object_classes,
                      attributes={
                          'cn': user,
+                         'userPassword': attributes['password'],
                          'displayName': attributes['name'] + ' ' + attributes['surname'],
                          'givenName':  attributes['name'],
                          'sn': attributes['surname'],

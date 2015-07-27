@@ -87,7 +87,7 @@ def login_post():
                     "errors": v.errors})
 
 
-@user.route("/log_out")
+@user.route("/logout")
 def log_out():
     auth.service.logout()
     return redirect(url_for('user.login'))

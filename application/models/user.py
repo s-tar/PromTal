@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, date
 from uuid import uuid1
 from sqlalchemy import func
 from application.utils.auth.user import User as AuthUser
+from application.models.group import Group
 
 
 class UserGroupAssociation(db.Model):
