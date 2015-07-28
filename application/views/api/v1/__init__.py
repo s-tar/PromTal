@@ -1,13 +1,9 @@
-import os
-import glob
+from application import Module
 
-__all__ = []
-directory = os.path.dirname(__file__)
-modules = glob.glob(directory+"/*.py")
-modules += glob.glob(directory+"/*/__init__.py")
+__author__ = 'newbie'
 
-for f in modules:
-    f = f.replace("__init__.py", "").replace(directory, "")\
-         .replace(".py", "", -1).strip('/').strip('\\')
-    if f:
-        __all__.append(os.path.basename(f))
+api_v1 = Module('api_v1', __name__, url_prefix='/api/v1')
+
+from . import users
+from . import news
+from . import comments

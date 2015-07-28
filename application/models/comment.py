@@ -12,3 +12,12 @@ class Comment(db.Model):
     quote_for_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
     quote_for = db.relationship('Comment', remote_side=[id],  backref="quotes")
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'author_id': self.author_id,
+            'text': self.text,
+            'datetime': self.datetime,
+            'quote_for_id': self.quote_for_id,
+            'quote_for': self.quote_for,
+        }

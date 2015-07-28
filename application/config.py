@@ -50,7 +50,8 @@ class Config:
     }
 
     ADMIN_USERS_PER_PAGE = 20
-    ADMIN_NEWS_PER_PAGE = 20
+    ADMIN_NEWS_PER_PAGE = 10
+    ADMIN_COMMENTS_PER_PAGE = 10
 
     files = {
         'path': './application/files'

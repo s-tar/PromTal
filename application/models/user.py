@@ -89,6 +89,22 @@ class User(db.Model, AuthUser):
         today, born = date.today(), self.birth_date
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'full_name': self.full_name,
+            'login': self.login,
+            'status': self.status,
+            'roles': self.roles,
+            'mobile_phone': self.mobile_phone,
+            'inner_phone': self.inner_phone,
+            'birth_date': self.birth_date,
+            'avatar': self.avatar,
+            'photo': self.photo,
+            'skype': self.skype,
+        }
 
 class PasswordRestore(db.Model):
     __tablename__ = 'password_restore'

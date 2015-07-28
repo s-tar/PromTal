@@ -46,5 +46,18 @@ class News(db.Model, Mixin):
             return "Вчера в %s" % self.datetime.strftime('%H:%M')
         return self.datetime.strftime('%d.%m.%y')
 
-
-
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'text': self.text,
+            'author_id': self.author_id,
+            'category_id': self.category_id,
+            'datetime': self.datetime,
+            'comments_count': self.comments_count,
+            'likes_count': self.likes_count,
+            'author': self.author,
+            'category': self.category,
+            'tags': self.tags,
+            'comments': self.comments,
+        }
