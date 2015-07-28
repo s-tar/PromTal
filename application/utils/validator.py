@@ -15,7 +15,6 @@ class Validator:
         val = self.data.get(item, None)
         return val if len(val) > 1 else val[0]
 
-
     def field(self, name):
         return Field(self, name)
 
@@ -68,6 +67,8 @@ class Field:
         self.val = self.validator.data.get(self.name)
         if not isinstance(self.val, list):
             self.val = [self.val]
+
+        self.validator.valid_data[name] = [v.strip().strip('\n').strip('\r') if isinstance(v, str) else v for v in self.val]
 
     @property
     def value(self):

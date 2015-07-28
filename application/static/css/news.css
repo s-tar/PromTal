@@ -6,6 +6,11 @@
   padding: 10px;
   display: none;
 }
+.news-list > .title,
+.news-one > .title {
+  text-align: center;
+  font-size: 1.7em;
+}
 .news-list article,
 .news-one article {
   margin: 0;
@@ -16,28 +21,28 @@
 .news-one article:hover .edit-buttons {
   display: block;
 }
-.news-list .text,
-.news-one .text {
+.news-list article .text,
+.news-one article .text {
   padding: 0px 20px;
 }
-.news-list .datetime,
-.news-one .datetime {
+.news-list article .datetime,
+.news-one article .datetime {
   clear: both;
   text-align: right;
   padding: 5px 20px;
   color: #aaa;
   font-size: 0.8em;
 }
-.news-list .footer,
-.news-one .footer {
+.news-list article .footer,
+.news-one article .footer {
   float: left;
   width: 100%;
   border-top: 1px solid #eee;
   padding: 5px 20px;
   position: relative;
 }
-.news-list .footer .user-icon,
-.news-one .footer .user-icon {
+.news-list article .footer .user-icon,
+.news-one article .footer .user-icon {
   position: absolute;
   border: 1px solid #eee;
   width: 30px;
@@ -45,27 +50,35 @@
   top: -15px;
   left: 20px;
 }
-.news-list .footer .comments,
-.news-one .footer .comments,
-.news-list .footer .likes,
-.news-one .footer .likes {
+.news-list article .footer .comments-counter,
+.news-one article .footer .comments-counter,
+.news-list article .footer .likes,
+.news-one article .footer .likes,
+.news-list article .footer .views,
+.news-one article .footer .views {
   float: right;
   margin-left: 10px;
   font-weight: 1.2em;
 }
-.news-list .footer .comments span,
-.news-one .footer .comments span,
-.news-list .footer .likes span,
-.news-one .footer .likes span {
+.news-list article .footer .comments-counter span,
+.news-one article .footer .comments-counter span,
+.news-list article .footer .likes span,
+.news-one article .footer .likes span,
+.news-list article .footer .views span,
+.news-one article .footer .views span {
   margin: 0px 5px;
 }
-.news-list .footer .likes,
-.news-one .footer .likes {
+.news-list article .footer .likes,
+.news-one article .footer .likes {
   color: #e7422c;
 }
-.news-list .footer .comments,
-.news-one .footer .comments {
+.news-list article .footer .comments-counter,
+.news-one article .footer .comments-counter {
   color: #779dca;
+}
+.news-list article .footer .views,
+.news-one article .footer .views {
+  color: #999;
 }
 .news-form .title {
   border-bottom: 1px solid #f6f6f6;
