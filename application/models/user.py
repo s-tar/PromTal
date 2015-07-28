@@ -1,7 +1,10 @@
-from application.db import db
 from datetime import datetime, timedelta, date
+from enum import Enum
 from uuid import uuid1
-from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import ARRAY
+
+from application.db import db
+from application.lib.orm import MutableList, EnumInt
 from application.utils.auth.user import User as AuthUser
 
 
@@ -14,12 +17,25 @@ class UserGroupAssociation(db.Model):
 
 class User(db.Model, AuthUser):
     __tablename__ = 'users'
+
+    class STATUS(Enum):
+        active = 0
+        blocked = 1
+        deleted = 2
+
+    class ROLE(Enum):
+        user = 0
+        admin = 1
+        moderator = 2
+
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
+    login = db.Column(db.String(64), unique=True)
+    status = db.Column(db.Integer, default=STATUS.active)
+    roles = db.Column(MutableList.as_mutable(ARRAY(EnumInt(ROLE))), default=[ROLE.user])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
-    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)  # TODO delete this field
     photo = db.Column(db.String(255), nullable=True)
