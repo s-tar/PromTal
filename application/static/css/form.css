@@ -72,6 +72,24 @@ textarea.editor {
   width: 100%;
   padding: 5px;
 }
+select + .error-wrapper {
+  vertical-align: bottom;
+}
+select + .error-wrapper .error {
+  margin-top: -3px;
+  -webkit-border-radius: 0px 0px 3px 3px;
+  -moz-border-radius: 0px 0px 3px 3px;
+  border-radius: 0px 0px 3px 3px;
+}
+select[multiple] + .error-wrapper {
+  vertical-align: bottom;
+}
+select[multiple] + .error-wrapper .error {
+  margin-top: -20px;
+  -webkit-border-radius: 3px 0px 0px 0px;
+  -moz-border-radius: 3px 0px 0px 0px;
+  border-radius: 3px 0px 0px 0px;
+}
 .error-wrapper {
   display: inline-block;
   width: 0;

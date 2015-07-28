@@ -1,5 +1,8 @@
 var base_url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
+function locationReload(){
+    window.location.reload();
+}
 $( window ).load(function() {
     setTimeout(function(){
         $('textarea.autosize').textareaAutoSize();
@@ -65,5 +68,16 @@ $( window ).load(function() {
             }
 
         });
-    }, 100);
+    }, 400);
 });
+
+
+function niceDateFormat(date){
+    var now = new Date()
+    date = new Date(date)
+    if(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
+        if(date.getDate() == now.getDate()) return date.format("Сегодня в HH:MM");
+        if(date.getDate() == now.getDate()-1) return date.format("Вчера в HH:MM");
+    }
+    return date.format("dd.mm.yy в HH:MM");
+}

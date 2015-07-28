@@ -1,10 +1,12 @@
+import pickle
+from application import redis
 from application.utils import auth
 from flask import request, render_template, redirect
 from flask.json import jsonify
 
 from application.utils.validator import Validator
 from application.module import Module
-from application.models.user import PasswordRestore
+from application.models.user import PasswordRestore, User
 
 
 main = Module('main', __name__)
@@ -15,15 +17,15 @@ main = Module('main', __name__)
 #     return render_template('index.html')
 
 
-@main.get("/session")
-@main.get("/session/<text>")
+@main.get("/force_login")
 def session_check(text=None):
-    s = request.session
-    if text:
-        s.text = text
-
-    return "This is session check page.<br/>" \
-           "Session text: %s" % s.text
+    sid = request.cookies.get('sid', None)
+    user = User.get_by_login('qwe')
+    uid = user and user.id or None
+    if sid and uid:
+        session = {'user': {'id': uid}}
+        redis.set(sid, pickle.dumps(session))
+        return True
 
 
 @main.route("/message/<msg>")

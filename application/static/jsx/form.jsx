@@ -29,7 +29,7 @@ var Input = React.createClass({
     }
 });
 
-var TextArea = React.createClass({
+var Select = React.createClass({
     onChange: function(event) {
         this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
@@ -38,7 +38,46 @@ var TextArea = React.createClass({
     render: function() {
         return(
             <div className="field-wrapper">
-                <textarea {...this.props} onChange={this.props.onChange}>{this.props.children}</textarea>
+                <select {...this.props} onChange={this.onChange}>{this.props.children}</select>
+                <FieldError ref='error' registerError={this.props.registerError}/>
+            </div>
+        )
+    }
+});
+
+var TextArea = React.createClass({
+    updateHeight: function(){
+        if(this.props.autosize){
+            var dom = this.refs.textarea.getDOMNode();
+            dom.style.height = 0
+            dom.style.height =  dom.offsetHeight+ (dom.scrollHeight - dom.offsetHeight)+'px'
+        }
+    },
+    onKeyDown: function(event){
+        if(typeof this.props.onKeyDown == 'function')
+            this.props.onKeyDown(event)
+        this.updateHeight()
+    },
+    onKeyUp: function(event){
+        if(typeof this.props.onKeyUp == 'function')
+            this.props.onKeyUp(event)
+        this.updateHeight()
+    },
+    onChange: function(event) {
+        this.refs.error.setState({text: ''})
+        if(typeof this.props.onChange == 'function')
+            this.props.onChange(event)
+        this.updateHeight()
+    },
+    componentDidMount: function(event) {
+        this.updateHeight()
+        if(this.props.focus)
+            this.refs.textarea.getDOMNode().focus()
+    },
+    render: function() {
+        return(
+            <div className="field-wrapper">
+                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp} onChange={this.onChange}>{this.props.children}</textarea>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
@@ -71,13 +110,11 @@ var AJAXForm = React.createClass({
     onSubmit: function(e) {
         e.preventDefault();
         var self = this
-        var form = $(e.target)
-        console.log(form[0])
-        var data = new FormData(form[0])
+        var form = e.target;
         $.ajax({
-            type: form.attr('method') || 'POST',
-            url: form.attr('action') || '',
-            data: data,
+            type: form.getAttribute('method') || 'POST',
+            url: form.getAttribute('action') || '',
+            data: new FormData(form),
             cache: false,
             contentType: false,
             processData: false,
@@ -242,11 +279,11 @@ var NewPass = React.createClass({
         return (
             <div>
                 <div className="form-pass">
-                    <input name="password_1" className="form-control" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
+                    <input name="password_1" className="form-control edit-password-1" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
                     <span className={classEye1} onClick={self.clickedEye1}></span>
                 </div>
                 <div className="form-pass form-pass2">
-                    <input name="password_2" className="form-control" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
+                    <input name="password_2" className="form-control edit-password-2" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
                     <span className={classEye2} onClick={self.clickedEye2}></span>
                 </div>
             </div>

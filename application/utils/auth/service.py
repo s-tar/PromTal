@@ -1,3 +1,4 @@
+import datetime
 import pickle
 from application import redis
 from application.models.user import User
@@ -14,6 +15,7 @@ def get_user():
         if session is not None:
             session = pickle.loads(session)
             uid = session.get('user', {}).get('id', None)
+            touch(sid, session)
         g.user = User.get_by_id(uid) or AuthUser()
     return g.user
 
@@ -24,7 +26,10 @@ def login(login, password):
         user = User.get_by_login(login)
         uid = user and user.id or None
         if sid and uid:
-            session = {'user': {'id': uid}}
+            session = {
+                'create_datetime': datetime.datetime.now().isoformat(),
+                'user': {'id': uid}
+            }
             redis.set(sid, pickle.dumps(session))
             return True
     return False
@@ -41,3 +46,6 @@ def logout():
             redis.set(sid, pickle.dumps(session))
 
 
+def touch(sid, session):
+    session['touch_datetime'] = datetime.datetime.now().isoformat()
+    redis.set(sid, pickle.dumps(session))

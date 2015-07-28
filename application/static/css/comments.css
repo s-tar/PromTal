@@ -1,0 +1,136 @@
+.comments {
+  padding: 0;
+  padding-top: 5px;
+  list-style: none;
+  padding-left: 10px;
+  margin-bottom: 0px;
+}
+.comments ul {
+  list-style: none;
+  padding-left: 40px;
+}
+.comments .comment {
+  position: relative;
+}
+.comments .comment .user-icon {
+  position: absolute;
+}
+.comments .comment .message {
+  padding: 5px 10px;
+  margin-left: 60px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  min-height: 50px;
+  position: relative;
+  overflow: visible;
+}
+.comments .comment .message:hover .answer-button {
+  display: block;
+}
+.comments .comment .message .answer-button {
+  float: right;
+  display: none;
+}
+.comments .comment .message .text {
+  white-space: pre-wrap;
+}
+.comments .comment .message .datetime {
+  color: #aaa;
+  font-size: 0.8em;
+  padding-left: 10px;
+}
+.comments .comment .message .arrow {
+  position: absolute;
+  color: #fff;
+  left: -0.35em;
+  font-size: 1.3em;
+  top: 5px;
+}
+.comments .comments.new {
+  padding-top: 0px;
+}
+.comments .quotes ul,
+.comments .comments.new ul {
+  padding-left: 20px;
+}
+.comments .quotes .comment .user-icon,
+.comments .comments.new .comment .user-icon {
+  width: 30px;
+  height: 30px;
+  margin-top: 0px;
+}
+.comments .quotes .comment .message,
+.comments .comments.new .comment .message {
+  margin-left: 40px;
+  min-height: 30px;
+}
+.comments .quotes .comment .message .arrow,
+.comments .comments.new .comment .message .arrow {
+  top: 5px;
+}
+/*.comments*/
+/*border-radius 5px*/
+/*margin: 0px 10px*/
+/*margin-top: -10px*/
+/*background: #FFFFFF*/
+/*padding: 10px*/
+/*.comment .text*/
+/*-box-shadow none*/
+/*border-bottom: 1px solid #f6f6f6*/
+.comments .comments.new .user-icon {
+  width: 40px;
+  height: 40px;
+}
+.comments.new .user-icon {
+/*width: 40px*/
+/*height: 40px*/
+  margin-top: -5px;
+}
+.comments.new .message {
+  padding: 0;
+  min-height: 39px;
+}
+.comments.new .message .text {
+  white-space: normal;
+}
+.comments.new form {
+  padding: 0;
+  float: none;
+  text-align: right;
+  position: relative;
+}
+.comments.new form .wrapper {
+  position: relative;
+  padding-right: 40px;
+}
+.comments.new textarea {
+  border: 0 none;
+  min-height: 39px;
+  height: 39px;
+  margin-bottom: -5px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+  padding-top: 12px;
+  resize: none;
+  overflow: hidden;
+}
+.comments.new .send {
+  outline: none;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  right: 0;
+  position: absolute;
+  width: 40px;
+  height: 100%;
+  background: #fd8a16;
+  color: #fff;
+  border: 0 none;
+  -webkit-border-radius: 0 3px 3px 0;
+  -moz-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
+  text-align: center;
+  font-size: 1.2em;
+}
