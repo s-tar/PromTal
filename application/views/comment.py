@@ -105,6 +105,7 @@ def get_comment_json(comment):
         }
         d = comment.as_dict()
         d['author'] = author
+        d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
         return d
 
     return {}

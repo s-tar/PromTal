@@ -45,3 +45,14 @@ def test():
 
     return jsonify({'status': 'fail',
             'errors': v.errors})
+
+# @main.route('/parse_asl')
+# def parser_asf():
+#     with open('application/static/images/smiles/tango/MSNTango.asl', 'r') as f:
+#         for line in f.readlines():
+#             parts = line.split(' "')
+#             if len(parts) > 2:
+#                 file = parts[1].split('"')[0].strip('",')
+#                 text = parts[2].strip('",').strip('-125, ').split()
+#                 if len(file) > 1:
+#                     print('"/static/images/smiles/tango/'+file+'":', '["'+'", "'.join(text)+'"],')
