@@ -23,7 +23,8 @@ def generate_password(length=8):
     return password
 
 
-def generate_inner_phone(already_used_numbers, start=7000, stop=9999):
-    all_numbers = {number for number in range(start, stop)}
+def generate_inner_phone(already_used_numbers, begin, end):
+    all_numbers = {number for number in range(begin, end)}
     unused_numbers = all_numbers - already_used_numbers
-    return random.choice(tuple(unused_numbers))
+
+    return str(random.choice(tuple(unused_numbers))) if len(unused_numbers) != 0 else None

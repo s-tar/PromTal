@@ -94,9 +94,8 @@ def add_user_post():
         }
 
         # TODO Check if user with such login or email already exists
+        add_user_data_to_db(data)
 
-        if not add_user_data_to_db(data):
-            abort(500)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
