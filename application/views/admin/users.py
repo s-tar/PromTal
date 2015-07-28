@@ -1,15 +1,48 @@
-from flask import render_template, request, current_app, flash, url_for, redirect
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application.db import db
+from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
 @admin.get('/users_list')
 def users_list():
     users = User.query.order_by(User.full_name.asc()).all()
     return render_template('admin/users/users.html', users=users)
+
+
+@admin.get('/users_list_sql')
+def users_list_sql():
+    users = User.query.order_by(User.full_name.asc()).all()
+    return render_template('admin/users/users_sql.html', users=users)
+
+
+@admin.get('/simple_example')
+def simple_example():
+    # defining columns
+    columns = []
+    columns.append(ColumnDT('full_name'))
+    columns.append(ColumnDT('login'))
+    columns.append(ColumnDT('email'))
+    
+
+    # defining the initial query depending on your purpose
+    query = db.session.query(User)
+    #print("\nquery.all() =", len(query), "\n")
+    #row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
+    #rezalt = []
+    #for i in query:
+    #    print(row2dict(i))
+    #print("\nquery.all() =", query.all().__dict__, "\n")
+
+    # instantiating a DataTable for the query and table needed
+    rowTable = DataTables(request, User, query, columns)
+    a = rowTable.output_result()
+    #print("\n\n\n", a, "\n\n\n")
+    # returns what is needed by DataTable
+    return jsonify(**a)
 
 
 @admin.get('/users')
