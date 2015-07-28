@@ -253,7 +253,7 @@ var Comment = React.createClass({
                         <span className="datetime">{niceDateFormat(comment.datetime)}</span>
                         {answerButton}
                     </div>
-                    <div className="text">{comment.text}</div>
+                    <div className="text" dangerouslySetInnerHTML={{__html: markup(comment.text)}}></div>
                     <div className="footer"></div>
                 </div>
                 <Quotes comments={storage.getQuotes(comment.id)} root={this.props.root}/>
