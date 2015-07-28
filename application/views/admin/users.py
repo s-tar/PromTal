@@ -7,41 +7,47 @@ from application.db import db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
+def _default_value(chain):
+    return chain or '-'
+
 @admin.get('/users_list')
 def users_list():
     users = User.query.order_by(User.full_name.asc()).all()
     return render_template('admin/users/users.html', users=users)
 
 
-@admin.get('/users_list_sql')
-def users_list_sql():
+@admin.get('/s_users')
+def s_users():
     users = User.query.order_by(User.full_name.asc()).all()
-    return render_template('admin/users/users_sql.html', users=users)
+    return render_template('admin/users/s_users.html', users=users)
 
 
-@admin.get('/simple_example')
-def simple_example():
-    # defining columns
+@admin.get('/s_users_json')
+def s_users_json():
     columns = []
-    columns.append(ColumnDT('full_name'))
-    columns.append(ColumnDT('login'))
-    columns.append(ColumnDT('email'))
-    
-
-    # defining the initial query depending on your purpose
+    columns.append(ColumnDT('id', filter=_default_value))
+    columns.append(ColumnDT('full_name', filter=_default_value))
+    columns.append(ColumnDT('email', filter=_default_value))
+    columns.append(ColumnDT('login', filter=_default_value))
+    columns.append(ColumnDT('mobile_phone', filter=_default_value))
+    columns.append(ColumnDT('inner_phone', filter=_default_value))
     query = db.session.query(User)
-    #print("\nquery.all() =", len(query), "\n")
-    #row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
-    #rezalt = []
-    #for i in query:
-    #    print(row2dict(i))
-    #print("\nquery.all() =", query.all().__dict__, "\n")
-
-    # instantiating a DataTable for the query and table needed
     rowTable = DataTables(request, User, query, columns)
     a = rowTable.output_result()
-    #print("\n\n\n", a, "\n\n\n")
-    # returns what is needed by DataTable
+    for i in a['aaData']:
+        row_id = i['0']
+        last_columns = str(len(columns))
+        manage_html = """
+            <a href="{edit_user_profile}">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+            <a href="{delete_user_profile}">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+        """
+        i[last_columns] = manage_html.format(
+            edit_user_profile = url_for('admin.edit_user_profile', id=row_id),
+            delete_user_profile = url_for('admin.delete_user_profile', id=row_id))
     return jsonify(**a)
 
 
