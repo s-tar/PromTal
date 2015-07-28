@@ -67,7 +67,6 @@ def edit_profile():
     return render_template('profile/edit_profile.html')
 
 
-<<<<<<< HEAD
 @user.post('/profile/edit')
 def edit_profile_post():
     current_user = auth.service.get_user()
