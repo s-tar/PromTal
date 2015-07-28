@@ -103,10 +103,7 @@ def edit_profile_post():
                     "errors": v.errors})
 
 
-@user.route("/login")
-=======
 @user.get("/login")
->>>>>>> b07d4037536ee0d0640d820492c8dd3d061263a1
 def login():
     return render_template('login/login.html')
 
