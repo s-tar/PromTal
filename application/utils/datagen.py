@@ -4,21 +4,26 @@ import string
 
 def generate_password(length=8):
     password = ''.join((random.choice(string.ascii_lowercase) for _ in range(length)))
+    already_used_indices = set()
 
-    for amount in range(random.randint(1, 3)):
-        for _ in range(amount):
+    for _ in range(random.randint(1, 3)):
+        index = random.choice(range(length))
+        while index in already_used_indices:
             index = random.choice(range(length))
-            password = password[:index] + password[index].upper() + password[index + 1:]
+        already_used_indices.add(index)
+        password = password[:index] + password[index].upper() + password[index + 1:]
 
-    for amount in range(random.randint(1, 3)):
-        for _ in range(amount):
+    for _ in range(random.randint(1, 3)):
+        index = random.choice(range(length))
+        while index in already_used_indices:
             index = random.choice(range(length))
-            password = password[:index] + str(random.choice(string.digits)) + password[index + 1:]
+        already_used_indices.add(index)
+        password = password[:index] + str(random.choice(string.digits)) + password[index + 1:]
 
     return password
 
 
-def generate_inner_number(already_used_numbers, init=6000, length=4):
+def generate_inner_phone(already_used_numbers, init=1000, length=4):
     all_numbers = set()
     for number in range(init, int('9' * length)):
         all_numbers.add(number)

@@ -1,10 +1,12 @@
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application.db import db
 from application.utils.validator import Validator
+from application.bl.admin import add_user_data_to_db
+
 
 @admin.get('/users_list')
 def users_list():
@@ -90,7 +92,11 @@ def add_user_post():
             'groups': request.form.groups,
             'mobile_phone': request.form.mobile_phone
         }
-        # TODO add processing of form data
+
+        # TODO Check if user with such login or email already exists
+
+        if not add_user_data_to_db(data):
+            abort(500)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
