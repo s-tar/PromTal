@@ -144,7 +144,7 @@ var NewComment = React.createClass({
         var action = '/comment/new'
         if(!!this.props.quote_for)
             action = '/comment/quote/new'
-
+        var sendDisabled = !this.state.text.trim() ? 'true' : ''
         return(
             <ul className="comments new">
                 <li className="comment">
@@ -158,7 +158,10 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="entity_id" value={this.props.entity_id}/>
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
                                     <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
-                                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                    <div className="right-buttons">
+                                        <MediaUploader/>
+                                        <button type="submit" disabled={sendDisabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                    </div>
                                 </div>
                             </AJAXForm>
                         </div>
@@ -249,7 +252,7 @@ var Comment = React.createClass({
                 <div className="message frame">
                     <div className="fa fa-caret-left arrow"></div>
                     <div className="header">
-                        <a href='/user/profile/{comment.author.id}'>{comment.author.full_name}</a>
+                        <a href={'/user/profile/'+comment.author.id}>{comment.author.full_name}</a>
                         <span className="datetime">{niceDateFormat(comment.datetime)}</span>
                         {answerButton}
                     </div>
@@ -262,6 +265,8 @@ var Comment = React.createClass({
         )
     }
 })
+
+
 
 $(document).ready(function(){
     $('.comments-counter').each(function(){

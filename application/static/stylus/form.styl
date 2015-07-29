@@ -1,5 +1,32 @@
 @import 'mixins'
 
+button
+  outline: none
+.button,
+input[type=button],
+input[type=submit]
+  display: inline-block
+  background: #fd8a16
+  color: white
+  text-transform: uppercase
+  border: 0 none
+  width: auto
+  float: right
+  margin-top: 20px
+  margin-left: 10px
+  text-decoration: none
+  -border-radius(3px)
+  padding: 12px 15px 10px
+  &:hover
+    background: #fd9e3f
+  &.cancel
+    background: #e7422c
+    &:hover
+      background: #FF6961
+  &.success
+    background: #77DD77
+    &:hover
+      background: #89dd89
 input, textarea
     display: inline-block !important
 .mce-tinymce
@@ -34,23 +61,6 @@ textarea.editor
     &:focus
       border-color: #fd8a16
 
-  .button,
-  input[type=button],
-  input[type=submit]
-    display: inline-block
-    background: #fd8a16
-    color: white
-    text-transform: uppercase
-    border: 0 none
-    width: auto
-    float: right
-    margin-top: 20px
-    margin-left: 10px
-    text-decoration: none
-    -border-radius(3px)
-    padding: 12px 15px 10px
-    &:hover
-      background: #fd9e3f
   .field-label
     color: #777777
     width: 100%
