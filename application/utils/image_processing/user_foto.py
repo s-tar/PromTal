@@ -60,13 +60,13 @@ def save_user_fotos(file, current_user, avatar=False):
         delete_files(path_walk)
     uid = ''.join(str(uuid1()).split('-'))
     name = "{}_{}".format(uid, file.filename)
-    name_s = "{}_s_{}".format(uid, file.filename)
+    name_small = "{}_s_{}".format(uid, file.filename)
     output_size = 300, 300
-    output_size_s = 50, 50
+    output_size_small = 50, 50
     def save_resize_foto(file, output_size, name):
         im = imageResize(file, output_size)
         img_path = os.path.join(path_walk, name)
-        im = im.save(img_path, 'JPEG', quality=85)
+        im.save(img_path, 'JPEG', quality=85)
     save_resize_foto(file, output_size, name)
-    save_resize_foto(file, output_size_s, name_s)
-    return name, name_s
+    save_resize_foto(file, output_size_small, name_small)
+    return name, name_small

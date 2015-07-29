@@ -3,6 +3,14 @@ var base_url = location.protocol+'//'+location.hostname+(location.port ? ':'+loc
 function locationReload(){
     window.location.reload();
 }
+
+String.prototype.format = String.prototype.f = function(){
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g, function(m,n){
+        return args[n] ? args[n] : m;
+    });
+};
+
 $( window ).load(function() {
     setTimeout(function(){
         $('textarea.autosize').textareaAutoSize();

@@ -149,6 +149,7 @@ a.logo {
 }
 .dropdown-toggle-foto {
     padding: 5px 0px !important;
+    padding-left: 15px !important;
 }
 .email-restore {
     border-radius: 4px !important;
@@ -168,4 +169,15 @@ a.logo {
     border-bottom-left-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
     margin-top: -1px;
+}
+.table-admin {
+    background-color: white;
+    border: solid 1px #DDD;
+}
+table.dataTable thead .sorting:last-child:after {
+    content: "";
+    cursor: pointer;
+}
+table.dataTable thead .sorting:last-child {
+    cursor: default;
 }
