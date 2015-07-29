@@ -36,3 +36,5 @@ class EnumInt(TypeDecorator):
         if value is not None:
             return self._enum(value)
         return value
+
+    process_literal_param = process_result_value

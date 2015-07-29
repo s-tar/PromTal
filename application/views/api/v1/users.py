@@ -70,15 +70,14 @@ def edit_user(id):
 @api_v1.post('/users/')
 @json()
 def create_user():
-    name = request.form.get('name')
+    login = request.form.get('login')
     email = request.form.get('email')
     full_name = request.form.get('full_name')
     print(email, full_name)
-    user = User(login='111',
-                        full_name='11112',
-                        mobile_phone='121212',
-                        inner_phone='2123124',
-                        email='343423')
+    user = User()
+    user.full_name = full_name
+    user.email = email
+    user.login = login
     print(user, user.id)
     db.session.add(user)
     db.session.commit()

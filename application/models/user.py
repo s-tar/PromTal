@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, date
-from enum import Enum
 from uuid import uuid1
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -18,22 +17,24 @@ class UserGroupAssociation(db.Model):
 class User(db.Model, AuthUser):
     __tablename__ = 'users'
 
-    class STATUS(Enum):
-        active = 0
-        blocked = 1
-        deleted = 2
-
-    class ROLE(Enum):
-        user = 0
-        admin = 1
-        moderator = 2
+    # STATUS = EnumInt('Statuses', {
+    #     'active': 0,
+    #     'deleted': 1,
+    #     'blocked': 2,
+    # })
+    #
+    # ROLE = EnumInt('Roles', {
+    #     'user': 0,
+    #     'admin': 1,
+    #     'moderator': 2,
+    # })
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
     login = db.Column(db.String(64), unique=True)
-    status = db.Column(db.Integer, default=STATUS.active)
-    roles = db.Column(MutableList.as_mutable(ARRAY(EnumInt(ROLE))), default=[ROLE.user])
+    # status = db.Column(EnumInt(STATUS), default=STATUS.active)
+    # roles = db.Column(MutableList.as_mutable(ARRAY(EnumInt(ROLE))), default=[ROLE.user])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
@@ -92,12 +93,11 @@ class User(db.Model, AuthUser):
     def to_json(self):
         return {
             'id': self.id,
-            'name': self.name,
             'email': self.email,
             'full_name': self.full_name,
             'login': self.login,
-            'status': self.status,
-            'roles': self.roles,
+            # 'status': type(self.status),
+            # 'roles': type(self.roles),
             'mobile_phone': self.mobile_phone,
             'inner_phone': self.inner_phone,
             'birth_date': self.birth_date,
