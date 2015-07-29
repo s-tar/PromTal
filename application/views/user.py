@@ -38,7 +38,9 @@ def edit_profile_post():
     v = Validator(request.form)
     v.field('full_name').required()
     v.field('email').email().required()
+    v.field('birth_date').datetime(format="%d.%m.%Y")
     file = request.files["file"]
+    name, name_s = None, None
     if bool(file.filename):
         try:
             name, name_s = save_user_fotos(file, current_user, avatar=True)
