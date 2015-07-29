@@ -27,7 +27,12 @@ def profile_id(user_id):
     return render_template('profile/profile.html', user=user)
 
 
-@user.post('/edit_profile')
+@user.get("/profile/edit")
+def edit_profile():
+    return render_template('profile/edit_profile.html')
+
+
+@user.post('/profile/edit')
 def edit_profile_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
@@ -62,11 +67,6 @@ def edit_profile_post():
                     "errors": v.errors})
 
 
-@user.get("/edit_profile")
-def edit_profile():
-    return render_template('profile/edit_profile.html')
-
-
 @user.get("/login")
 def login():
     return render_template('login/login.html')
@@ -88,21 +88,21 @@ def login_post():
                     "errors": v.errors})
 
 
-@user.get("/log_out")
+@user.route("/logout")
 def log_out():
     auth.service.logout()
     return redirect(url_for('user.login'))
 
 
-@user.get("/restore")
+@user.route("/password/restore")
 def restore():
     return render_template('login/restore.html')
 
 
-@user.post('/restore')
+@user.post('/password/restore')
 def restore_post():
     v = Validator(request.form)
-    v.field('email').email().required()
+    v.field('email').required().email()
     if v.is_valid():
         email = request.form.get("email")
         user = User.get_by_email(email)
@@ -114,7 +114,7 @@ def restore_post():
                     "errors": v.errors})
 
 
-@user.get("/restore_pass/<token>")
+@user.route("/password/restore/<token>")
 def restore_pass(token):
     pass_restore = PasswordRestore.is_valid_token(token)
     if not pass_restore:
@@ -122,12 +122,12 @@ def restore_pass(token):
     return render_template('login/new_pass.html', token=pass_restore.token)
 
 
-@user.get("/new_pass")
+@user.route("/password/new")
 def new_pass():
     return render_template('login/new_pass.html')
 
 
-@user.post('/new_pass')
+@user.post('/password/new')
 def new_pass_post():
     v = Validator(request.form)
     v.field('password_1').required()
@@ -145,12 +145,12 @@ def new_pass_post():
                     "errors": v.errors})
 
 
-@user.get("/edit_pass")
+@user.route("/password/change")
 def edit_pass():
     return render_template('login/edit_pass.html')
 
 
-@user.post('/edit_pass')
+@user.post('/password/change')
 def edit_pass_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)

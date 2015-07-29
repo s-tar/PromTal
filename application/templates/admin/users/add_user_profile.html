@@ -1,0 +1,82 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+
+<script type="text/jsx">
+React.render(
+    <AJAXForm action="{{ url_for('.add_user_post') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
+        <div className="row">
+          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <table className="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Имя</td>
+                        <td><Input className="form-control" type="text" name="name"  placeholder="Имя пользователя"/></td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия</td>
+                        <td><Input className="form-control" type="text" name="surname"  placeholder="Фамилия пользователя"/></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><Input className="form-control" type="text" name="email" placeholder="Email пользователя"/></td>
+                    </tr>
+                    <tr>
+                        <td>Логин</td>
+                        <td><Input className="form-control" type="text" name="login" placeholder="Логин пользователя"/></td>
+                    </tr>
+                    <tr>
+                        <td>Подразделение</td>
+                        <td>
+                            <Select className="form-control" type="text" name="department">
+                            {% for department in departments %}
+                                <option>{{ department }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Группы</td>
+                        <td>
+                            <Select className="form-control" type="text" name="groups" multiple>
+                            {% for group in groups %}
+                                <option>{{ group }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Номер телефона</td>
+                        <td><Input className="form-control" type="text" name="mobile_phone" placeholder="Номер телефона пользователя"/></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ url_for('.admin_index') }}" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          </div>
+        </div>
+    </AJAXForm>,
+    document.getElementById('add_user_form'))
+
+function wellDone(){
+    window.location.href = "{{ url_for('.admin_index') }}";
+}
+</script>
+<script>
+window.onload = function () {
+    $(document).on("focus", ".datepicker", function(){
+        $(this).datepicker();
+    });
+
+    function funcfilestyle() {
+      $(":file").filestyle({buttonBefore: true});
+    }
+    setTimeout(funcfilestyle, 200);
+};
+</script>
+
+<div id="add_user_form"></div>
+{% endblock %}

@@ -6,14 +6,7 @@ from sqlalchemy import func
 from application.utils.auth.user import User as AuthUser
 
 
-class UserGroupAssociation(db.Model):
-    __tablename__ = "user_group_association"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-
-
-class User(db.Model, Mixin, AuthUser):
+class User(db.Model, AuthUser):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True)
@@ -27,7 +20,6 @@ class User(db.Model, Mixin, AuthUser):
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
 
-    groups = db.relationship("Group", secondary="user_group_association", backref="users")
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)

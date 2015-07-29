@@ -1,9 +1,11 @@
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
-from application.db import db
+from application import db, ldap
+from application.utils.validator import Validator
+from application.bl.admin import add_user_data_to_db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
@@ -102,3 +104,45 @@ def delete_user_profile(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('admin.users_index'))
+
+
+@admin.get('/users/add')
+def add_user():
+    groups = ldap.get_all_groups()
+    departments = {'This is a mock', 'This is also a mock', 'One more'}  # TODO replace
+    return render_template('admin/users/add_user_profile.html',
+                           groups={group['cn'][0] for group in groups},
+                           departments=departments)
+
+
+@admin.post('/users/add')
+def add_user_post():
+    v = Validator(request.form)
+    v.field('name').required()
+    v.field('surname').required()
+    v.field('email').required().email()
+    v.field('login').required()
+    v.field('department').required()
+    v.field('groups').required()
+    v.field('mobile_phone').required()
+    if v.is_valid():
+        data = {
+            'name': request.form.get('name'),
+            'surname': request.form.get('surname'),
+            'email': request.form.get('email'),
+            'login': request.form.get('login'),
+            'department': request.form.get('department'),
+            'groups': request.form.get('groups'),
+            'mobile_phone': request.form.get('mobile_phone')
+        }
+
+        if User.get_by_login(data['login']):
+            pass
+        elif User.get_by_email(data['email']):
+            pass
+
+        add_user_data_to_db(data)
+
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
