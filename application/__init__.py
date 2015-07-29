@@ -13,7 +13,6 @@ from application.utils.auth.service import get_user
 from application.utils.auth.middleware import AuthMiddleware
 from application.views import *
 from application.models import *
-from application.utils.markup import markup
 
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
@@ -51,7 +50,6 @@ def create_app(config_name):
             date_str = ' '.join((date_str, time_str)) if time else date_str
 
         return date_str
-    app.jinja_env.filters['markup'] = markup
 
     @app.errorhandler(404)
     def page_not_found(e):
