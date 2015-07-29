@@ -6,7 +6,6 @@ from ldap3.extend.standard.modifyPassword import ModifyPassword
 from flask import current_app
 
 
-# TODO hash password
 # TODO add method for customizing filters
 class LDAP(object):
     def __init__(self, app=None):
@@ -56,7 +55,7 @@ class LDAP(object):
             server = self.initialize()
             conn = ldap3.Connection(server=server,
                                     user=current_app.config['LDAP_USERNAME'],
-                                    password=current_app.config['LDAP_PASSWORD'],
+                                    password=current_app.config['LDAP_PASSWORD'],  # TODO hashing password for service user
                                     authentication=ldap3.SIMPLE)
             conn.bind()
             return conn
@@ -69,9 +68,10 @@ class LDAP(object):
             return
         try:
             server = self.initialize()
+            h_password = hashlib.sha1(password.encode()).hexdigest()
             conn = ldap3.Connection(server=server,
                                     user=user_dn,
-                                    password=password,
+                                    password=h_password,
                                     authentication=ldap3.SIMPLE)
             conn.bind()
             if get_connection:
@@ -85,9 +85,10 @@ class LDAP(object):
         try:
             conn = self.bind()
             user_dn = self.get_object_details(user=user, dn_only=True)
+            h_new_password = hashlib.sha1(new_password.encode()).hexdigest()
             conn.modify(dn=user_dn,
                         changes={
-                            current_app.config['LDAP_USER_PASSWORD_FIELD']: [(ldap3.MODIFY_REPLACE, new_password)]
+                            current_app.config['LDAP_USER_PASSWORD_FIELD']: [(ldap3.MODIFY_REPLACE, h_new_password)]
                         })
             conn.unbind()
         except ldap3.LDAPExceptionError as e:
@@ -97,7 +98,9 @@ class LDAP(object):
         try:
             conn = self.bind_user(user, old_password, get_connection=True)
             user_dn = self.get_object_details(user=user, dn_only=True)
-            modification = ModifyPassword(conn, user_dn, old_password, new_password)
+            h_old_password = hashlib.sha1(old_password.encode()).hexdigest()
+            h_new_password = hashlib.sha1(new_password.encode()).hexdigest()
+            modification = ModifyPassword(conn, user_dn, h_old_password, h_new_password)
             modification.send()
             conn.unbind()
         except ldap3.LDAPExceptionError as e:
@@ -113,8 +116,8 @@ class LDAP(object):
                      object_class=object_classes,
                      attributes={
                          'cn': user,
-                         'userPassword': attributes['password'],
-                         'displayName': attributes['name'] + ' ' + attributes['surname'],
+                         'userPassword': hashlib.sha1(attributes['password'].encode()).hexdigest(),
+                         'displayName': "{0} {1}".format(attributes['name'], attributes['surname']),
                          'givenName':  attributes['name'],
                          'sn': attributes['surname'],
                          'mail': attributes['email'],

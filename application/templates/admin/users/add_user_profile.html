@@ -26,15 +26,27 @@ React.render(
                     </tr>
                     <tr>
                         <td>Подразделение</td>
-                        <td></td>
+                        <td>
+                            <Select className="form-control" type="text" name="department">
+                            {% for department in departments %}
+                                <option>{{ department }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Группы</td>
-                        <td></td>
+                        <td>
+                            <Select className="form-control" type="text" name="groups" multiple>
+                            {% for group in groups %}
+                                <option>{{ group }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Номер телефона</td>
-                        <td><Input className="form-control" type="text" name="mobile_phone"/></td>
+                        <td><Input className="form-control" type="text" name="mobile_phone" placeholder="Номер телефона пользователя"/></td>
                     </tr>
                     <tr>
                         <td><a href="{{ url_for('.admin_index') }}" className="btn btn-lg btn-danger btn-block">Отмена</a></td>

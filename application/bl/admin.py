@@ -17,32 +17,21 @@ def add_user_data_to_db(data):
         'inner_phone': inner_phone
     })
 
-    if not _add_to_ldap(data):
-        raise Exception
-    elif not _add_to_local_db(data):
-        raise Exception
-
+    # _add_to_ldap(data)
+    # _add_to_local_db(data)
     # TODO send password with sms
 
 
 def _add_to_ldap(data):
-    try:
-        ldap.add_user(user=data['login'], attributes=data)
-        ldap.add_user_to_groups(user=data['login'], groups=data['groups'])
-        return True
-    except Exception as e:
-        return False  # TODO add appropriate processing
+    ldap.add_user(user=data['login'], attributes=data)
+    ldap.add_user_to_groups(user=data['login'], groups=data['groups'])
 
 
 def _add_to_local_db(data):
-    try:
-        user = User(login=data['login'],
-                    full_name="{0} {1}".format(data['name'], data['surname']),
-                    mobile_phone=data['mobile_phone'],
-                    inner_phone=data['inner_phone'],
-                    email=data['email'])
-        db.session.add(user)
-        db.session.commit()
-        return True
-    except Exception as e:
-        return False  # TODO add appropriate processing
+    user = User(login=data['login'],
+                full_name="{0} {1}".format(data['name'], data['surname']),
+                mobile_phone=data['mobile_phone'],
+                inner_phone=data['inner_phone'],
+                email=data['email'])
+    db.session.add(user)
+    db.session.commit()

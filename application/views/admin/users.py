@@ -3,7 +3,7 @@ from flask import render_template, request, current_app, flash, url_for, redirec
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
-from application.db import db
+from application import db, ldap
 from application.utils.validator import Validator
 from application.bl.admin import add_user_data_to_db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
@@ -102,7 +102,11 @@ def delete_user_profile(id):
 
 @admin.get('/users/add')
 def add_user():
-    return render_template('admin/users/add_user_profile.html')
+    groups = ldap.get_all_groups()
+    departments = {'This is a mock', 'This is also a mock', 'One more'}  # TODO replace
+    return render_template('admin/users/add_user_profile.html',
+                           groups={group['cn'][0] for group in groups},
+                           departments=departments)
 
 
 @admin.post('/users/add')
@@ -117,16 +121,20 @@ def add_user_post():
     v.field('mobile_phone').required()
     if v.is_valid():
         data = {
-            'name': request.form.name,
-            'surname': request.form.surname,
-            'email': request.form.email,
-            'login': request.form.login,
-            'department': request.form.department,
-            'groups': request.form.groups,
-            'mobile_phone': request.form.mobile_phone
+            'name': request.form.get('name'),
+            'surname': request.form.get('surname'),
+            'email': request.form.get('email'),
+            'login': request.form.get('login'),
+            'department': request.form.get('department'),
+            'groups': request.form.get('groups'),
+            'mobile_phone': request.form.get('mobile_phone')
         }
 
-        # TODO Check if user with such login or email already exists
+        if User.get_by_login(data['login']):
+            pass
+        elif User.get_by_email(data['email']):
+            pass
+
         add_user_data_to_db(data)
 
         return jsonify({"status": "ok"})

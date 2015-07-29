@@ -9,8 +9,8 @@ logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 
 def fill_db():
-    logging.info("Start filling DB ...")
     if sys.argv[1] == 'users':
+        logging.info("Start filling DB ...")
         for user_attr in ldap.get_all_users():
             user = User(login=user_attr.get('cn', [''])[0],
                         full_name=user_attr.get('displayName', [''])[0],
@@ -19,9 +19,9 @@ def fill_db():
                         email=user_attr.get('mail', [''])[0])
             db.session.add(user)
             db.session.commit()
+        logging.info("DB has been filled successfully.")
     else:
         logging.error("Wrong argument passed.")
-    logging.info("DB has been filled successfully.")
 
 if __name__ == '__main__':
     app = create_app('default')
