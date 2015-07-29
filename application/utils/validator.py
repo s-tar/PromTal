@@ -198,7 +198,12 @@ class Field:
     def equal(self, field, message=None):
         code, message = get_message("equal", message)
         if self.value != field.value:
-            self.validator.add_error(self.name, message % {field: field.name}, code)
+            self.validator.add_error(self.name, message % {'field': field.name}, code)
+        return self
+
+    def old_password(self, message=None):
+        code, message = get_message("old_password", message)
+        self.validator.add_error(self.name, message, code)
         return self
 
 
@@ -215,7 +220,8 @@ def get_message(code, message):
         'is_not_svg': 'Файл не является SVG картинкой',
         'wrong_email_format': 'Введен неверный адрес электронной почты',
         'wrong_datetime_format': 'Неверный формат',
-        'equal': "Должно повторять значение поля %(field)s"
+        'equal': "Должно повторять значение поля %(field)s",
+        'old_password': 'Неверный старый пароль',
     }
     if message is None:
         message = messages[code]

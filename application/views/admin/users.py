@@ -10,6 +10,7 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 def _default_value(chain):
     return chain or '-'
 
+
 @admin.get('/users_list')
 def users_list():
     users = User.query.order_by(User.full_name.asc()).all()
@@ -18,8 +19,7 @@ def users_list():
 
 @admin.get('/s_users')
 def s_users():
-    users = User.query.order_by(User.full_name.asc()).all()
-    return render_template('admin/users/s_users.html', users=users)
+    return render_template('admin/users/s_users.html')
 
 
 @admin.get('/s_users_json')

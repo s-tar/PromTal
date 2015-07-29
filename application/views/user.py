@@ -161,7 +161,12 @@ def edit_pass_post():
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
-        modify_password(current_user.login, old_password, new_password)
+        try:
+            modify_password(current_user.login, old_password, new_password)
+        except:
+            print("\n\n\n1111111\n\n\n")
+            v.field('password_old').old_password()
+            return jsonify({"status": "fail", "errors": v.errors})
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
