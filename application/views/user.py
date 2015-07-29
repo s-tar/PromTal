@@ -134,7 +134,7 @@ def new_pass_post():
     v = Validator(request.form)
     v.field('password_1').required()
     v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'))
+    v.field('password_2').equal(v.field('password_1'), message="Повторый пароль неверный")
     if v.is_valid():
         restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
         if not restore_pass:
@@ -159,14 +159,13 @@ def edit_pass_post():
     v.field('password_old').required()
     v.field('password_1').required()
     v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'))
+    v.field('password_2').equal(v.field('password_1'), message="Повторый пароль неверный")
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
         try:
             modify_password(current_user.login, old_password, new_password)
         except:
-            print("\n\n\n1111111\n\n\n")
             v.field('password_old').old_password()
             return jsonify({"status": "fail", "errors": v.errors})
         return jsonify({"status": "ok"})
