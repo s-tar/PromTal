@@ -16,6 +16,7 @@ $( window ).load(function() {
         $('textarea.autosize').textareaAutoSize();
         tinymce.init({
             selector:'textarea.editor',
+            language : 'ru',
             height : 200,
             plugins : [
                 "pagebreak",
@@ -89,3 +90,4 @@ function niceDateFormat(date){
     }
     return date.format("dd.mm.yy в HH:MM");
 }
+

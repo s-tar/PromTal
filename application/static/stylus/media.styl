@@ -73,6 +73,8 @@
   .options
     .title
       text-align: center
+      border-bottom: 1px solid #eee;
+      margin: 0px -10px 15px;
     .file-uploader
       padding: 10px
       padding-top:0
@@ -87,8 +89,30 @@
           margin-left: 10px
           text-transform: inherit
           float: left
-      input
-        padding: 10px
+      .preview
+        padding: 10px 0px
+        -border-radius 3px
+        overflow: hidden
+        text-align: center
+        input
+          display: none
+        img
+          max-width: 100%
+      .url-wrapper
+        position: relative
+        input
+          padding: 10px
+          margin: 0
+          padding-right: 50px
+        .download
+          position: absolute
+          padding: 5px
+          font-size: 1.2em
+          margin: 0
+          height: 100%
+          right: 0
+          width: 40px
+          -border-radius 0 3px 3px 0
       .separator
         color: #eee
         text-align: center

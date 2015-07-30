@@ -53,31 +53,23 @@ var TextArea = React.createClass({
             dom.style.height =  dom.offsetHeight+ (dom.scrollHeight - dom.offsetHeight)+'px'
         }
     },
-    onKeyDown: function(event){
-        if(typeof this.props.onKeyDown == 'function')
-            this.props.onKeyDown(event)
-        this.updateHeight()
-    },
-    onKeyUp: function(event){
-        if(typeof this.props.onKeyUp == 'function')
-            this.props.onKeyUp(event)
-        this.updateHeight()
-    },
     onChange: function(event) {
         this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
-        this.updateHeight()
     },
     componentDidMount() {
         this.updateHeight()
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
     },
+    componentDidUpdate() {
+        this.updateHeight()
+    },
     render: function() {
         return(
             <div className="field-wrapper">
-                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp} onChange={this.onChange}>{this.props.children}</textarea>
+                <textarea ref='textarea' {...this.props} onChange={this.onChange}>{this.props.children}</textarea>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )

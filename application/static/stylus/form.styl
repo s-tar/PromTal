@@ -2,6 +2,7 @@
 
 button
   outline: none
+
 .button,
 input[type=button],
 input[type=submit]
@@ -27,8 +28,8 @@ input[type=submit]
     background: #77DD77
     &:hover
       background: #89dd89
-input, textarea
-    display: inline-block !important
+input[type], textarea
+    display: inline-block
 .mce-tinymce
   display: inline-block !important
   width: 100% !important
@@ -46,7 +47,7 @@ textarea.editor
   width: 100%
   textarea
     min-height: 100px
-  input, textarea
+  input[type=text],input[type=password], textarea
     background: #FFFFFF
     border: 1px solid #EEEEEE
     border-bottom-color: #cccccc

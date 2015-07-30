@@ -44,9 +44,9 @@ input[type=button].success:hover,
 input[type=submit].success:hover {
   background: #89dd89;
 }
-input,
+input[type],
 textarea {
-  display: inline-block !important;
+  display: inline-block;
 }
 .mce-tinymce {
   display: inline-block !important;
@@ -70,7 +70,8 @@ textarea.editor {
 .custom-form textarea {
   min-height: 100px;
 }
-.custom-form input,
+.custom-form input[type=text],
+.custom-form input[type=password],
 .custom-form textarea {
   background: #fff;
   border: 1px solid #eee;
@@ -86,7 +87,8 @@ textarea.editor {
   width: 100%;
   resize: vertical;
 }
-.custom-form input:focus,
+.custom-form input[type=text]:focus,
+.custom-form input[type=password]:focus,
 .custom-form textarea:focus {
   border-color: #fd8a16;
 }

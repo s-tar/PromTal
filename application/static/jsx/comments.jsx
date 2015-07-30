@@ -117,7 +117,7 @@ var CommentsCounter = React.createClass({
 })
 var NewComment = React.createClass({
     getInitialState: function() {
-        return {text: ''}
+        return {text: '', disabled: false, stream: new Rx.Subject(), media: []}
     },
     onSuccess: function(data){
         var storage = CommentStorageFactory.get(this.props.entity, this.props.entity_id)
@@ -130,11 +130,14 @@ var NewComment = React.createClass({
         this.setState({text: e.target.value})
     },
     onKeyDown: function(e){
-        if(e.key == 'Enter' && e.ctrlKey) {
+        if(e.key == 'Enter' && e.ctrlKey && !!this.state.text.trim() && !this.state.disabled) {
             var form = this.refs.form
             e['target'] = form.getDOMNode()
             form.onSubmit(e)
         }
+
+    },
+    componentDidMount: function(){
 
     },
     render: function() {
@@ -144,7 +147,7 @@ var NewComment = React.createClass({
         var action = '/comment/new'
         if(!!this.props.quote_for)
             action = '/comment/quote/new'
-        var sendDisabled = !this.state.text.trim() ? 'true' : ''
+        var sendDisabled = !this.state.text.trim() || this.state.disabled ? 'true' : ''
         return(
             <ul className="comments new">
                 <li className="comment">
@@ -158,10 +161,12 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="entity_id" value={this.props.entity_id}/>
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
                                     <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
+
                                     <div className="right-buttons">
-                                        <MediaUploader/>
+                                        <MediaUploader holder={this}/>
                                         <button type="submit" disabled={sendDisabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
                                     </div>
+                                    {this.state.media.map(function(media){ return media })}
                                 </div>
                             </AJAXForm>
                         </div>
