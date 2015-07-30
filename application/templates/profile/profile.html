@@ -3,17 +3,21 @@
 
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <h2>{% if current_user.full_name %}{{ current_user.full_name }}{% else %}R2D2{% endif %}</h2>
+    <h2>{% if user.full_name %}{{ user.full_name }}{% else %}R2D2{% endif %}</h2>
     <p># Astromech droid</p>
+
+    {% if user.id == current_user.id %}
     <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a> &nbsp; 
     <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Edit Password</a>
+    {% endif %}
+
     </div>
 </div>
 
 <div class="row">
   <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
     <p>
-      <img src="{% if current_user.avatar %}/file/users/{{ current_user.id }}/avatar/{{ current_user.photo }}{% else %}/static/img/r2-d2.jpg{% endif %}" class="img-thumbnail" alt="Cinque Terre">
+      <img src="{% if user.avatar %}/file/users/{{ user.id }}/avatar/{{ user.photo }}{% else %}/static/img/r2-d2.jpg{% endif %}" class="img-thumbnail" alt="Фото {{ user.full_name }}">
     </p>
 
   </div>
@@ -24,34 +28,34 @@
                 <td># Manager</td>
                 <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
             </tr>
-            {% if current_user.inner_phone %}
+            {% if user.inner_phone %}
                 <tr>
                     <td>Office Phone</td>
-                    <td><span class="glyphicon glyphicon-home"></span> {{ current_user.inner_phone }}</td>
+                    <td><span class="glyphicon glyphicon-home"></span> {{ user.inner_phone }}</td>
                 </tr>
             {% endif %}
-            {% if current_user.birth_date %}
+            {% if user.birth_date %}
                 <tr>
                     <td>Birth date</td>
-                    <td><span class="glyphicon glyphicon-glass"></span> {{ current_user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ current_user.age }})</td>
+                    <td><span class="glyphicon glyphicon-glass"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
                 </tr>
             {% endif %}
-            {% if current_user.mobile_phone %}
+            {% if user.mobile_phone %}
                 <tr>
                     <td>Cell Phone</td>
-                    <td><span class="glyphicon glyphicon-headphones"></span> {{ current_user.mobile_phone }}</td>
+                    <td><span class="glyphicon glyphicon-headphones"></span> {{ user.mobile_phone }}</td>
                 </tr>
             {% endif %}
-            {% if current_user.email %}
+            {% if user.email %}
                 <tr>
                     <td>Email</td>
-                    <td><span class="glyphicon glyphicon-envelope"></span> {{ current_user.email }}</td>
+                    <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
                 </tr>
             {% endif %}
-            {% if current_user.skype %}
+            {% if user.skype %}
                 <tr>
                     <td>Skype</td>
-                    <td><span class="glyphicon glyphicon-link"></span> {{ current_user.skype }}</td>
+                    <td><span class="glyphicon glyphicon-link"></span> {{ user.skype }}</td>
                 </tr>
             {% endif %}
         </tbody>

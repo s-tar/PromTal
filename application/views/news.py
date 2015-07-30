@@ -18,6 +18,7 @@ def list_all():
 @module.get('/<int:id>')
 def news_one(id):
     news = News.get(id)
+    news.increment_views()
     return render_template('news/one.html', **{'news': news})
 
 @module.get('/new')

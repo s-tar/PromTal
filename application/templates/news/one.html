@@ -1,3 +1,5 @@
+{% import "macros/comments.html" as comments %}
+{% import "macros/user.html" as user %}
 {% extends "layout.html" %}
 {% block content %}
 <div class="row">
@@ -9,20 +11,26 @@
         </div>
         <h3 class="title">{{ news.title or '' }}</h3>
         <div class="text">{{ news.text|safe or '' }}</div>
-        <div class="datetime">{{ news.formatted_datetime() or '' }}</div>
+        <div class="datetime">{{ news.datetime|datetime(time=False) or '' }}</div>
         <div class="footer">
             <div class="author">
-                <div class="user-icon" onClick="window.location.href='{{ url_for('user.profile') }}/{{ news.author.id }}'" {% if news.author.photo_s %}style="background-image: url('{{ n.author.photo_s or '' }}')"{% endif %} title="{{ news.author.full_name or '' }}"></div>
-                <div class="comments">
-                    <span class="fa fa-comments-o"></span>{{ news.comments_count or 0}}
-                </div>
-                <div class="likes">
-                    <span class="fa fa-heart"></span>{{ news.likes_count or 0 }}
-                </div>
+                {{ user.icon(news.author) }}
+                <div class="comments-counter" title="Комментарии" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
+                <div class="likes" title="Понравилось"><span class="fa fa-heart"></span>{{ news.likes_count or 0 }}</div>
+                <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
         </div>
     </article>
+    <div id="comments"></div>
+    <script type="text/jsx">
+        React.render(
+            <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
+            document.getElementById('comments'))
+    </script>
+    <!--{{ comments.new(current_user, news.entity.name, news.entity.id) }}-->
+    <!--{{ comments.show(news.comments_all) }}-->
 </div>
 </div>
 </div>
+
 {% endblock %}

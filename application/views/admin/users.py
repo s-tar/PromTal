@@ -1,15 +1,56 @@
-from flask import render_template, request, current_app, flash, url_for, redirect
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
-from application.db import db
+from application import db, ldap
+from application.utils.validator import Validator
+from application.bl.admin import add_user_data_to_db
+from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
+
+
+def _default_value(chain):
+    return chain or '-'
 
 
 @admin.get('/users_list')
 def users_list():
     users = User.query.order_by(User.full_name.asc()).all()
     return render_template('admin/users/users.html', users=users)
+
+
+@admin.get('/s_users')
+def s_users():
+    return render_template('admin/users/s_users.html')
+
+
+@admin.get('/s_users_json')
+def s_users_json():
+    columns = []
+    columns.append(ColumnDT('id', filter=_default_value))
+    columns.append(ColumnDT('full_name', filter=_default_value))
+    columns.append(ColumnDT('email', filter=_default_value))
+    columns.append(ColumnDT('login', filter=_default_value))
+    columns.append(ColumnDT('mobile_phone', filter=_default_value))
+    columns.append(ColumnDT('inner_phone', filter=_default_value))
+    query = db.session.query(User)
+    rowTable = DataTables(request, User, query, columns)
+    a = rowTable.output_result()
+    for i in a['aaData']:
+        row_id = i['0']
+        last_columns = str(len(columns))
+        manage_html = """
+            <a href="{edit_user_profile}">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+            <a href="{delete_user_profile}">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+        """
+        i[last_columns] = manage_html.format(
+            edit_user_profile = url_for('admin.edit_user_profile', id=row_id),
+            delete_user_profile = url_for('admin.delete_user_profile', id=row_id))
+    return jsonify(**a)
 
 
 @admin.get('/users')
@@ -62,3 +103,45 @@ def delete_user_profile(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('admin.users_index'))
+
+
+@admin.get('/users/add')
+def add_user():
+    groups = ldap.get_all_groups()
+    departments = {'This is a mock', 'This is also a mock', 'One more'}  # TODO replace
+    return render_template('admin/users/add_user_profile.html',
+                           groups={group['cn'][0] for group in groups},
+                           departments=departments)
+
+
+@admin.post('/users/add')
+def add_user_post():
+    v = Validator(request.form)
+    v.field('name').required()
+    v.field('surname').required()
+    v.field('email').required().email()
+    v.field('login').required()
+    v.field('department').required()
+    v.field('groups').required()
+    v.field('mobile_phone').required()
+    if v.is_valid():
+        data = {
+            'name': request.form.get('name'),
+            'surname': request.form.get('surname'),
+            'email': request.form.get('email'),
+            'login': request.form.get('login'),
+            'department': request.form.get('department'),
+            'groups': request.form.get('groups'),
+            'mobile_phone': request.form.get('mobile_phone')
+        }
+
+        if User.get_by_login(data['login']):
+            pass
+        elif User.get_by_email(data['email']):
+            pass
+
+        add_user_data_to_db(data)
+
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})

@@ -10,6 +10,7 @@ class Config:
     POSTGRESQL_PASSWORD = 'postgres'
     POSTGRESQL_DB_NAME = 'promtal'
 
+    # SQLALCHEMY_ECHO=True
     SQLALCHEMY_DATABASE_URI = "postgresql://{0}:{1}@{2}:{3}/{4}".format(POSTGRESQL_USERNAME,
                                                                         POSTGRESQL_PASSWORD,
                                                                         POSTGRESQL_HOST,
@@ -52,6 +53,9 @@ class Config:
     ADMIN_USERS_PER_PAGE = 20
     ADMIN_NEWS_PER_PAGE = 10
     ADMIN_COMMENTS_PER_PAGE = 10
+
+    INNER_PHONE_DIAPASON_BEGIN = 7000
+    INNER_PHONE_DIAPASON_END = 9999
 
     files = {
         'path': './application/files'

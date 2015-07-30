@@ -1,17 +1,12 @@
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
 from application.lib.orm import MutableList, EnumInt
+from application.models.mixin import Mixin
 from application.utils.auth.user import User as AuthUser
-
-
-class UserGroupAssociation(db.Model):
-    __tablename__ = "user_group_association"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
 
 
 class User(db.Model, AuthUser):
@@ -42,8 +37,12 @@ class User(db.Model, AuthUser):
     photo = db.Column(db.String(255), nullable=True)
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
-    groups = db.relationship("Group", secondary="user_group_association", backref="users")
+    department = db.relationship("Department", backref="users")
+    team = db.relationship("Team", backref="users")
+
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
@@ -106,6 +105,7 @@ class User(db.Model, AuthUser):
             'skype': self.skype,
         }
 
+
 class PasswordRestore(db.Model):
     __tablename__ = 'password_restore'
     id = db.Column(db.Integer, primary_key=True)
@@ -141,4 +141,3 @@ class PasswordRestore(db.Model):
         for token in tokens:
             token.is_active = False
         db.session.commit()
-
