@@ -12,6 +12,9 @@
 .comments .comment {
   position: relative;
 }
+.comments .comment .comments.new {
+  padding-top: 0px;
+}
 .comments .comment .user-icon {
   position: absolute;
 }
@@ -49,9 +52,6 @@
 }
 .comments .comment .message .smile {
   margin-top: -4px;
-}
-.comments .comments.new {
-  padding-top: 0px;
 }
 .comments .quotes ul,
 .comments .comments.new ul {

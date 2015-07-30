@@ -161,12 +161,11 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="entity_id" value={this.props.entity_id}/>
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
                                     <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
-
                                     <div className="right-buttons">
-                                        <MediaUploader holder={this}/>
+                                        <MediaUploader stream={this.state.stream} holder={this}/>
                                         <button type="submit" disabled={sendDisabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
                                     </div>
-                                    {this.state.media.map(function(media){ return media })}
+                                    <MediaHolder stream={this.state.stream} holder={this}/>
                                 </div>
                             </AJAXForm>
                         </div>
@@ -212,8 +211,8 @@ var Comments = React.createClass({
             <div>
                 <NewComment entity={this.props.entity} entity_id={this.props.entity_id} root={this}/>
                 <ul className={className}>
-                    {this.state.comments.map(function(comment) {
-                        return <Comment comment={comment} root={self}/>;
+                    {this.state.comments.map(function(comment, i) {
+                        return <Comment key={'comment'+i} comment={comment} root={self}/>;
                     })}
                 </ul>
             </div>
@@ -226,8 +225,8 @@ var Quotes = React.createClass({
         var self = this
         return(
             <ul className='quotes'>
-                {this.props.comments.map(function(comment) {
-                    return <Comment comment={comment} root={self.props.root}/>;
+                {this.props.comments.map(function(comment, i) {
+                    return <Comment key={'quote_'+i} comment={comment} root={self.props.root}/>;
                 })}
             </ul>
         )

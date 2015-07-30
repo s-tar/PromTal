@@ -136,3 +136,57 @@
         color: #aaaaaa
         padding: 20px
         text-align: center
+
+.media-holder
+  text-align: left
+  /*padding: 10px*/
+  /*border-top: 1px solid #eeeeee*/
+  margin-right: -40px
+  -border-radius: 0px 0px 0px 3px
+  overflow: hidden
+  &.hidden
+    display: none
+  &.count-2 .media.approved
+    width: 50%
+  &.count-3 .media.approved
+    width: 50%
+    height: 150px
+    &:nth-of-type(3)
+      width: 100%
+  &.count-4 .media.approved
+    width: 50%
+    height: 150px
+  .media
+    display: none
+    position: relative
+    margin-top: 0
+    loat:left
+    width: 100%
+    height: 300px
+    .image
+      width: 100%
+      height: 100%
+      background-position: center center
+      background-size: cover
+    .cancel
+      width: 30px
+      height: 30px
+      background: #ffffff
+      -border-radius 999px
+      margin: 5px 10px
+      position: absolute
+      top: 0px
+      right: 0px
+      color: #e7422c
+      padding: 0px
+      border: 0 none
+      font-size: 1.5em
+      &:hover
+        color: #FF6961
+    &.approved
+      display: inline-block
+      vertical-align: top
+      input
+        display: none
+      img
+        max-width: 100%
