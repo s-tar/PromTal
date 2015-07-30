@@ -15,11 +15,11 @@ def get_news():
     per_page = min(request.args.get('per_page', current_app.config['ADMIN_NEWS_PER_PAGE'],
                                     type=int), current_app.config['ADMIN_NEWS_PER_PAGE'])
 
-    post = (
+    posts = (
         News.query
         .order_by(News.datetime.desc())
     )
-    p = post.paginate(page, per_page)
+    p = posts.paginate(page, per_page)
 
     return {
         'paginator': {
