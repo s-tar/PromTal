@@ -63,8 +63,10 @@ var Media = React.createClass({
         return {src: null, status: 'active', fromFile: null, url: null}
     },
     cancel: function(){
-        var count = this.props.holder.state.count
-        this.props.holder.setState({count: count-1})
+        if(this.state.status == 'approved') {
+            var count = this.props.holder.state.count
+            this.props.holder.setState({count: count-1})
+        }
         this.setState({status: 'canceled'})
     },
     approve: function(){
