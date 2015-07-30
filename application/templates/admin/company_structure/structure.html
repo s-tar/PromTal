@@ -1,7 +1,22 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}Users{% endblock %}
+{% block title %}Structure{% endblock %}
 {% block content %}
-<h1>company_structure</h1>
+<div class="container-fluid">
+    <h2>Company structure</h2>
+    <ul>
+    {%- for dep in departments recursive %}
+        <li>
+            <p>{{ dep.name }}
+                <span class="glyphicon glyphicon-pencil"></span>
+                <span class="glyphicon glyphicon-plus"></span>
+                <span class="glyphicon glyphicon-minus"></span>
+            </p>
+        {%- if dep.dep_list -%}
+            <ul><p>{{ loop(dep.dep_list) }}</p></ul>
+        {%- endif %}</li>
+    {%- endfor %}
+    </ul>
+</div>
 
 {% endblock %}

@@ -8,5 +8,5 @@ class Team(db.Model):
     parent_id = db. Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    parent = db.relationship('Team', remote_side=[id],  backref="subcategories")
-    user = db.relationship("User", backref="team")
+    #parent = db.relationship('Team', remote_side=[id],  backref="subteam")
+    #user = db.relationship("User", backref="team")

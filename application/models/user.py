@@ -20,10 +20,10 @@ class User(db.Model, AuthUser):
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    #team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
-    department = db.relationship("Department", backref="users")
-    team = db.relationship("Team", backref="users")
+    department = db.relationship("Department", backref="users", foreign_keys=[department_id])
+    #team = db.relationship("Team", backref="users")
 
 
     def __repr__(self):

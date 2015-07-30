@@ -8,5 +8,12 @@ class Department(db.Model):
     parent_id = db. Column(db.Integer, db.ForeignKey('department.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    parent = db.relationship('Department', remote_side=[id],  backref="subcategories")
-    user = db.relationship("User", backref="department")
+    parent = db.relationship('Department', remote_side=[id],  backref="subdepartment")
+    user = db.relationship("User", backref="managed_department", foreign_keys=[user_id])
+
+    def __repr__(self):
+        return "<Department {name}>".format(name=self.name)
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
