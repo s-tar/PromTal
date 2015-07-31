@@ -55,12 +55,15 @@ class LDAP(object):
             server = self.initialize()
             conn = ldap3.Connection(server=server,
                                     user=current_app.config['LDAP_USERNAME'],
-                                    password=current_app.config['LDAP_PASSWORD'],  # TODO hashing password for service user
+                                    password=current_app.config['LDAP_PASSWORD'],
                                     authentication=ldap3.SIMPLE)
             conn.bind()
-            return conn
-        except ldap3.LDAPExceptionError as e:
-            return  # TODO add appropriate processing
+            if conn.bound:
+                return conn
+            else:
+                return None
+        except ldap3.LDAPExceptionError:
+            return None
 
     def bind_user(self, user, password, get_connection=False):
         user_dn = self.get_object_details(user=user, dn_only=True)
@@ -77,9 +80,11 @@ class LDAP(object):
             if get_connection:
                 return conn
             else:
-                return conn.bound
+                bound = conn.bound
+                conn.unbind()
+                return bound
         except ldap3.LDAPExceptionError:
-            return  # TODO add appropriate processing
+            return None
 
     def restore_password(self, user, new_password):
         try:
@@ -97,6 +102,8 @@ class LDAP(object):
     def modify_password(self, user, old_password, new_password):
         try:
             conn = self.bind_user(user, old_password, get_connection=True)
+            if not conn.bound:
+                raise ldap3.LDAPBindError("user can't be bound")
             user_dn = self.get_object_details(user=user, dn_only=True)
             h_old_password = hashlib.sha1(old_password.encode()).hexdigest()
             h_new_password = hashlib.sha1(new_password.encode()).hexdigest()
