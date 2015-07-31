@@ -1,30 +1,42 @@
-from application.db import db
 from datetime import datetime, timedelta, date
 from uuid import uuid1
-from application.models.mixin import Mixin
 from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import ARRAY
+
+from application.db import db
+from application.lib.orm import MutableList, EnumInt
+from application.models.mixin import Mixin
 from application.utils.auth.user import User as AuthUser
 
 
 class User(db.Model, AuthUser):
     __tablename__ = 'users'
+
+    # STATUS = EnumInt('Statuses', {
+    #     'active': 0,
+    #     'deleted': 1,
+    #     'blocked': 2,
+    # })
+    #
+    # ROLE = EnumInt('Roles', {
+    #     'user': 0,
+    #     'admin': 1,
+    #     'moderator': 2,
+    # })
+
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
+    login = db.Column(db.String(64), unique=True)
+    # status = db.Column(EnumInt(STATUS), default=STATUS.active)
+    # roles = db.Column(MutableList.as_mutable(ARRAY(EnumInt(ROLE))), default=[ROLE.user])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
-    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)  # TODO delete this field
     photo = db.Column(db.String(255), nullable=True)
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
-    department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
-    #team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-
-    department = db.relationship("Department", backref="users", foreign_keys=[department_id])
-    #team = db.relationship("Team", backref="users")
-
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
@@ -71,6 +83,22 @@ class User(db.Model, AuthUser):
         today, born = date.today(), self.birth_date
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'full_name': self.full_name,
+            'login': self.login,
+            # 'status': type(self.status),
+            # 'roles': type(self.roles),
+            'mobile_phone': self.mobile_phone,
+            'inner_phone': self.inner_phone,
+            'birth_date': self.birth_date,
+            'avatar': self.avatar,
+            'photo': self.photo,
+            'skype': self.skype,
+        }
+
 
 class PasswordRestore(db.Model):
     __tablename__ = 'password_restore'
@@ -107,4 +135,3 @@ class PasswordRestore(db.Model):
         for token in tokens:
             token.is_active = False
         db.session.commit()
-

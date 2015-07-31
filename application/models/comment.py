@@ -3,6 +3,7 @@ from collections import defaultdict
 from application.db import db
 from datetime import datetime
 
+
 class Comment(db.Model, Mixin):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
@@ -16,14 +17,25 @@ class Comment(db.Model, Mixin):
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref="quotes")
     author = db.relationship("User", backref="comments", lazy='joined')
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'author_id': self.author_id,
+            'text': self.text,
+            'datetime': self.datetime,
+            'entity': self.entity,
+            'entity_id': self.entity_id,
+            'quote_for_id': self.quote_for_id,
+            'author': self.author.full_name,
+            }
 
     @staticmethod
     def get_for(entity, entity_id, lazy=True):
         if lazy:
-            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None) \
                 .order_by(Comment.datetime.desc()).all()
         else:
-            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
                 .order_by(Comment.datetime.desc()).all()
 
     def get_entity(self):

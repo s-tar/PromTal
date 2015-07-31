@@ -4,4 +4,3 @@ class User:
 
     def is_authorized(self):
         return not self.is_guest()
-

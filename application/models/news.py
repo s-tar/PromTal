@@ -8,6 +8,7 @@ from application.models.news_tag import NewsTag
 
 class NewsTagAssociation(db.Model):
     __tablename__ = 'news_tag_association'
+
     id = db.Column(db.Integer, primary_key=True)
     news_id = db.Column(db.Integer, db.ForeignKey('news.id'))
     tag_id = db.Column(db.Integer, db.ForeignKey('news_tag.id'))
@@ -15,7 +16,8 @@ class NewsTagAssociation(db.Model):
 
 class News(db.Model, Mixin, HasComments):
     __tablename__ = 'news'
-    id = db.Column(db.Integer, primary_key=True) 
+
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
     text = db.Column(db.Text())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -42,6 +44,20 @@ class News(db.Model, Mixin, HasComments):
         self.comments_count = (self.comments_count or 0) + 1
         db.session.commit()
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'text': self.text,
+            'author_id': self.author_id,
+            'category_id': self.category_id,
+            'datetime': self.datetime,
+            'comments_count': self.comments_count,
+            'likes_count': self.likes_count,
+            'author': self.author.full_name,
+            'category': self.category,
+            'tags': self.tags,
+            'comments': self.comments,
+            }
+
 News.init_comments()
-
-
