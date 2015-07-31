@@ -16,3 +16,5 @@ class UserSchema(Schema):
     photo = fields.Str()
     photo_s = fields.Str()
     skype = fields.Str()
+
+user_schema = UserSchema()

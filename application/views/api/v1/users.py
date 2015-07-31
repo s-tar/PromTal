@@ -3,6 +3,7 @@ from flask import request, current_app
 from . import api_v1
 
 from application.db import db
+from application.models.serializers.user import user_schema
 from application.models.user import User
 from application.views.api.decorators import json
 
@@ -25,7 +26,7 @@ def get_users():
             'page': page,
             'pages': p.pages,
         },
-        'objects': [x.to_json() for x in p.items]
+        'objects': [x.to_json().data for x in p.items],
     }
 
 
@@ -35,7 +36,7 @@ def get_user(id):
     user = (
         User.query.get_or_404(id)
     )
-    return user.to_json()
+    return user.to_json().data
 
 
 @api_v1.delete('/users/<int:id>')
@@ -52,18 +53,17 @@ def delete_user(id):
 @api_v1.put('/users/<int:id>')
 @json()
 def edit_user(id):
-    name = request.form.get('name')
-    email = request.form.get('email')
-    full_name = request.form.get('full_name')
     user = (
         User.query.get(id)
     )
-    user.name = name
-    user.email = email
-    user.full_name = full_name
+    data = request.form
 
-    db.session.add(user)
-    db.session.commit()
+    for field in list(user_schema.dump(user).data.keys()):
+        for value in data.getlist(field):
+            user.field = value
+            db.session.flush()
+
+    print(user.full_name, user.login)
     return {}, 200
 
 

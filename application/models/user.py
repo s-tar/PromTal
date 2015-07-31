@@ -1,15 +1,18 @@
 from datetime import datetime, timedelta, date
 from uuid import uuid1
-from sqlalchemy import func
-from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
-from application.lib.orm import MutableList, EnumInt
-from application.models.mixin import Mixin
+from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
+from application.utils.orm import EnumInt, MutableList
 
 
 class User(db.Model, AuthUser):
+    '''
+    при добавлении полей не забыть их добавить в
+    application/models/serializers/user.py для корректной валидации данных
+    '''
+
     __tablename__ = 'users'
 
     # STATUS = EnumInt('Statuses', {
@@ -84,20 +87,7 @@ class User(db.Model, AuthUser):
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
     def to_json(self):
-        return {
-            'id': self.id,
-            'email': self.email,
-            'full_name': self.full_name,
-            'login': self.login,
-            # 'status': type(self.status),
-            # 'roles': type(self.roles),
-            'mobile_phone': self.mobile_phone,
-            'inner_phone': self.inner_phone,
-            'birth_date': self.birth_date,
-            'avatar': self.avatar,
-            'photo': self.photo,
-            'skype': self.skype,
-        }
+        return user_schema.dump(self)
 
 
 class PasswordRestore(db.Model):
