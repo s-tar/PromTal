@@ -17,7 +17,8 @@ def get(filepath):
     full_path = os.path.join(path, name)
     mdate = datetime.fromtimestamp(os.stat(full_path).st_mtime)
     delta = datetime.now().date() - mdate.date()
-    if delta.days > 0:
+
+    if filepath.startswith('uploads/') and delta.days > 0:
         os.system('touch %s' % full_path)   # Update modified date
     if os.path.exists(full_path):
         return send_from_directory(path, name)

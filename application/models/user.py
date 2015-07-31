@@ -1,6 +1,8 @@
 from application.db import db
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from application.models.comment import HasComments
+from application.models.mixin import Mixin
 from sqlalchemy import func
 from application.utils.auth.user import User as AuthUser
 
@@ -12,7 +14,7 @@ class UserGroupAssociation(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
 
 
-class User(db.Model, AuthUser):
+class User(db.Model, AuthUser, Mixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True)

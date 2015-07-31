@@ -115,11 +115,11 @@ var Media = React.createClass({
     render: function(){
         var src = this.state.url || this.state.src
         var image = !src ? '' : <div className="image" style={{'backgroundImage': "url('"+src+"')"}}></div>
-        var urlInput = <input type="text" name="file" value={this.state.url}/>
-        var fileInput = <input ref="fileInput"  type="file" name="file" onChange={this.onInputFileChange}/>
+        var url_input = <input type="hidden" name="url" value={this.state.url}/>
+        var type_input = <input type="hidden" name="file.type" value={this.props.type}/>
+        var file_input = <input ref="fileInput"  type="file" name="upload" onChange={this.onInputFileChange}/>
         if(this.state.status == 'approved') {
-            urlInput = !this.state.url ? '' : urlInput
-            fileInput = !this.state.src ? '' : fileInput
+            file_input = !this.state.src ? '' : file_input
         }
         if(this.state.status == 'canceled')
             return null
@@ -128,8 +128,9 @@ var Media = React.createClass({
                 <div className={"media "+this.state.status}>
                     <button className="cancel" onClick={this.cancel}><span className="fa fa-times"></span></button>
                     {image}
-                    {urlInput}
-                    {fileInput}
+                    {type_input}
+                    {url_input}
+                    {file_input}
                 </div>
             )
 
@@ -140,18 +141,18 @@ var MediaHolder = React.createClass({
     getInitialState: function(){
         return {media: [], key: 0, count: 0}
     },
-    createMedia: function() {
+    createMedia: function(type) {
         var key = this.state.key + 1;
         var media = this.state.media;
-        media.push(<Media holder={this} key={"media_"+key} stream={this.props.stream}/>)
+        media.push(<Media holder={this} key={"media_"+key} type={type} stream={this.props.stream}/>)
         this.setState({media: media, key: key})
     },
     componentWillMount: function(){
         var self = this
         this.props.stream
             .filter(function(data){ return data.action == 'createMedia'})
-            .subscribe(function(){
-                self.createMedia()
+            .subscribe(function(data){
+                self.createMedia(data.type)
         });
     },
     render:function(){
@@ -202,13 +203,13 @@ var FileUploader = React.createClass({
     componentDidMount: function(){
         var self = this
         this.state.inputChangeStream.debounce(500).subscribe(this.urlChangeHandler)
-        this.props.stream.onNext({action: 'createMedia'});
+        this.props.stream.onNext({action: 'createMedia', type: this.props.type});
         this.props.stream
             .filter(function(data){ return data.action == 'updatePreview' && self.isMounted()})
             .subscribe(self.updatePreview)
     },
     render: function() {
-        var preview = !this.state.preview ? '' : <img src={this.state.preview} alt=''/>
+        var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} alt=''/></div>
         return (
             <div className="file-uploader">
                 <h3 className="title">{this.getTitle()}</h3>

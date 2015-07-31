@@ -1,3 +1,4 @@
+from application.models.file import File
 from collections import defaultdict
 import json
 from application import Module, db
@@ -14,8 +15,13 @@ module = Module('comment', __name__, url_prefix='/comment')
 @module.post("/edit/<int:id>")
 def save_comment(id=None):
     user = auth.service.get_user()
-    v = Validator(request.form)
+    data = dict(request.form)
+    data['upload'] = request.files.getlist('upload')
+    v = Validator(data)
+
     v.field('comment').required(message="Напишите хоть что-нибудь...")
+    v.fields('upload').image()
+
     if v.is_valid():
         if not id:
             v.field('entity_name').required()
@@ -36,6 +42,7 @@ def save_comment(id=None):
                 db.session.add(comment)
                 db.session.commit()
 
+                save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
                 entity = comment.get_entity()
                 if entity:
                     entity.after_add_comment(comment)
@@ -77,6 +84,7 @@ def save_quote(id=None):
                 db.session.add(comment)
                 db.session.commit()
 
+                save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
                 entity = comment.get_entity()
                 if entity:
                     entity.after_add_comment(comment)
@@ -93,6 +101,13 @@ def json_all_comments(entity, entity_id):
     comments = Comment.get_for(entity, entity_id, lazy=False)
     comments = {'data': [get_comment_json(comment) for comment in comments] }
     return jsonify(comments)
+
+
+def save_files(urls, uploads, types, comment):
+    for url, type in zip(urls, types):
+        file = File.create('image.png', 'comments', comment)
+        print(file.get_url())
+        print(url, type)
 
 
 def get_comment_json(comment):
