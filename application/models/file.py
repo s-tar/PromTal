@@ -1,5 +1,6 @@
 import application
 from application import db
+from application.config import Config as config
 from application.models.mixin import Mixin
 import hashlib
 import uuid
@@ -24,20 +25,24 @@ class File(db.Model, Mixin):
     @classmethod
     def get(cls, name=None, module=None, entity=None):
         if name or module or entity:
-            query = cls.query(File)
-            if entity: query = query.filter(File.entity == File.stringify_entity(entity))
+            query = cls.query
+            if entity:
+                if isinstance(entity, list):
+                    query = query.filter(File.entity.in_((File.stringify_entity(e) for e in entity)))
+                else:
+                    query = query.filter(File.entity == File.stringify_entity(entity))
             if module: query = query.filter(File.module == module)
             if name:
                 parts = name.rsplit('.', 1)
                 query = query.filter(File.name == parts[0])
                 if len(parts) > 1:
                     query = query.filter(File.extension == parts[1])
-            query = query.order_by(File.order, File.id.desc())
+            query = query.order_by(File.order, File.id)
             return query.all()
         return []
 
     @classmethod
-    def create(cls, name, module=None, entity=None):
+    def create(cls, name, module=None, entity=None, external_link=None):
         name = name.strip("/")
         name_parts = name.split('.')
 
@@ -47,44 +52,55 @@ class File(db.Model, Mixin):
         new_file.entity = File.stringify_entity(entity)
         new_file.extension = name_parts[-1] if len(name_parts) > 1 else None
 
-        new_file.update_uniq_id()
+        new_file.update_hash()
+        new_file.external_link = external_link
+
         db.session.add(new_file)
-        db.session.commit()
+        db.session.flush()
 
         return new_file
 
-    def get_path(self, sufix=None, with_cache=False):
-        path = [application.files_folder]
-        name = []
+    def __get_path(self, sufix=None, hash=False):
+        path = []
         if self.module: path.append(self.module)
         if self.entity: path.append(self.entity)
-        if self.name: name.append(self.name)
-        name.append('id'+str(self.id))
-        if sufix: name.append(sufix)
-        if with_cache: name.append('_'+self.uniq_id+'_')
-        if self.extension: name.append(self.extension)
-
-        path = os.path.normpath(os.path.join('/'.join(path), '.'.join(name)))
+        path = os.path.normpath(os.path.join('/'.join(path), self.get_name(sufix, hash)))
         return path
 
-    def update_uniq_id(self):
-        self.uniq_id = str(uuid.uuid4()).replace('-', '')
+    def is_local(self):
+        return self.external_link is None
 
-    def get_fullpath(self, sufix=None):
-        path = self.get_path(sufix)
-        return os.path.join(root, path)
+    def get_name(self, sufix=None, hash=False):
+        name = []
+        name.append('id'+str(self.id))
+        if sufix: name.append(sufix)
+        if hash: name.append('_'+self.hash+'_')
+        if self.extension: name.append(self.extension)
+        return '.'.join(name)
+
+    def update_hash(self):
+        self.hash = str(uuid.uuid4()).replace('-', '')
+
+    def get_path(self, sufix=None):
+        if self.external_link:
+            return None
+        path = self.__get_path(sufix)
+        return os.path.join(application.files_folder, path)
 
     def get_url(self, sufix=None):
-        path = self.get_path(sufix, with_cache=True)
-        return '/'+path.replace('\\', '/')
+        if self.external_link:
+            return self.external_link
+        path = self.__get_path(sufix, hash=True)
+        return '/'.join(['', config.files['url'], path])
 
-    def create_dir(self):
-        path = os.path.dirname(self.get_fullpath())
-        if not os.path.exists(path):
-            os.makedirs(path)
+    def makedir(self):
+        if not self.external_link:
+            path = os.path.dirname(self.get_path())
+            if not os.path.exists(path):
+                os.makedirs(path)
 
     def remove_files(self):
-        path, name = self.get_fullpath().rsplit(os.sep, 1)
+        path, name = self.get_path().rsplit(os.sep, 1)
         name = self.name.split('/')[-1]+'.id'+str(self.id)
         if os.path.exists(path):
             for f in os.listdir(path):

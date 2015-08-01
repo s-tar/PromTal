@@ -125,6 +125,7 @@ var NewComment = React.createClass({
         if(!!this.props.root)
             this.props.root.showAnswerForm(null)
         storage.add(data.comment)
+        this.state.stream.onNext({action: 'clearMedia'});
     },
     onChange: function(e){
         this.setState({text: e.target.value})
@@ -241,6 +242,10 @@ var Comment = React.createClass({
         e.preventDefault()
         this.props.root.showAnswerForm(this.props.comment)
     },
+    componentDidMount: function(){
+        $(this.getDOMNode()).find("a.image").fancybox({});
+        console.log($(this.getDOMNode()).find("a.image").length)
+    },
     render: function() {
         var comment = this.props.comment
         var storage = CommentStorageFactory.get(comment.entity, comment.entity_id)
@@ -249,6 +254,18 @@ var Comment = React.createClass({
 
         var answerButton = current_user.is_authorized && current_user.id != comment.author.id ?
             <a href="#" className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
+        var media = ''
+        if(comment.files.length){
+            media = (
+                <div className={"media-holder count-"+comment.files.length}>
+                {comment.files.map(function(file){ return(
+                    <div className="media approved">
+                        <a href={file.origin}  rel={"comment-"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
+                    </div>
+                )})}
+                </div>
+            )
+        }
 
         return(
             <li className="comment">
@@ -261,6 +278,7 @@ var Comment = React.createClass({
                         {answerButton}
                     </div>
                     <div className="text" dangerouslySetInnerHTML={{__html: markup(comment.text)}}></div>
+                    {media}
                     <div className="footer"></div>
                 </div>
                 <Quotes comments={storage.getQuotes(comment.id)} root={this.props.root}/>

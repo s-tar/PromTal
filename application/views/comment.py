@@ -1,4 +1,5 @@
 from application.models.file import File
+from application.utils import image
 from collections import defaultdict
 import json
 from application import Module, db
@@ -37,17 +38,7 @@ def save_comment(id=None):
                 comment = Comment.get(id)
 
             if comment:
-                comment.text = data.comment
-
-                db.session.add(comment)
-                db.session.commit()
-
-                save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
-                entity = comment.get_entity()
-                if entity:
-                    entity.after_add_comment(comment)
-                return jsonify({'status': 'ok',
-                                'comment': get_comment_json(comment)})
+                return save(comment, data)
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
     return jsonify({'status': 'fail',
@@ -79,38 +70,63 @@ def save_quote(id=None):
                 comment = Comment.get(id)
 
             if comment:
-                comment.text = data.comment
+                return save(comment, data)
 
-                db.session.add(comment)
-                db.session.commit()
-
-                save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
-                entity = comment.get_entity()
-                if entity:
-                    entity.after_add_comment(comment)
-                return jsonify({'status': 'ok',
-                                'comment': get_comment_json(comment)})
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
 
     return jsonify({'status': 'fail',
                     'errors': v.errors})
 
-@module.get('/<entity>/<int:entity_id>/json/all')
-def json_all_comments(entity, entity_id):
-    comments = Comment.get_for(entity, entity_id, lazy=False)
-    comments = {'data': [get_comment_json(comment) for comment in comments] }
-    return jsonify(comments)
+
+def save(comment, data):
+    comment.text = data.comment
+
+    db.session.add(comment)
+    db.session.flush()
+
+    save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
+    entity = comment.get_entity()
+
+    if entity:
+        entity.after_add_comment(comment)
+
+    db.session.commit()
+
+    files = [get_file_json(f) for f in comment.files]
+    return jsonify({'status': 'ok',
+                    'comment': get_comment_json(comment, files)})
 
 
 def save_files(urls, uploads, types, comment):
     for url, type in zip(urls, types):
-        file = File.create('image.png', 'comments', comment)
-        print(file.get_url())
-        print(url, type)
+        file = File.create(name='image.png', module='comments', entity=comment, external_link=url or None)
+
+        if file.is_local():
+            file.makedir()
+            img = uploads.pop(0)
+            image.thumbnail(img, width=450, height=300, fill=image.COVER).save(file.get_path())
+            image.resize(img).save(file.get_path(sufix='origin'))
 
 
-def get_comment_json(comment):
+@module.get('/<entity>/<int:entity_id>/json/all')
+def json_all_comments(entity, entity_id):
+    comments = Comment.get_for(entity, entity_id, lazy=False)
+    files = defaultdict(list)
+    for f in File.get(module='comments', entity=comments):
+        files[f.entity].append(get_file_json(f))
+    comments = {'data': [get_comment_json(comment, files.get(File.stringify_entity(comment), [])) for comment in comments] }
+    return jsonify(comments)
+
+
+def get_file_json(file):
+    return {
+        'url': file.get_url(),
+        'origin': file.get_url(sufix='origin')
+    }
+
+
+def get_comment_json(comment, files=[]):
     if comment:
         author = {
             'id': comment.author.id,
@@ -120,6 +136,7 @@ def get_comment_json(comment):
         }
         d = comment.as_dict()
         d['author'] = author
+        d['files'] = files
         d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
         return d
 

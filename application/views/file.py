@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 import uuid
 import os
 from application import Module
@@ -13,13 +14,16 @@ module = Module('file', __name__, url_prefix='/file')
 @module.get("/<path:filepath>")
 def get(filepath):
     path = os.path.join(application.files_folder, os.path.dirname(filepath))
+
     name = os.path.basename(filepath)
+    name = re.sub(r'(.*)\._(.*)_\.(.*)', r'\1.\3', name)
     full_path = os.path.join(path, name)
+
     mdate = datetime.fromtimestamp(os.stat(full_path).st_mtime)
     delta = datetime.now().date() - mdate.date()
-
     if filepath.startswith('uploads/') and delta.days > 0:
         os.system('touch %s' % full_path)   # Update modified date
+
     if os.path.exists(full_path):
         return send_from_directory(path, name)
     else:
@@ -28,7 +32,7 @@ def get(filepath):
 
 @module.post("/upload")
 @module.post("/upload/<ftype>")
-def index(ftype=None):
+def upload(ftype=None):
     v = Validator({'file': request.files['file']})
     if ftype == 'image':
         v.field('file').image()

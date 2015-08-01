@@ -54,7 +54,8 @@ class Config:
     ADMIN_NEWS_PER_PAGE = 20
 
     files = {
-        'path': './application/files'
+        'path': './application/files',
+        'url': 'file'
     }
 
 

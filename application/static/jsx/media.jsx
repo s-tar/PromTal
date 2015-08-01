@@ -154,6 +154,11 @@ var MediaHolder = React.createClass({
             .subscribe(function(data){
                 self.createMedia(data.type)
         });
+        this.props.stream
+            .filter(function(data){ return data.action == 'clearMedia'})
+            .subscribe(function(){
+                self.setState({media: [], key: 0, count: 0})
+        });
     },
     render:function(){
         return(
