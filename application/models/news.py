@@ -1,9 +1,11 @@
-from application.db import db
 from datetime import datetime, date, timedelta
+
+from application.db import db
 from application.models.comment import Comment, HasComments
 from application.models.mixin import Mixin
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
+from application.models.serializers.news import news_schema
 
 
 class NewsTagAssociation(db.Model):
@@ -45,19 +47,6 @@ class News(db.Model, Mixin, HasComments):
         db.session.commit()
 
     def to_json(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'text': self.text,
-            'author_id': self.author_id,
-            'category_id': self.category_id,
-            'datetime': self.datetime,
-            'comments_count': self.comments_count,
-            'likes_count': self.likes_count,
-            'author': self.author.full_name,
-            'category': self.category,
-            'tags': self.tags,
-            'comments': self.comments,
-            }
+        return news_schema.dump(self)
 
 News.init_comments()

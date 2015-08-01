@@ -3,8 +3,8 @@ from flask import request, current_app
 from . import api_v1
 
 from application.db import db
-from application.models.serializers.user import user_schema
 from application.models.user import User
+from application.models.serializers.user import user_schema
 from application.views.api.decorators import json
 
 
@@ -43,7 +43,7 @@ def get_user(id):
 @json()
 def delete_user(id):
     user = (
-        User.query.get(id)
+        User.query.get_or_404(id)
     )
     db.session.delete(user)
     db.session.commit()
@@ -54,31 +54,24 @@ def delete_user(id):
 @json()
 def edit_user(id):
     user = (
-        User.query.get(id)
+        User.query.get_or_404(id)
     )
-    data = request.form
 
-    for field in list(user_schema.dump(user).data.keys()):
-        for value in data.getlist(field):
-            user.field = value
-            db.session.flush()
+    for field, value in user_schema.load(request.get_json()).data.items():
+        setattr(user, field, value)
 
-    print(user.full_name, user.login)
+    db.session.commit()
     return {}, 200
 
 
 @api_v1.post('/users/')
 @json()
 def create_user():
-    login = request.form.get('login')
-    email = request.form.get('email')
-    full_name = request.form.get('full_name')
-    print(email, full_name)
     user = User()
-    user.full_name = full_name
-    user.email = email
-    user.login = login
-    print(user, user.id)
+
+    for field, value in user_schema.load(request.get_json()).data.items():
+        setattr(user, field, value)
+
     db.session.add(user)
     db.session.commit()
-    return user.to_json(), 200
+    return user.to_json().data, 200
