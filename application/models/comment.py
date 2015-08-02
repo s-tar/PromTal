@@ -1,7 +1,9 @@
-from application.models.mixin import Mixin
-from collections import defaultdict
-from application.db import db
 from datetime import datetime
+from collections import defaultdict
+
+from application.db import db
+from application.models.mixin import Mixin
+from application.models.serializers.comment import comment_schema
 
 
 class Comment(db.Model, Mixin):
@@ -18,16 +20,7 @@ class Comment(db.Model, Mixin):
     author = db.relationship("User", backref="comments", lazy='joined')
 
     def to_json(self):
-        return {
-            'id': self.id,
-            'author_id': self.author_id,
-            'text': self.text,
-            'datetime': self.datetime,
-            'entity': self.entity,
-            'entity_id': self.entity_id,
-            'quote_for_id': self.quote_for_id,
-            'author': self.author.full_name,
-            }
+        return comment_schema.dump(self)
 
     @staticmethod
     def get_for(entity, entity_id, lazy=True):

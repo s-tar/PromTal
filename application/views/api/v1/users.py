@@ -8,7 +8,7 @@ from application.models.serializers.user import user_schema
 from application.views.api.decorators import json
 
 
-@api_v1.get('/users/')
+@api_v1.get('/users')
 @json()
 def get_users():
     page = request.args.get('page', 1, type=int)
@@ -33,18 +33,14 @@ def get_users():
 @api_v1.get('/users/<int:id>')
 @json()
 def get_user(id):
-    user = (
-        User.query.get_or_404(id)
-    )
+    user = User.query.get_or_404(id)
     return user.to_json().data
 
 
 @api_v1.delete('/users/<int:id>')
 @json()
 def delete_user(id):
-    user = (
-        User.query.get_or_404(id)
-    )
+    user = User.query.get_or_404(id)
     db.session.delete(user)
     db.session.commit()
     return {}, 204
@@ -53,9 +49,7 @@ def delete_user(id):
 @api_v1.put('/users/<int:id>')
 @json()
 def edit_user(id):
-    user = (
-        User.query.get_or_404(id)
-    )
+    user = User.query.get_or_404(id)
 
     for field, value in user_schema.load(request.get_json()).data.items():
         setattr(user, field, value)
@@ -64,7 +58,7 @@ def edit_user(id):
     return {}, 200
 
 
-@api_v1.post('/users/')
+@api_v1.post('/users')
 @json()
 def create_user():
     user = User()
