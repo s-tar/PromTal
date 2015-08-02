@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
 from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
-from application.utils.orm import EnumInt, MutableList
 
 
 class User(db.Model, AuthUser):
@@ -15,24 +15,28 @@ class User(db.Model, AuthUser):
 
     __tablename__ = 'users'
 
-    # STATUS = EnumInt('Statuses', {
-    #     'active': 0,
-    #     'deleted': 1,
-    #     'blocked': 2,
-    # })
-    #
-    # ROLE = EnumInt('Roles', {
-    #     'user': 0,
-    #     'admin': 1,
-    #     'moderator': 2,
-    # })
+    (
+        STATUS_ACTIVE,
+        STATUS_DELETED,
+        STATUS_BLOCKED,
+    ) = range(3)
+
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+
+    (
+        ROLE_ADMIN,
+        ROLE_MODERATOR,
+        ROLE_USER,
+    ) = range(3)
+
+    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
     login = db.Column(db.String(64), unique=True)
-    # status = db.Column(EnumInt(STATUS), default=STATUS.active)
-    # roles = db.Column(MutableList.as_mutable(ARRAY(EnumInt(ROLE))), default=[ROLE.user])
+    status = db.Column(db.Integer, default=STATUS_ACTIVE)
+    roles = db.Column(ARRAY(db.Integer), default=[ROLE_USER])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value

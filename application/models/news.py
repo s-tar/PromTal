@@ -19,9 +19,18 @@ class NewsTagAssociation(db.Model):
 class News(db.Model, Mixin, HasComments):
     __tablename__ = 'news'
 
+    (
+        STATUS_ACTIVE,
+        STATUS_DELETED,
+        STATUS_BLOCKED,
+    ) = range(3)
+
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
     text = db.Column(db.Text())
+    status = db.Column(db.Integer, default=STATUS_ACTIVE)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('news_category.id'))
     datetime = db.Column(db.DateTime, default=datetime.now)

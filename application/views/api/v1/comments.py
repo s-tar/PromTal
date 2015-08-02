@@ -8,17 +8,16 @@ from application.models.serializers.comment import comment_schema
 from application.views.api.decorators import json
 
 
-@api_v1.get('/comments')
+@api_v1.get('/comments/')
 @json()
 def get_comments():
-
     page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', current_app.config['ADMIN_COMMENTS_PER_PAGE'],
-                                    type=int), current_app.config['ADMIN_COMMENTS_PER_PAGE'])
+    per_page = min(request.args.get('per_page', current_app.config['ADMIN_USERS_PER_PAGE'],
+                                    type=int), current_app.config['ADMIN_USERS_PER_PAGE'])
 
     comments = (
         Comment.query
-        .order_by(Comment.datetime.desc())
+        .order_by(Comment.id.desc())
     )
     p = comments.paginate(page, per_page)
 
@@ -27,18 +26,18 @@ def get_comments():
             'page': page,
             'pages': p.pages,
         },
-        'objects': [x.to_json().data for x in p.items]
+        'objects': [x.to_json().data for x in p.items],
     }
 
 
-@api_v1.get('/comment/<int:id>')
+@api_v1.get('/comments/<int:id>/')
 @json()
-def get_comment_item(id):
+def get_comment(id):
     comment = Comment.query.get_or_404(id)
     return comment.to_json().data
 
 
-@api_v1.delete('/comment/<int:id>')
+@api_v1.delete('/comments/<int:id>/')
 @json()
 def delete_comment(id):
     comment = Comment.query.get_or_404(id)
@@ -47,26 +46,32 @@ def delete_comment(id):
     return {}, 204
 
 
-@api_v1.put('/comment/<int:id>')
+@api_v1.put('/comments/<int:id>/')
 @json()
 def edit_comment(id):
     comment = Comment.query.get_or_404(id)
 
-    for field, value in comment_schema.load(request.get_json()).data.items():
+    result = comment_schema.load(request.get_json())
+
+    if result.errors:
+        return result.errors, 400
+
+    for field, value in result.data.items():
         setattr(comment, field, value)
 
     db.session.commit()
-    return {}, 200
+    return comment.to_json().data, 200
 
 
-@api_v1.post('/comments')
+@api_v1.post('/comments/')
 @json()
 def create_comment():
-    comment = Comment()
+    result = comment_schema.load(request.get_json())
 
-    print(comment)
-    for field, value in comment_schema.load(request.get_json()).data.items():
-        setattr(comment, field, value)
+    if result.errors:
+        return result.errors, 400
+
+    comment = Comment(**result.data)
 
     db.session.add(comment)
     db.session.commit()

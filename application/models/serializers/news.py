@@ -3,6 +3,7 @@ __author__ = 'newbie'
 from marshmallow import Schema, fields
 
 from application.models.serializers.user import UserSchema
+from application.models.serializers.custom_fields import StatusField
 
 
 class NewsCategorySchema(Schema):
@@ -24,6 +25,7 @@ class NewsSchema(Schema):
     id = fields.Int()
     title = fields.Str()
     text = fields.Str()
+    status = StatusField()
     datetime = fields.Date()
     comments_count = fields.Int()
     likes_count = fields.Int()

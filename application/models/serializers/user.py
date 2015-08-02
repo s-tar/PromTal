@@ -1,6 +1,7 @@
 __author__ = 'kdegtyarenko'
 
 from marshmallow import Schema, fields
+from application.models.serializers.custom_fields import RolesField, StatusField
 
 
 class UserSchema(Schema):
@@ -9,6 +10,8 @@ class UserSchema(Schema):
     email = fields.Email()
     full_name = fields.Str()
     login = fields.Str()
+    status = StatusField()
+    roles = RolesField()
     mobile_phone = fields.Str()
     inner_phone = fields.Str()
     birth_date = fields.Date()
