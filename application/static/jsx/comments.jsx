@@ -244,7 +244,6 @@ var Comment = React.createClass({
     },
     componentDidMount: function(){
         $(this.getDOMNode()).find("a.image").fancybox({});
-        console.log($(this.getDOMNode()).find("a.image").length)
     },
     render: function() {
         var comment = this.props.comment
@@ -257,7 +256,7 @@ var Comment = React.createClass({
         var media = ''
         if(comment.files.length){
             media = (
-                <div className={"media-holder count-"+comment.files.length}>
+                <div className={"media-holder  count-"+comment.files.length}>
                 {comment.files.map(function(file){ return(
                     <div className="media approved">
                         <a href={file.origin}  rel={"comment-"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>

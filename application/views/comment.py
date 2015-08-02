@@ -49,8 +49,13 @@ def save_comment(id=None):
 @module.post("/quote/edit/<int:id>")
 def save_quote(id=None):
     user = auth.service.get_user()
-    v = Validator(request.form)
+    data = dict(request.form)
+    data['upload'] = request.files.getlist('upload')
+
+    v = Validator(data)
     v.field('comment').required(message="Напишите хоть что-нибудь")
+    v.fields('upload').image()
+
     if v.is_valid():
         if not id:
             v.field('quote_for').integer().required()

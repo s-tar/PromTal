@@ -197,6 +197,7 @@
 }
 .media-holder.count-0 {
   padding: 0;
+  display: none;
 }
 .media-holder.hidden {
   display: none;

@@ -141,6 +141,10 @@
   font-size: 1.5em;
   padding: 4px;
 }
-.comments:not(.new) .media-holder {
+.comments .media-holder {
   margin: 3px -9px -4px;
+}
+.comments.new .media-holder {
+  margin: 0;
+  margin-right: -40px;
 }
