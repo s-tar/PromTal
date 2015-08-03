@@ -19,14 +19,13 @@ def save_comment(id=None):
     data = dict(request.form)
     data['upload'] = request.files.getlist('upload')
     v = Validator(data)
-
-    v.field('comment').required(message="Напишите хоть что-нибудь...")
     v.fields('upload').image()
-
     if v.is_valid():
         if not id:
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
+            if v.valid_data.list('entity_id') == 0:
+                v.field('comment').required(message="Напишите хоть что-нибудь...")
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
             if not id:
@@ -53,12 +52,15 @@ def save_quote(id=None):
     data['upload'] = request.files.getlist('upload')
 
     v = Validator(data)
-    v.field('comment').required(message="Напишите хоть что-нибудь")
     v.fields('upload').image()
 
     if v.is_valid():
         if not id:
             v.field('quote_for').integer().required()
+            v.field('entity_name').required()
+            v.field('entity_id').integer(nullable=True).required()
+            if v.valid_data.list('entity_id') == 0:
+                v.field('comment').required(message="Напишите хоть что-нибудь...")
 
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
@@ -136,8 +138,8 @@ def get_comment_json(comment, files=[]):
         author = {
             'id': comment.author.id,
             'full_name': comment.author.full_name,
-            'photo': comment.author.photo,
-            'photo_s': comment.author.photo_s,
+            'photo': comment.author.photo.get_url() if comment.author.photo else '',
+            'photo_s': comment.author.photo.get_url('thumbnail') if comment.author.photo else '',
         }
         d = comment.as_dict()
         d['author'] = author

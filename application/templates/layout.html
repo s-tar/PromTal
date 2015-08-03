@@ -43,8 +43,8 @@
         var current_user = {
             id: {{ current_user.id or 0 }},
             full_name: '{{ current_user.full_name or '' }}',
-            photo: '{{ current_user.photo or '' }}',
-            photo_s: '{{ current_user.photo_s or '' }}',
+            photo: '{{ current_user.photo.get_url if current_user.photo else '' }}',
+            photo_s: '{{ current_user.photo.get_url('thumbnail') if current_user.photo else '' }}',
             is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }}
         }
     </script>
