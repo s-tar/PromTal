@@ -134,13 +134,13 @@ var AJAXForm = React.createClass({
             var name = child.props.name
             counter[name] = counter[name] || 0
             var index = counter[name]++
-            var clone = React.addons.cloneWithProps(child, {
-                registerError: self.registerError(name, index)
-            });
+            var children = undefined
 
-            if(!!clone.props.children)
-                clone.props.children = self.childrenWithErrors(root, clone)
-            return clone
+            if(!!child.props.children)
+                children = self.childrenWithErrors(root, child)
+
+            var clone = React.cloneElement(child, {registerError: self.registerError(name, index)}, children)
+            return clone;
         });
     },
     render: function() {

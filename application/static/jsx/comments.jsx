@@ -117,7 +117,7 @@ var CommentsCounter = React.createClass({
 })
 var NewComment = React.createClass({
     getInitialState: function() {
-        return {text: '', disabled: false, stream: new Rx.Subject(), media: []}
+        return {text: '', disabled: true, stream: new Rx.Subject(), media: []}
     },
     onSuccess: function(data){
         var storage = CommentStorageFactory.get(this.props.entity, this.props.entity_id)
@@ -128,7 +128,9 @@ var NewComment = React.createClass({
         this.state.stream.onNext({action: 'clearMedia'});
     },
     onChange: function(e){
-        this.setState({text: e.target.value})
+        this.state.text = e.target.value
+        this.setState({text: this.state.text})
+        this.state.stream.onNext({action: 'updateSubmitDisabled'});
     },
     onKeyDown: function(e){
         if(e.key == 'Enter' && e.ctrlKey && !!this.state.text.trim() && !this.state.disabled) {
@@ -138,8 +140,14 @@ var NewComment = React.createClass({
         }
 
     },
+    updateSubmitDisabled: function(data){
+        this.setState({disabled: this.refs.mediaHolder.state.count == 0 && !this.state.text})
+    },
     componentDidMount: function(){
-
+        var self = this
+        this.state.stream
+            .filter(function(data){ return data.action == 'updateSubmitDisabled' && self.isMounted()})
+            .subscribe(self.updateSubmitDisabled)
     },
     render: function() {
         if(!current_user.is_authorized) return(false)
@@ -148,7 +156,6 @@ var NewComment = React.createClass({
         var action = '/comment/new'
         if(!!this.props.quote_for)
             action = '/comment/quote/new'
-        var sendDisabled = !this.state.text.trim() || this.state.disabled ? 'true' : ''
         return(
             <ul className="comments new">
                 <li className="comment">
@@ -161,12 +168,12 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="entity_name" value={this.props.entity}/>
                                     <input type="hidden" name="entity_id" value={this.props.entity_id}/>
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
-                                    <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
+                                    <TextArea ref="comment" focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
                                     <div className="right-buttons">
                                         <MediaUploader stream={this.state.stream} holder={this}/>
-                                        <button type="submit" disabled={sendDisabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                        <button type="submit" disabled={this.state.disabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
                                     </div>
-                                    <MediaHolder stream={this.state.stream} holder={this}/>
+                                    <MediaHolder ref="mediaHolder" stream={this.state.stream} holder={this}/>
                                 </div>
                             </AJAXForm>
                         </div>
@@ -258,8 +265,8 @@ var Comment = React.createClass({
             media = (
                 <div className={"media-holder  count-"+comment.files.length}>
                 {comment.files.map(function(file){ return(
-                    <div className="media approved">
-                        <a href={file.origin}  rel={"comment-"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
+                    <div key={"comment_"+comment.id}  className="media approved">
+                        <a href={file.origin}  className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
                     </div>
                 )})}
                 </div>

@@ -64,10 +64,11 @@ var Media = React.createClass({
     },
     cancel: function(){
         if(this.state.status == 'approved') {
-            var count = this.props.holder.state.count
-            this.props.holder.setState({count: count-1})
+            this.props.holder.state.count -= 1
+            this.props.holder.setState({count: this.props.holder.state.count})
         }
         this.setState({status: 'canceled'})
+        this.props.stream.onNext({action: 'updateSubmitDisabled'});
     },
     approve: function(){
         var count = this.props.holder.state.count
@@ -217,6 +218,7 @@ var FileUploader = React.createClass({
             .filter(function(data){ return data.action == 'updatePreview' && self.isMounted()})
             .subscribe(self.updatePreview)
     },
+
     render: function() {
         var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} onLoad={this.onImageLoad} alt=''/></div>
         return (
