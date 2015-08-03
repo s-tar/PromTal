@@ -58,7 +58,7 @@ var TextArea = React.createClass({
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
     },
-    componentDidMount() {
+    componentDidMount: function(event) {
         this.updateHeight()
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
@@ -271,11 +271,11 @@ var NewPass = React.createClass({
         return (
             <div>
                 <div className="form-pass">
-                    <input name="password_1" className="form-control" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
+                    <input name="password_1" className="form-control edit-password-1" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
                     <span className={classEye1} onClick={self.clickedEye1}></span>
                 </div>
                 <div className="form-pass form-pass2">
-                    <input name="password_2" className="form-control" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
+                    <input name="password_2" className="form-control edit-password-2" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
                     <span className={classEye2} onClick={self.clickedEye2}></span>
                 </div>
             </div>

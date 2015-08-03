@@ -251,7 +251,7 @@ var Comment = React.createClass({
         var quoteForm = this.props.root.state.quote_form_for == comment.id ?
             <NewComment entity={comment.entity} entity_id={comment.entity_id} quote_for={comment.id} root={this.props.root}/> : ''
 
-        var answerButton = current_user.is_authorized && current_user.id != comment.author.id ?
+        var answerButton = current_user.is_authorized ?
             <a href="#" className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
         var media = ''
         if(comment.files.length){

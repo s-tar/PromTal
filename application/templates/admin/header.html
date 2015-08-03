@@ -8,8 +8,10 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/admin/users">Users </a></li>
-            <li><a href="/admin/news">News </a></li>
+            <li><a href="{{ url_for('admin.users_index') }}">Users </a></li>
+            <li><a href="{{ url_for('admin.news_index') }}">News </a></li>
+            <li><a href="{{ url_for('admin.s_users') }}">*Users </a></li>
+            <li><a href="{{ url_for('admin.s_news') }}">*News </a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

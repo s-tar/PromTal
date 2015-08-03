@@ -1,6 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="/static/jsx/restore.jsx" type="text/jsx"></script>
+<script type="text/jsx">
+React.render(
+    <AJAXForm action="{{ url_for('user.restore') }}" method="post" className="form-signin" onSuccess={wellDone}>
+        <Input className="form-control email-restore" type="text" name="email" placeholder="Email" onChange={someChange}/>
+        <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Restore"/>
+    </AJAXForm>,
+    document.getElementById('restore_form'))
+
+function someChange(){
+    console.log('CHANGE')
+}
+function wellDone(){
+    window.location.href = "/message/Вам отправлен email";
+}
+</script>
 <div class="row">
     <div class="col-sm-6 col-md-4 col-md-offset-4">
         <h1 class="text-center login-title">Restore Password</h1>

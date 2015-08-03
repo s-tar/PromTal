@@ -1,13 +1,71 @@
 {% extends "admin/layout.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}Edit Profile{% endblock %}
-
 {% block content %}
-<div class="page-header">
-    <h1>Edit Your Profile</h1>
-</div>
-<div class="col-md-4">
-    {{ wtf.quick_form(form) }}
-</div>
+
+<script type="text/jsx">
+React.render(
+    <AJAXForm action="{{ url_for('admin.edit_user_profile', id=user.id) }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
+        <div className="row">
+          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <table className="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Full name</td>
+                        <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if user.full_name %}{{ user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
+                    </tr>
+                    <tr>
+                        <td>Avatar</td>
+                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
+                    </tr>
+                    <tr>
+                        <td>Office Phone</td>
+                        <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if user.inner_phone %}{{ user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
+                    </tr>
+                    <tr>
+                        <td>Birth date</td>
+                        <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
+                    </tr>
+                    <tr>
+                        <td>Cell Phone</td>
+                        <td><Input className="form-control" type="text" name="mobile_phone" defaultValue="{% if user.mobile_phone %}{{ user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><Input className="form-control" type="text" name="email" defaultValue="{% if user.email %}{{ user.email }}{% else %}{% endif %}" placeholder="mail@mail"/></td>
+                    </tr>
+                    <tr>
+                        <td>Skype</td>
+                        <td><Input className="form-control" type="text" name="skype" defaultValue="{% if user.skype %}{{ user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
+                    </tr>
+                    <tr>
+                        <td><a href="/message/ну ты и лошара" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          </div>
+        </div>
+    </AJAXForm>,
+    document.getElementById('edit_profile_form'))
+
+function wellDone(){
+    window.location.href = "{{ url_for('user.profile') }}";
+}
+</script>
+<script>
+window.onload = function () {
+    $(document).on("focus", ".datepicker", function(){
+        $(this).datepicker();
+    });
+
+    function funcfilestyle() {
+      $(":file").filestyle({buttonBefore: true});
+    }
+    setTimeout(funcfilestyle, 200);
+};
+</script>
+
+<div id="edit_profile_form"></div>
 {% endblock %}
+

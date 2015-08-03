@@ -1,4 +1,3 @@
-from application.db import db
 from datetime import datetime, timedelta, date
 from uuid import uuid1
 from application.models.comment import HasComments
@@ -6,29 +5,50 @@ from application.models.mixin import Mixin
 from sqlalchemy import func
 from application.utils.auth.user import User as AuthUser
 
+from sqlalchemy.dialects.postgresql import ARRAY
 
-class UserGroupAssociation(db.Model):
-    __tablename__ = "user_group_association"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
+from application.db import db
+from application.models.serializers.user import user_schema
+from application.utils.auth.user import User as AuthUser
 
 
 class User(db.Model, AuthUser, Mixin):
+    '''
+    при добавлении полей не забыть их добавить в
+    application/models/serializers/user.py для корректной валидации данных
+    '''
+
     __tablename__ = 'users'
+
+    (
+        STATUS_ACTIVE,
+        STATUS_DELETED,
+        STATUS_BLOCKED,
+    ) = range(3)
+
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+
+    (
+        ROLE_ADMIN,
+        ROLE_MODERATOR,
+        ROLE_USER,
+    ) = range(3)
+
+    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
+
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
+    login = db.Column(db.String(64), unique=True)
+    status = db.Column(db.Integer, default=STATUS_ACTIVE)
+    roles = db.Column(ARRAY(db.Integer), default=[ROLE_USER])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
-    email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     avatar = db.Column(db.String, nullable=True)  # TODO delete this field
     photo = db.Column(db.String(255), nullable=True)
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
-
-    groups = db.relationship("Group", secondary="user_group_association", backref="users")
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
@@ -75,6 +95,9 @@ class User(db.Model, AuthUser, Mixin):
         today, born = date.today(), self.birth_date
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
+    def to_json(self):
+        return user_schema.dump(self)
+
 
 class PasswordRestore(db.Model):
     __tablename__ = 'password_restore'
@@ -111,4 +134,3 @@ class PasswordRestore(db.Model):
         for token in tokens:
             token.is_active = False
         db.session.commit()
-

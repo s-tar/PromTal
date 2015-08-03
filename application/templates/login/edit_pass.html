@@ -3,8 +3,13 @@
 <script type="text/jsx">
 React.render(
     <AJAXForm action="{{ url_for('user.edit_pass') }}" method="post" className="form-signin" onSuccess={wellDone}>
-        <Input name="password_old" className="form-control" type="password" placeholder="Старый пароль"/>
-        <NewPass />
+        <Input name="password_old" className="form-control edit-password-old" type="password" placeholder="Старый пароль"/>
+        <div className="form-pass">
+            <Input name="password_1" className="form-control edit-password-1" type="password" placeholder="Новый пароль"/>
+        </div>
+        <div className="form-pass form-pass2">
+            <Input name="password_2" className="form-control edit-password-2" type="password" placeholder="Повторить новый пароль"/>
+        </div>
         <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Сменить"/>
     </AJAXForm>,
     document.getElementById('edit_pass_form'))

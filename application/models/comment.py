@@ -1,8 +1,11 @@
 from application.models.file import File
-from application.models.mixin import Mixin
-from collections import defaultdict
-from application.db import db
 from datetime import datetime
+from collections import defaultdict
+
+from application.db import db
+from application.models.mixin import Mixin
+from application.models.serializers.comment import comment_schema
+
 
 class Comment(db.Model, Mixin):
     __tablename__ = 'comment'
@@ -25,13 +28,16 @@ class Comment(db.Model, Mixin):
             self.__files = File.get(module='comments', entity=self)
         return self.__files
 
+    def to_json(self):
+        return comment_schema.dump(self)
+
     @staticmethod
     def get_for(entity, entity_id, lazy=True):
         if lazy:
-            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None) \
                 .order_by(Comment.datetime.desc()).all()
         else:
-            comments = Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id)\
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
                 .order_by(Comment.datetime.desc()).all()
             return comments
 
