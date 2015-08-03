@@ -63,7 +63,7 @@ var TextArea = React.createClass({
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
     },
-    componentDidUpdate() {
+    componentDidUpdate: function() {
         this.updateHeight()
     },
     render: function() {

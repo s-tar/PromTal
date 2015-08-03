@@ -89,6 +89,8 @@ class User(db.Model, AuthUser, Mixin):
             u.email = email
             if birth_date:
                 u.birth_date = birth_date
+            else:
+                u.birth_date = None
             u.skype = skype
             if photo:
                 u.photo = photo

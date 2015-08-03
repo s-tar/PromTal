@@ -41,11 +41,15 @@ def edit_profile_post():
     v.field('birth_date').datetime(format="%d.%m.%Y")
     file = request.files["file"]
     name, name_s = None, None
+
+    
     if bool(file.filename):
         try:
             name, name_s = save_user_fotos(file, current_user, avatar=True)
         except NotImage:
             v.add_error('file', 'Это не картинка')
+
+
     if v.is_valid():
         full_name = request.form.get("full_name")
         birth_date = request.form.get("birth_date")
