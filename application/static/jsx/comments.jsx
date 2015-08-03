@@ -117,7 +117,7 @@ var CommentsCounter = React.createClass({
 })
 var NewComment = React.createClass({
     getInitialState: function() {
-        return {text: ''}
+        return {text: '', disabled: true, stream: new Rx.Subject(), media: []}
     },
     onSuccess: function(data){
         var storage = CommentStorageFactory.get(this.props.entity, this.props.entity_id)
@@ -125,17 +125,29 @@ var NewComment = React.createClass({
         if(!!this.props.root)
             this.props.root.showAnswerForm(null)
         storage.add(data.comment)
+        this.state.stream.onNext({action: 'clearMedia'});
     },
     onChange: function(e){
-        this.setState({text: e.target.value})
+        this.state.text = e.target.value
+        this.setState({text: this.state.text})
+        this.state.stream.onNext({action: 'updateSubmitDisabled'});
     },
     onKeyDown: function(e){
-        if(e.key == 'Enter' && e.ctrlKey) {
+        if(e.key == 'Enter' && e.ctrlKey && !!this.state.text.trim() && !this.state.disabled) {
             var form = this.refs.form
             e['target'] = form.getDOMNode()
             form.onSubmit(e)
         }
 
+    },
+    updateSubmitDisabled: function(data){
+        this.setState({disabled: this.refs.mediaHolder.state.count == 0 && !this.state.text})
+    },
+    componentDidMount: function(){
+        var self = this
+        this.state.stream
+            .filter(function(data){ return data.action == 'updateSubmitDisabled' && self.isMounted()})
+            .subscribe(self.updateSubmitDisabled)
     },
     render: function() {
         if(!current_user.is_authorized) return(false)
@@ -144,7 +156,6 @@ var NewComment = React.createClass({
         var action = '/comment/new'
         if(!!this.props.quote_for)
             action = '/comment/quote/new'
-
         return(
             <ul className="comments new">
                 <li className="comment">
@@ -157,8 +168,12 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="entity_name" value={this.props.entity}/>
                                     <input type="hidden" name="entity_id" value={this.props.entity_id}/>
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
-                                    <TextArea focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
-                                    <button type="submit" className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                    <TextArea ref="comment" focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
+                                    <div className="right-buttons">
+                                        <MediaUploader stream={this.state.stream} holder={this}/>
+                                        <button type="submit" disabled={this.state.disabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
+                                    </div>
+                                    <MediaHolder ref="mediaHolder" stream={this.state.stream} holder={this}/>
                                 </div>
                             </AJAXForm>
                         </div>
@@ -204,8 +219,8 @@ var Comments = React.createClass({
             <div>
                 <NewComment entity={this.props.entity} entity_id={this.props.entity_id} root={this}/>
                 <ul className={className}>
-                    {this.state.comments.map(function(comment) {
-                        return <Comment comment={comment} root={self}/>;
+                    {this.state.comments.map(function(comment, i) {
+                        return <Comment key={'comment'+i} comment={comment} root={self}/>;
                     })}
                 </ul>
             </div>
@@ -218,8 +233,8 @@ var Quotes = React.createClass({
         var self = this
         return(
             <ul className='quotes'>
-                {this.props.comments.map(function(comment) {
-                    return <Comment comment={comment} root={self.props.root}/>;
+                {this.props.comments.map(function(comment, i) {
+                    return <Comment key={'quote_'+i} comment={comment} root={self.props.root}/>;
                 })}
             </ul>
         )
@@ -234,6 +249,9 @@ var Comment = React.createClass({
         e.preventDefault()
         this.props.root.showAnswerForm(this.props.comment)
     },
+    componentDidMount: function(){
+        $(this.getDOMNode()).find("a.image").fancybox({});
+    },
     render: function() {
         var comment = this.props.comment
         var storage = CommentStorageFactory.get(comment.entity, comment.entity_id)
@@ -242,6 +260,18 @@ var Comment = React.createClass({
 
         var answerButton = current_user.is_authorized ?
             <a href="#" className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
+        var media = ''
+        if(comment.files.length){
+            media = (
+                <div className={"media-holder  count-"+comment.files.length}>
+                {comment.files.map(function(file){ return(
+                    <div key={"comment_"+comment.id}  className="media approved">
+                        <a href={file.origin}  className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
+                    </div>
+                )})}
+                </div>
+            )
+        }
 
         return(
             <li className="comment">
@@ -254,6 +284,7 @@ var Comment = React.createClass({
                         {answerButton}
                     </div>
                     <div className="text" dangerouslySetInnerHTML={{__html: markup(comment.text)}}></div>
+                    {media}
                     <div className="footer"></div>
                 </div>
                 <Quotes comments={storage.getQuotes(comment.id)} root={this.props.root}/>
@@ -262,6 +293,8 @@ var Comment = React.createClass({
         )
     }
 })
+
+
 
 $(document).ready(function(){
     $('.comments-counter').each(function(){

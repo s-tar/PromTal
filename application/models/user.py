@@ -1,5 +1,10 @@
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from application.models.comment import HasComments
+from application.models.mixin import Mixin
+from sqlalchemy import func
+from application.utils.auth.user import User as AuthUser
+
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
@@ -7,7 +12,7 @@ from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
 
 
-class User(db.Model, AuthUser):
+class User(db.Model, AuthUser, Mixin):
     '''
     при добавлении полей не забыть их добавить в
     application/models/serializers/user.py для корректной валидации данных
