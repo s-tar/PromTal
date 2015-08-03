@@ -1,11 +1,11 @@
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application import db, ldap
 from application.utils.validator import Validator
-from application.bl.admin import add_user_data_to_db
+from application.bl.admin import create_user
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
@@ -123,24 +123,32 @@ def add_user_post():
     v.field('login').required()
     v.field('department').required()
     v.field('groups').required()
-    v.field('mobile_phone').required()
+    v.field('mobile_phone').required().phone_number()
     if v.is_valid():
         data = {
-            'name': request.form.get('name'),
-            'surname': request.form.get('surname'),
-            'email': request.form.get('email'),
-            'login': request.form.get('login'),
-            'department': request.form.get('department'),
-            'groups': request.form.get('groups'),
-            'mobile_phone': request.form.get('mobile_phone')
+            'name': v.valid_data.name,
+            'surname': v.valid_data.surname,
+            'email': v.valid_data.email,
+            'login': v.valid_data.login,
+            'department': v.valid_data.department,
+            'groups': v.valid_data.list('groups'),
+            'mobile_phone': v.valid_data.mobile_phone
         }
 
-        if User.get_by_login(data['login']):
-            pass
-        elif User.get_by_email(data['email']):
-            pass
+        already_used_login = User.get_by_login(data['login'])
+        already_used_email = User.get_by_email(data['email'])
 
-        add_user_data_to_db(data)
+        if already_used_login:
+            v.add_error('login', 'Такой логин уже занят')
+        if already_used_email:
+            v.add_error('email', 'Такой email уже занят')
+
+        if already_used_login or already_used_email:
+            return jsonify({"status": "fail",
+                            "errors": v.errors})
+
+        if not create_user(data):  # MAIN FUNCTION
+            redirect(url_for('admin.add_user'))
 
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",

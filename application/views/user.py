@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-from application.bl.user import restore_password, modify_password
+from application.bl.user import restore_password, modify_password, PasswordError
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -159,14 +159,14 @@ def edit_pass_post():
     v.field('password_old').required()
     v.field('password_1').required()
     v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'), message="Повторый пароль неверный")
+    v.field('password_2').equal(v.field('password_1'), message="Повторный пароль неверный")
     if v.is_valid():
         old_password = request.form.get("password_old")
         new_password = request.form.get("password_1")
         try:
             modify_password(current_user.login, old_password, new_password)
-        except:
-            v.field('password_old').old_password()
+        except PasswordError:
+            v.add_error('old_password', 'Неверный пароль')
             return jsonify({"status": "fail", "errors": v.errors})
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
