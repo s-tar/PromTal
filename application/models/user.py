@@ -49,6 +49,9 @@ class User(db.Model, AuthUser, Mixin):
     photo = db.Column(db.String(255), nullable=True)
     photo_s = db.Column(db.String(255), nullable=True)
     skype = db.Column(db.String(64), unique=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
+
+    department = db.relationship("Department", backref="users", foreign_keys=[department_id])
 
     def __repr__(self):
         return "<User {login}>".format(login=self.login)
