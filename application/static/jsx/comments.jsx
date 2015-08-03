@@ -250,6 +250,7 @@ var Comment = React.createClass({
         this.props.root.showAnswerForm(this.props.comment)
     },
     componentDidMount: function(){
+        console.log($(this.getDOMNode()).find("a.image").length)
         $(this.getDOMNode()).find("a.image").fancybox({});
     },
     render: function() {
@@ -259,14 +260,14 @@ var Comment = React.createClass({
             <NewComment entity={comment.entity} entity_id={comment.entity_id} quote_for={comment.id} root={this.props.root}/> : ''
 
         var answerButton = current_user.is_authorized ?
-            <a href="#" className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
+            <a href="#"  className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
         var media = ''
         if(comment.files.length){
             media = (
                 <div className={"media-holder  count-"+comment.files.length}>
                 {comment.files.map(function(file){ return(
-                    <div key={"comment_"+comment.id}  className="media approved">
-                        <a href={file.origin}  className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
+                    <div key={"comment_"+comment.id+"_id_"+file.id}  className="media approved">
+                        <a href={file.origin}  data-fancybox-group={"comment_"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
                     </div>
                 )})}
                 </div>

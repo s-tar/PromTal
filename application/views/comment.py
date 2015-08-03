@@ -128,6 +128,7 @@ def json_all_comments(entity, entity_id):
 
 def get_file_json(file):
     return {
+        'id': file.id,
         'url': file.get_url(),
         'origin': file.get_url(sufix='origin')
     }
