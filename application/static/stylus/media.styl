@@ -1,0 +1,200 @@
+@import 'mixins'
+
+.media-uploader
+  width: 30px
+  height: 30px
+  font-size: 2em
+  color: #779dca
+  position: relative
+  button.toggle
+    -transition all .3s ease
+    outline: none
+    height: 100%
+    width: 100%
+    margin: 0
+    -border-radius 999px
+    padding: 4px
+    color: #779dca
+    background: transparent
+  &.opened button.toggle, button.toggle:hover
+      background: #779dca
+      color: white
+  &.opened
+    .options
+      display: block
+      opacity: 1
+  .options
+    opacity: 0
+    display: none
+    position: absolute
+    bottom: 100%
+    right: 5px
+    background: white
+    margin-bottom: 9px
+    -transition all .3s ease
+    z-index: 1
+    -border-radius 3px
+    -box-shadow 0px 2px 7px 0px rgba(0,0,0,0.2)
+    > .buttons
+      position: relative
+      z-index: 1
+      width: 100%
+      height: 100%
+      -border-radius 3px
+      overflow: hidden
+      background: white
+      button
+        padding: 5px 10px
+        margin: 0
+        border: 0 none
+        background: transparent
+        color: #779dca
+        width: 100%
+        font-size: 0.7em
+        white-space: nowrap
+        text-align: left
+        span:first-child
+          padding-right: 5px
+        &:hover, &.active
+          background-color: #779dca
+          color: #FFFFFF
+    .fa.arrow
+      color: white
+      top: 100% !important
+      right: 10px
+      height: 7px
+      line-height: 7px
+      margin-top: -1px
+      font-size: 1.2em
+      -text-shadow 0px 1px 2px rgba(0,0,0,0.1)
+      z-index: 0
+
+.media-uploader
+  .options
+    .title
+      text-align: center
+      border-bottom: 1px solid #eee;
+      margin: 0px -10px 15px;
+    .file-uploader
+      padding: 10px
+      padding-top:0
+      min-width: 400px
+      font-size: 0.8em
+      .buttons
+        float:right
+        padding: 15px 0px
+        .button
+          padding: 5px 10px
+          margin: 0px
+          margin-left: 10px
+          text-transform: inherit
+          float: left
+      .preview
+        .wrapper
+          margin: 10px 0px
+          padding-right: 0px !important
+          -border-radius 3px
+          overflow: hidden
+          text-align: center
+          width: 100%
+        input
+          display: none
+        img
+          max-width: 100%
+      .url-wrapper
+        position: relative
+        input
+          padding: 10px
+          margin: 0
+          padding-right: 50px
+        .download
+          position: absolute
+          padding: 5px
+          font-size: 1.2em
+          margin: 0
+          height: 100%
+          right: 0
+          width: 40px
+          -border-radius 0 3px 3px 0
+      .separator
+        color: #eee
+        text-align: center
+        position: relative
+        margin: 10px 0px
+        span
+          background: white
+          padding: 0 10px
+          position: relative
+          z-index: 1
+        &:before
+          content: ''
+          position: absolute
+          top: 45%
+          width: 100%
+          border-bottom: 1px solid #eee
+          left: 0
+      .drop-area
+        -border-radius 5px
+        border: 1px dashed #cccccc
+        color: #aaaaaa
+        padding: 20px
+        text-align: center
+
+.media-holder
+  text-align: left
+  /*padding: 10px*/
+  /*border-top: 1px solid #eeeeee*/
+  margin-right: -40px
+  -border-radius: 0px 0px 0px 3px
+  overflow: hidden
+  padding: 2px
+  &.count-0
+    padding: 0
+    display: none
+  &.hidden
+    display: none
+  &.count-2 .media.approved
+    width: 50%
+  &.count-3 .media.approved
+    width: 50%
+    height: 150px
+    &:nth-of-type(3)
+      width: 100%
+  &.count-4 .media.approved
+    width: 50%
+    height: 150px
+  .media
+    padding: 1px
+    display: none
+    position: relative
+    margin-top: 0
+    width: 100%
+    height: 300px
+    .image
+      display: inline-block
+      width: 100%
+      height: 100%
+      background-position: center center
+      background-size: cover
+    .cancel
+      width: 20px
+      height: 20px
+      background: #ffffff
+      -border-radius 999px
+      margin: 5px 10px
+      position: absolute
+      top: 0px
+      right: 0px
+      color: #e7422c
+      padding: 0px
+      border: 0 none
+      font-size: 1em
+      &:hover
+        color: #FF6961
+    &.approved
+      display: inline-block
+      vertical-align: top
+      input
+        display: none
+      img
+        max-width: 100%

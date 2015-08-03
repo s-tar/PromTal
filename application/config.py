@@ -51,13 +51,15 @@ class Config:
     }
 
     ADMIN_USERS_PER_PAGE = 20
-    ADMIN_NEWS_PER_PAGE = 20
+    ADMIN_NEWS_PER_PAGE = 10
+    ADMIN_COMMENTS_PER_PAGE = 10
 
     INNER_PHONE_DIAPASON_BEGIN = 7000
     INNER_PHONE_DIAPASON_END = 9999
 
     files = {
-        'path': './application/files'
+        'path': './application/files',
+        'url': 'file'
     }
 
 

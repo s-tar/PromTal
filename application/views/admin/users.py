@@ -71,7 +71,6 @@ def users_index():
 
 
 @admin.get('/users/edit/<int:id>')
-@admin.post('/users/edit/<int:id>')
 def edit_user_profile(id):
     user = User.get_by_id(id)
     form = EditUserForm()
