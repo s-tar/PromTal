@@ -12,15 +12,15 @@ from application.views.api.decorators import json
 @json()
 def get_news():
     page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', current_app.config['ADMIN_USERS_PER_PAGE'],
-                                    type=int), current_app.config['ADMIN_USERS_PER_PAGE'])
+    per_page = min(request.args.get('per_page', current_app.config['ADMIN_NEWS_PER_PAGE'],
+                                    type=int), current_app.config['ADMIN_NEWS_PER_PAGE'])
 
     news = (
         News.query
         .order_by(News.datetime.desc())
     )
     p = news.paginate(page, per_page)
-
+    print(p.items[0])
     return {
         'paginator': {
             'page': page,

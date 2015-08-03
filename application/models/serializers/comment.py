@@ -14,6 +14,6 @@ class CommentSchema(Schema):
     entity_id = fields.Int()
 
     quote_for = fields.Nested('self', exclude=('quote_for', ))
-    author = fields.Nested(UserSchema, many=True)
+    author = fields.Nested(UserSchema)
 
 comment_schema = CommentSchema()
