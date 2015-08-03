@@ -55,15 +55,9 @@ textarea.editor {
 .custom-form textarea:focus {
   border-color: #fd8a16;
 }
-.custom-form input[type=text] .button,
-.custom-form input[type=password] .button,
-.custom-form textarea .button,
-.custom-form input[type=text] input[type=button],
-.custom-form input[type=password] input[type=button],
-.custom-form textarea input[type=button],
-.custom-form input[type=text] input[type=submit],
-.custom-form input[type=password] input[type=submit],
-.custom-form textarea input[type=submit] {
+.custom-form .button,
+.custom-form input[type=button],
+.custom-form input[type=submit] {
   display: inline-block;
   background: #fd8a16;
   color: #fff;
@@ -79,59 +73,29 @@ textarea.editor {
   border-radius: 3px;
   padding: 12px 15px 10px;
 }
-.custom-form input[type=text] .button:hover,
-.custom-form input[type=password] .button:hover,
-.custom-form textarea .button:hover,
-.custom-form input[type=text] input[type=button]:hover,
-.custom-form input[type=password] input[type=button]:hover,
-.custom-form textarea input[type=button]:hover,
-.custom-form input[type=text] input[type=submit]:hover,
-.custom-form input[type=password] input[type=submit]:hover,
-.custom-form textarea input[type=submit]:hover {
+.custom-form .button:hover,
+.custom-form input[type=button]:hover,
+.custom-form input[type=submit]:hover {
   background: #fd9e3f;
 }
-.custom-form input[type=text] .button.cancel,
-.custom-form input[type=password] .button.cancel,
-.custom-form textarea .button.cancel,
-.custom-form input[type=text] input[type=button].cancel,
-.custom-form input[type=password] input[type=button].cancel,
-.custom-form textarea input[type=button].cancel,
-.custom-form input[type=text] input[type=submit].cancel,
-.custom-form input[type=password] input[type=submit].cancel,
-.custom-form textarea input[type=submit].cancel {
+.custom-form .button.cancel,
+.custom-form input[type=button].cancel,
+.custom-form input[type=submit].cancel {
   background: #e7422c;
 }
-.custom-form input[type=text] .button.cancel:hover,
-.custom-form input[type=password] .button.cancel:hover,
-.custom-form textarea .button.cancel:hover,
-.custom-form input[type=text] input[type=button].cancel:hover,
-.custom-form input[type=password] input[type=button].cancel:hover,
-.custom-form textarea input[type=button].cancel:hover,
-.custom-form input[type=text] input[type=submit].cancel:hover,
-.custom-form input[type=password] input[type=submit].cancel:hover,
-.custom-form textarea input[type=submit].cancel:hover {
+.custom-form .button.cancel:hover,
+.custom-form input[type=button].cancel:hover,
+.custom-form input[type=submit].cancel:hover {
   background: #ff6961;
 }
-.custom-form input[type=text] .button.success,
-.custom-form input[type=password] .button.success,
-.custom-form textarea .button.success,
-.custom-form input[type=text] input[type=button].success,
-.custom-form input[type=password] input[type=button].success,
-.custom-form textarea input[type=button].success,
-.custom-form input[type=text] input[type=submit].success,
-.custom-form input[type=password] input[type=submit].success,
-.custom-form textarea input[type=submit].success {
+.custom-form .button.success,
+.custom-form input[type=button].success,
+.custom-form input[type=submit].success {
   background: #7d7;
 }
-.custom-form input[type=text] .button.success:hover,
-.custom-form input[type=password] .button.success:hover,
-.custom-form textarea .button.success:hover,
-.custom-form input[type=text] input[type=button].success:hover,
-.custom-form input[type=password] input[type=button].success:hover,
-.custom-form textarea input[type=button].success:hover,
-.custom-form input[type=text] input[type=submit].success:hover,
-.custom-form input[type=password] input[type=submit].success:hover,
-.custom-form textarea input[type=submit].success:hover {
+.custom-form .button.success:hover,
+.custom-form input[type=button].success:hover,
+.custom-form input[type=submit].success:hover {
   background: #89dd89;
 }
 .custom-form .field-label {

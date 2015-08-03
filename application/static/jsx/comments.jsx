@@ -250,7 +250,6 @@ var Comment = React.createClass({
         this.props.root.showAnswerForm(this.props.comment)
     },
     componentDidMount: function(){
-        console.log($(this.getDOMNode()).find("a.image").length)
         $(this.getDOMNode()).find("a.image").fancybox({});
     },
     render: function() {
