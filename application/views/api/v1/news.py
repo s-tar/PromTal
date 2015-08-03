@@ -20,7 +20,7 @@ def get_news():
         .order_by(News.datetime.desc())
     )
     p = news.paginate(page, per_page)
-    print(p.items[0])
+
     return {
         'paginator': {
             'page': page,
