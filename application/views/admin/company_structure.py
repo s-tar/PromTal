@@ -3,7 +3,7 @@ from application.views.admin.main import admin
 from application.models.department import Department
 from application import db
 from application.utils.datatables_sqlalchemy.datatables import row2dict
-#import pprint
+from application.utils.validator import Validator
 
 
 def get_departments(parent_id=None):
@@ -19,9 +19,49 @@ def get_departments(parent_id=None):
         return None
 
 
-@admin.get('/company_structure')
+@admin.get('/company-structure')
 def company_structure():
     departments = get_departments()
-    #pp = pprint.PrettyPrinter(indent=1)
-    #pp.pprint(departments)
     return render_template('admin/company_structure/structure.html', departments=departments)
+
+
+@admin.get('/company-structure/edit/<int:dep_id>')
+def edit_structure(dep_id):
+    department = Department.get_by_id(dep_id)
+    return render_template('admin/company_structure/edit_structure.html', department=department)
+
+
+@admin.post('/company-structure/edit-post/')
+def edit_structure_post():
+    v = Validator(request.form)
+    v.field("name_structure").required()
+    if v.is_valid():
+        name_structure = v.valid_data.name_structure
+        Department.rename(request.form.get("department_id"), name_structure)
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@admin.get('/company-structure/add/<int:dep_id>')
+def add_structure(dep_id):
+    department = Department.get_by_id(dep_id)
+    return render_template('admin/company_structure/add_structure.html', department=department)
+
+
+@admin.post('/company-structure/add-post/')
+def add_structure_post():
+    v = Validator(request.form)
+    v.field("name_structure").required()
+    if v.is_valid():
+        name_structure = v.valid_data.name_structure
+        Department.add(request.form.get("department_id"), name_structure)
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
+
+
+@admin.get('/company-structure/delete/<int:dep_id>')
+def delete_structure(dep_id):
+    Department.delete(dep_id)
+    return redirect(url_for('admin.company_structure'))

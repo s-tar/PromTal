@@ -1,4 +1,5 @@
 from application.db import db
+from application.models.user import User
 
 
 class Department(db.Model):
@@ -15,5 +16,25 @@ class Department(db.Model):
         return "<Department {name}>".format(name=self.name)
 
     @classmethod
-    def get_all(cls):
-        return cls.query.all()
+    def get_by_id(cls, uid):
+        return cls.query.filter_by(id=uid).first()
+
+    @classmethod
+    def rename(cls, uid, new_name):
+        dep = cls.query.filter_by(id=uid).first()
+        dep.name = new_name
+        db.session.add(dep)
+        db.session.commit()
+
+    @classmethod
+    def add(cls, uid, new_name):
+        dep = Department(parent_id=uid, name=new_name)
+        db.session.add(dep)
+        db.session.commit()
+
+    @classmethod
+    def delete(cls, uid):
+        parent_dep = cls.query.filter_by(parent_id=uid)
+        if (parent_dep.count() == 0) and (User.count_users_in_department(uid) == 0):
+            cls.query.filter_by(id=uid).delete()
+            db.session.commit()

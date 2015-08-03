@@ -42,6 +42,10 @@ class User(db.Model, AuthUser):
         return cls.query.filter_by(login=login).first()
 
     @classmethod
+    def count_users_in_department(cls, department):
+        return cls.query.filter_by(department_id=department).count()
+
+    @classmethod
     def edit_user(cls, uid, full_name=full_name,
                             mobile_phone=mobile_phone,
                             inner_phone=inner_phone,
@@ -56,7 +60,8 @@ class User(db.Model, AuthUser):
             u.mobile_phone = mobile_phone
             u.inner_phone = inner_phone
             u.email = email
-            u.birth_date = birth_date
+            if birth_date:
+                u.birth_date = birth_date
             u.skype = skype
             if photo:
                 u.photo = photo
