@@ -35,21 +35,14 @@ def edit_profile():
 @user.post('/profile/edit')
 def edit_profile_post():
     current_user = auth.service.get_user()
-    v = Validator(request.form)
+    data = dict(request.form)
+    data["file"] = request.files["file"]
+
+    v = Validator(data)
     v.field('full_name').required()
     v.field('email').email().required()
     v.field('birth_date').datetime(format="%d.%m.%Y")
-    file = request.files["file"]
-    name, name_s = None, None
-
-    
-    if bool(file.filename):
-        try:
-            name, name_s = save_user_fotos(file, current_user, avatar=True)
-        except NotImage:
-            v.add_error('file', 'Это не картинка')
-
-
+    v.field('file').image()
     if v.is_valid():
         full_name = request.form.get("full_name")
         birth_date = request.form.get("birth_date")
@@ -59,8 +52,7 @@ def edit_profile_post():
         inner_phone = request.form.get("inner_phone")
         email = request.form.get("email")
         skype = request.form.get("skype")
-        photo = name or None
-        photo_s = name_s or None
+
         User.edit_user(current_user.id,
                        full_name=full_name,
                        mobile_phone=mobile_phone,
@@ -68,8 +60,7 @@ def edit_profile_post():
                        email=email,
                        birth_date=birth_date,
                        skype=skype,
-                       photo=photo,
-                       photo_s=photo_s)
+                       photo=v.valid_data.file)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
