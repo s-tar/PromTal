@@ -1,6 +1,58 @@
-input,
+button {
+  outline: none;
+}
+button[disabled] {
+  opacity: 0.7;
+}
+button[disabled]:hover {
+  background: #fd8a16;
+}
+.button,
+input[type=button],
+input[type=submit] {
+  display: inline-block;
+  background: #fd8a16;
+  color: #fff;
+  text-transform: uppercase;
+  border: 0 none;
+  width: auto;
+  float: right;
+  margin-top: 20px;
+  margin-left: 10px;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 12px 15px 10px;
+}
+.button:hover,
+input[type=button]:hover,
+input[type=submit]:hover {
+  background: #fd9e3f;
+}
+.button.cancel,
+input[type=button].cancel,
+input[type=submit].cancel {
+  background: #e7422c;
+}
+.button.cancel:hover,
+input[type=button].cancel:hover,
+input[type=submit].cancel:hover {
+  background: #ff6961;
+}
+.button.success,
+input[type=button].success,
+input[type=submit].success {
+  background: #7d7;
+}
+.button.success:hover,
+input[type=button].success:hover,
+input[type=submit].success:hover {
+  background: #89dd89;
+}
+input[type],
 textarea {
-  display: inline-block !important;
+  display: inline-block;
 }
 .mce-tinymce {
   display: inline-block !important;
@@ -24,7 +76,8 @@ textarea.editor {
 .custom-form textarea {
   min-height: 100px;
 }
-.custom-form input,
+.custom-form input[type=text],
+.custom-form input[type=password],
 .custom-form textarea {
   background: #fff;
   border: 1px solid #eee;
@@ -40,32 +93,10 @@ textarea.editor {
   width: 100%;
   resize: vertical;
 }
-.custom-form input:focus,
+.custom-form input[type=text]:focus,
+.custom-form input[type=password]:focus,
 .custom-form textarea:focus {
   border-color: #fd8a16;
-}
-.custom-form .button,
-.custom-form input[type=button],
-.custom-form input[type=submit] {
-  display: inline-block;
-  background: #fd8a16;
-  color: #fff;
-  text-transform: uppercase;
-  border: 0 none;
-  width: auto;
-  float: right;
-  margin-top: 20px;
-  margin-left: 10px;
-  text-decoration: none;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  padding: 12px 15px 10px;
-}
-.custom-form .button:hover,
-.custom-form input[type=button]:hover,
-.custom-form input[type=submit]:hover {
-  background: #fd9e3f;
 }
 .custom-form .field-label {
   color: #777;

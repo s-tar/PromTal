@@ -1,3 +1,4 @@
+from application.models.file import File
 from datetime import datetime
 from collections import defaultdict
 
@@ -19,6 +20,14 @@ class Comment(db.Model, Mixin):
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref="quotes")
     author = db.relationship("User", backref="comments", lazy='joined')
 
+    __files = []
+
+    @property
+    def files(self):
+        if not self.__files:
+            self.__files = File.get(module='comments', entity=self)
+        return self.__files
+
     def to_json(self):
         return comment_schema.dump(self)
 
@@ -30,6 +39,8 @@ class Comment(db.Model, Mixin):
         else:
             return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
                 .order_by(Comment.datetime.desc()).all()
+            return comments
+
 
     def get_entity(self):
         return Comment.get_entities().get(self.entity, {}).get(self.entity_id)

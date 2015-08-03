@@ -1,5 +1,10 @@
 from datetime import datetime, timedelta, date
 from uuid import uuid1
+from application.models.comment import HasComments
+from application.models.mixin import Mixin
+from sqlalchemy import func
+from application.utils.auth.user import User as AuthUser
+
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
@@ -7,7 +12,7 @@ from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
 
 
-class User(db.Model, AuthUser):
+class User(db.Model, AuthUser, Mixin):
     '''
     при добавлении полей не забыть их добавить в
     application/models/serializers/user.py для корректной валидации данных
@@ -61,6 +66,10 @@ class User(db.Model, AuthUser):
         return cls.query.filter_by(login=login).first()
 
     @classmethod
+    def count_users_in_department(cls, department):
+        return cls.query.filter_by(department_id=department).count()
+
+    @classmethod
     def edit_user(cls, uid, full_name=full_name,
                             mobile_phone=mobile_phone,
                             inner_phone=inner_phone,
@@ -75,7 +84,8 @@ class User(db.Model, AuthUser):
             u.mobile_phone = mobile_phone
             u.inner_phone = inner_phone
             u.email = email
-            u.birth_date = birth_date
+            if birth_date:
+                u.birth_date = birth_date
             u.skype = skype
             if photo:
                 u.photo = photo

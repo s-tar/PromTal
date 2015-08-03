@@ -7,6 +7,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+migrations/
 files/
 migrations/
 env/
@@ -59,3 +60,48 @@ docs/_build/
 
 # PyBuilder
 target/
+
+
+git branch
+git show-branch --all
+git checkout c_struct
+
+
+
+select
+  tmp.maker maker,
+  tmp.type type
+from
+(select
+  tmp.maker maker,
+  prod.type type
+from
+  (select
+    maker,
+    count(DISTINCT type) count_type
+  from
+  (
+    select
+      tmp.maker maker,
+      prod.type type
+    from (
+      select
+        maker,
+        count(model) c_m
+      from Product
+      group by maker
+      having count(model) > 1
+    ) tmp
+    join Product prod on prod.maker = tmp.maker
+  ) tmp
+  group by maker
+  having count(DISTINCT type) = 1
+  ) tmp
+  join Product prod on prod.maker = tmp.maker) tmp
+--limit 1
+
+
+
+
+--Select * from Product
+--Select maker, count(DISTINCT type) from Product GROUP BY maker

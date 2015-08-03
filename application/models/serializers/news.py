@@ -26,12 +26,12 @@ class NewsSchema(Schema):
     title = fields.Str()
     text = fields.Str()
     status = StatusField()
-    datetime = fields.Date()
+    datetime = fields.DateTime()
     comments_count = fields.Int()
     likes_count = fields.Int()
     views_count = fields.Int()
 
-    author = fields.Nested(UserSchema, many=True)
+    author = fields.Nested(UserSchema)
     category = fields.Nested(NewsCategorySchema, many=True)
     tags = fields.Nested(NewsTagSchema, many=True)
 

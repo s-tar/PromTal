@@ -56,7 +56,7 @@ class ValidData:
         return str(self.__data)
 
     def list(self, item):
-        return self.__data.get(item)
+        return self.__data.get(item, [])
 
 
 class Field:

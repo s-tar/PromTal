@@ -48,7 +48,9 @@ def edit_profile_post():
             v.add_error('file', 'Это не картинка')
     if v.is_valid():
         full_name = request.form.get("full_name")
-        birth_date = datetime.strptime(request.form.get("birth_date"), "%d.%m.%Y")
+        birth_date = request.form.get("birth_date")
+        if birth_date:
+            birth_date = datetime.strptime(birth_date, "%d.%m.%Y")
         mobile_phone = request.form.get("mobile_phone")
         inner_phone = request.form.get("inner_phone")
         email = request.form.get("email")
