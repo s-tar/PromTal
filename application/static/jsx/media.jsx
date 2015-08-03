@@ -171,7 +171,7 @@ var MediaHolder = React.createClass({
 
 var FileUploader = React.createClass({
     getInitialState: function() {
-        return { inputChangeStream: new Rx.Subject(), preview: null }
+        return { inputChangeStream: new Rx.Subject(), preview: null, disabled: true }
     },
     onCancel: function(){
         this.props.stream.onNext({action: 'mediaCancel'});
@@ -182,15 +182,19 @@ var FileUploader = React.createClass({
         this.props.close()
     },
     onUploadClick: function(){
+        this.setState({'disabled': true})
         this.props.stream.onNext({action: 'selectMediaFile'});
     },
     onUrlChange: function(e){
+        this.setState({'disabled': true})
         this.state.inputChangeStream.onNext(e.target.value)
     },
     urlChangeHandler: function(url){
         this.props.stream.onNext({action: 'selectMediaUrl', url: url});
     },
-
+    onImageLoad: function(){
+        this.setState({'disabled': false})
+    },
     getTitle: function() {
         var title = 'Загрузка';
         switch(this.props.type) {
@@ -214,7 +218,7 @@ var FileUploader = React.createClass({
             .subscribe(self.updatePreview)
     },
     render: function() {
-        var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} alt=''/></div>
+        var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} onLoad={this.onImageLoad} alt=''/></div>
         return (
             <div className="file-uploader">
                 <h3 className="title">{this.getTitle()}</h3>
@@ -226,7 +230,7 @@ var FileUploader = React.createClass({
                     </button>
                 </div>
                 <div className="buttons">
-                    <button type="button" className="button" onClick={this.onApprove}>Добавить</button>
+                    <button type="button" disabled={this.state.disabled} className="button" onClick={this.onApprove}>Добавить</button>
                     <button type="button" onClick={this.onCancel} className="button cancel">Отмена</button>
                 </div>
             </div>

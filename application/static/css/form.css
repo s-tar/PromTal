@@ -1,6 +1,12 @@
 button {
   outline: none;
 }
+button[disabled] {
+  opacity: 0.7;
+}
+button[disabled]:hover {
+  background: #fd8a16;
+}
 .button,
 input[type=button],
 input[type=submit] {

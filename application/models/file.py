@@ -74,7 +74,7 @@ class File(db.Model, Mixin):
         name = []
         name.append('id'+str(self.id))
         if sufix: name.append(sufix)
-        if hash: name.append('_'+self.hash+'_')
+        if hash and self.hash: name.append('_'+self.hash+'_')
         if self.extension: name.append(self.extension)
         return '.'.join(name)
 

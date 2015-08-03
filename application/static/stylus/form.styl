@@ -2,7 +2,10 @@
 
 button
   outline: none
-
+  &[disabled]
+    opacity: 0.7
+    &:hover
+      background: #fd8a16
 .button,
 input[type=button],
 input[type=submit]
