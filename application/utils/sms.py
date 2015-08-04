@@ -46,10 +46,10 @@ class SkySMS(object):
             logging.basicConfig(format="%(levelname)s (%(asctime)s): %(message)s",
                                 datefmt='%m/%d/%Y %I:%M:%S %p',
                                 level=logging.INFO)
-            logging.warning('s')
+            logging.warning('log file was not specified')
 
     def send_message(self, phone_number, message):
-        logging.info('Отправление запроса на отправку сообщения')
+        logging.info('Sending request to sms service')
         response = requests.get(SUBMIT_SM,
                                 params={'login': current_app.config['SKYSMS_USERNAME'],
                                         'passwd': current_app.config['SKYSMS_PASSWORD'],
@@ -57,8 +57,9 @@ class SkySMS(object):
                                         'msgchrset': current_app.config['SKYSMS_MSGCHRSET'],
                                         'msgtext': message.encode(current_app.config['SKYSMS_MSGENCODING'])})
         if not response.ok:
-            logging.error('Проблемы с запросом. Статус HTTP: {code} {reason}'.format(code=response.status_code,
-                                                                                     reason=response.reason))
+            logging.error('Some problem has occurred with sent request. '
+                          'HTTP status: {code} {reason}'.format(code=response.status_code,
+                                                                reason=response.reason))
             return False
         result = self._parse_response_text(response.text)
         if result[RETURNCODE] == SUCCESS_CODE:
@@ -69,9 +70,9 @@ class SkySMS(object):
             return False
 
     def send_password(self, phone_number, login, password):
-        message = current_app('SKYSMS_PASSWORD_MESSAGE') % {'login': login, 'password': password}
+        message = current_app.config['SKYSMS_PASSWORD_MESSAGE'] % {'login': login, 'password': password}
         return self.send_message(phone_number, message)
 
     @staticmethod
     def _parse_response_text(text):
-        return {key: value for key, value in [pair.split('=') for pair in text.strip().split('\n')]}
+        return {key: value.strip('\r') for key, value in [pair.split('=') for pair in text.strip().split('\n')]}

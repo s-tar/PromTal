@@ -35,7 +35,7 @@ def create_user(data):
         flash('Произошла ошибка при добавлении пользователя в локальную базу данных')
         return False
 
-    if sms_service.send_password(data['phone_number'], data['login'], password):
+    if sms_service.send_password(data['mobile_phone'].strip('+'), data['login'], password):
         flash('Сообщение с логином и паролем было успешно отослано пользователю')
     else:
         flash('Произошла ошибка при отправлении сообщения с логином и паролем пользователю')
