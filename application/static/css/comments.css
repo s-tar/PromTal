@@ -28,10 +28,12 @@
   position: relative;
   overflow: visible;
 }
-.comments .comment .message:hover .answer-button {
+.comments .comment .message:hover .answer-button,
+.comments .comment .message:hover .delete-button {
   display: block;
 }
-.comments .comment .message .answer-button {
+.comments .comment .message .answer-button,
+.comments .comment .message .delete-button {
   float: right;
   display: none;
 }

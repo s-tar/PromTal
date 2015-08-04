@@ -11,6 +11,23 @@ from flask.json import jsonify
 
 module = Module('comment', __name__, url_prefix='/comment')
 
+@module.delete("/<int:id>")
+def delete(id):
+    user = auth.service.get_user()
+    if user.is_authorized():
+        comment = Comment.get(id)
+        if comment:
+            db.session.delete(comment)
+            db.session.flush()
+            entity = comment.get_entity()
+
+            if entity:
+                entity.after_delete_comment(comment)
+
+            db.session.commit()
+            return jsonify({'status': 'ok'})
+
+    return jsonify({'status': 'fail'})
 
 @module.post("/new")
 @module.post("/edit/<int:id>")

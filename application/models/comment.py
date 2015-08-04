@@ -5,6 +5,8 @@ from collections import defaultdict
 from application.db import db
 from application.models.mixin import Mixin
 from application.models.serializers.comment import comment_schema
+from sqlalchemy import event
+from sqlalchemy.orm import backref, Session
 
 
 class Comment(db.Model, Mixin):
@@ -17,7 +19,7 @@ class Comment(db.Model, Mixin):
     entity_id = db.Column(db.Integer)
     quote_for_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
 
-    quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref="quotes")
+    quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref=backref("quotes", cascade="all"))
     author = db.relationship("User", backref="comments", lazy='joined')
 
     __files = []
@@ -34,7 +36,7 @@ class Comment(db.Model, Mixin):
     @staticmethod
     def get_for(entity, entity_id, lazy=True):
         if lazy:
-            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id is None) \
+            return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id, Comment.quote_for_id == None) \
                 .order_by(Comment.datetime.desc()).all()
         else:
             return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
@@ -48,6 +50,13 @@ class Comment(db.Model, Mixin):
     @staticmethod
     def get_entities():
         return HasComments.__entities__
+
+@event.listens_for(Comment, "after_delete")
+def after_comment_delete(mapper, connection, target):
+    for f in target.files:
+        f.remove_files()
+        session = Session.object_session(f)
+        session.delete(f)
 
 
 class HasComments:
@@ -65,19 +74,23 @@ class HasComments:
     @property
     def comments(self):
         if self.__comments is None:
-            comments = Comment.get_for(self.entity['name'], self.entity['id'])
-            d = defaultdict(list)
-            for c in comments:
-                d[c.quote_for_id].append(c)
-            self.__comments = comments
+            self.__comments = Comment.get_for(self.entity['name'], self.entity['id'])
         return self.__comments
 
     @classmethod
     def init_comments(cls):
         cls.__entities__[cls.__tablename__] = cls
+        event.listen(cls, 'after_delete', HasComments.after_entity_delete)
+
+    @staticmethod
+    def after_entity_delete(mapper, connection, target):
+        for c in target.comments:
+            session = Session.object_session(c)
+            session.delete(c)
 
     def after_add_comment(self, comment=None):
         pass
 
     def after_delete_comment(self, comment=None):
         pass
+
