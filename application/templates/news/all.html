@@ -10,6 +10,7 @@
         {% if current_user == n.author %}
         <div class="edit-buttons">
             <a href="/news/edit/{{ n.id }}"><span class="fa fa-edit"></span></a>
+            <a href="javascript: news.delete({{ n.id }})"><span class="fa fa-times"></span></a>
         </div>
         {% endif %}
         <h3 class="title"><a href="/news/{{ n.id }}">{{ n.title or '' }}</a></h3>
