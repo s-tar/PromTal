@@ -1,11 +1,11 @@
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application import db, ldap
 from application.utils.validator import Validator
-from application.bl.admin import add_user_data_to_db
+from application.bl.admin import create_user
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
@@ -147,7 +147,8 @@ def add_user_post():
             return jsonify({"status": "fail",
                             "errors": v.errors})
 
-        add_user_data_to_db(data)
+        if not create_user(data):  # MAIN FUNCTION
+            redirect(url_for('admin.add_user'))
 
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
