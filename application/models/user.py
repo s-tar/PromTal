@@ -47,7 +47,7 @@ class User(db.Model, AuthUser, Mixin):
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
-    skype = db.Column(db.String(64), unique=True)
+    skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
 
