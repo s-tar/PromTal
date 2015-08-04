@@ -7,12 +7,22 @@ React.render(
     <AJAXForm action="{{ url_for('admin.edit_structure_post') }}" method="post" className="form-signin" onSuccess={wellDone}>
         <Input className="ninja" type="hidden" name="department_id" value="{{department.id}}" />
         <Input className="form-control" type="text" name="name_structure" defaultValue="{{department.name}}" placeholder="Название структуры"/>
+
+        <select name="parent" className="form-control" onClick={clickUsers}>
+          {% for p in dep_parents %}
+              <option value="{{ p.id }}" {% if p.id == department.parent_id %}selected{% endif %}>{{ p.name }}</option>
+          {% endfor %}
+        </select>
+
         <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Сохранить"/>
     </AJAXForm>,
     document.getElementById('edit-structure'))
 
 function wellDone(){
     window.location.href = "{{ url_for('admin.company_structure') }}";
+}
+function clickUsers(){
+    console.log("clickUsers");
 }
 </script>
 <div class="row">
