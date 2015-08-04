@@ -6,9 +6,11 @@
 <div class="col-sm-6 col-sm-offset-3">
 <div class="news-one">
     <article class="frame">
+        {% if current_user == news.author %}
         <div class="edit-buttons">
             <a href="/news/edit/{{ news.id }}"><span class="fa fa-edit"></span></a>
         </div>
+        {% endif %}
         <h3 class="title">{{ news.title or '' }}</h3>
         <div class="text">{{ news.text|safe or '' }}</div>
         <div class="datetime">{{ news.datetime|datetime(time=False) or '' }}</div>
