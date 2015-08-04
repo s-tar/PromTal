@@ -14,14 +14,20 @@
     <link rel="stylesheet" href="/static/css/comments.css" >
     <link rel="stylesheet" href="/static/css/news.css" >
     <link rel="stylesheet" href="/static/css/form.css" >
+    <link rel="stylesheet" href="/static/css/media.css" >
     <link rel="stylesheet" href="/static/css/jquery-ui.css" >
+    <link rel="stylesheet" href="/static/js/lib/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+
     <script src="/static/js/lib/jquery-1.11.3.min.js"></script>
     <script src="/static/js/lib/date.format.js"></script>
+    <script src="/static/js/lib/fancybox/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" ></script>
     <script src="/static/js/script.js"></script>
     <script src="/static/js/markup.js"></script>
     <script src="/static/jsx/form.jsx" type="text/jsx"></script>
     <script src="/static/jsx/user.jsx" type="text/jsx"></script>
+    <script src="/static/jsx/media.jsx" type="text/jsx"></script>
     <script src="/static/jsx/comments.jsx" type="text/jsx"></script>
+
 </head>
 <body>
     {% include 'header.html' %}
@@ -37,8 +43,8 @@
         var current_user = {
             id: {{ current_user.id or 0 }},
             full_name: '{{ current_user.full_name or '' }}',
-            photo: '{{ current_user.photo or '' }}',
-            photo_s: '{{ current_user.photo_s or '' }}',
+            photo: '{{ current_user.photo.get_url if current_user.photo else '' }}',
+            photo_s: '{{ current_user.photo.get_url('thumbnail') if current_user.photo else '' }}',
             is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }}
         }
     </script>

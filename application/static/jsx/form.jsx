@@ -53,31 +53,23 @@ var TextArea = React.createClass({
             dom.style.height =  dom.offsetHeight+ (dom.scrollHeight - dom.offsetHeight)+'px'
         }
     },
-    onKeyDown: function(event){
-        if(typeof this.props.onKeyDown == 'function')
-            this.props.onKeyDown(event)
-        this.updateHeight()
-    },
-    onKeyUp: function(event){
-        if(typeof this.props.onKeyUp == 'function')
-            this.props.onKeyUp(event)
-        this.updateHeight()
-    },
     onChange: function(event) {
         this.refs.error.setState({text: ''})
         if(typeof this.props.onChange == 'function')
             this.props.onChange(event)
-        this.updateHeight()
     },
     componentDidMount: function(event) {
         this.updateHeight()
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
     },
+    componentDidUpdate: function() {
+        this.updateHeight()
+    },
     render: function() {
         return(
             <div className="field-wrapper">
-                <textarea ref='textarea' {...this.props} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp} onChange={this.onChange}>{this.props.children}</textarea>
+                <textarea ref='textarea' {...this.props} onChange={this.onChange}>{this.props.children}</textarea>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )
@@ -142,13 +134,13 @@ var AJAXForm = React.createClass({
             var name = child.props.name
             counter[name] = counter[name] || 0
             var index = counter[name]++
-            var clone = React.addons.cloneWithProps(child, {
-                registerError: self.registerError(name, index)
-            });
+            var children = undefined
 
-            if(!!clone.props.children)
-                clone.props.children = self.childrenWithErrors(root, clone)
-            return clone
+            if(!!child.props.children)
+                children = self.childrenWithErrors(root, child)
+
+            var clone = React.cloneElement(child, {registerError: self.registerError(name, index)}, children)
+            return clone;
         });
     },
     render: function() {

@@ -1,7 +1,10 @@
-from application.models.mixin import Mixin
-from collections import defaultdict
-from application.db import db
+from application.models.file import File
 from datetime import datetime
+from collections import defaultdict
+
+from application.db import db
+from application.models.mixin import Mixin
+from application.models.serializers.comment import comment_schema
 
 
 class Comment(db.Model, Mixin):
@@ -17,17 +20,16 @@ class Comment(db.Model, Mixin):
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref="quotes")
     author = db.relationship("User", backref="comments", lazy='joined')
 
+    __files = []
+
+    @property
+    def files(self):
+        if not self.__files:
+            self.__files = File.get(module='comments', entity=self)
+        return self.__files
+
     def to_json(self):
-        return {
-            'id': self.id,
-            'author_id': self.author_id,
-            'text': self.text,
-            'datetime': self.datetime,
-            'entity': self.entity,
-            'entity_id': self.entity_id,
-            'quote_for_id': self.quote_for_id,
-            'author': self.author.full_name,
-            }
+        return comment_schema.dump(self)
 
     @staticmethod
     def get_for(entity, entity_id, lazy=True):
@@ -37,6 +39,8 @@ class Comment(db.Model, Mixin):
         else:
             return Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
                 .order_by(Comment.datetime.desc()).all()
+            return comments
+
 
     def get_entity(self):
         return Comment.get_entities().get(self.entity, {}).get(self.entity_id)
