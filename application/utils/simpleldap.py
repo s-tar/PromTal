@@ -1,4 +1,5 @@
 import hashlib
+import logging
 
 import ldap3
 from ldap3.extend.standard.modifyPassword import ModifyPassword

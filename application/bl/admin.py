@@ -1,65 +1,65 @@
-from flask import current_app, flash
+from flask import flash
 
 from application import ldap, db, sms_service
 from application.utils.datagen import generate_password, generate_inner_phone
 from application.models.user import User
 
 
-def create_user(data):
+def create_user(login, name, surname, email, mobile_phone, department, groups):
     password = generate_password()
-    inner_phone = generate_inner_phone({user.inner_phone for user in User.query.all()},
-                                       current_app.config['INNER_PHONE_DIAPASON_BEGIN'],
-                                       current_app.config['INNER_PHONE_DIAPASON_END'])
-    data.update({'inner_phone': inner_phone})
+    inner_phone = generate_inner_phone()
     ldap_user_attr = {
-        'cn': data['login'],
+        'cn': login,
         'userPassword': password,
-        'displayName': "{0} {1}".format(data['name'], data['surname']),
-        'givenName':  data['name'],
-        'sn': data['surname'],
-        'mail': data['email'],
-        'mobile': data['mobile_phone'],
-        'telephoneNumber': data['inner_phone'],
-        'departmentNumber': data['department'],
+        'displayName': "{0} {1}".format(name, surname),
+        'givenName':  name,
+        'sn': surname,
+        'mail': email,
+        'mobile': mobile_phone,
+        'telephoneNumber': inner_phone,
+        'departmentNumber': department,
     }
 
-    if _add_to_ldap(ldap_user_attr, data['groups']):
-        flash('Пользователь был успешно добавлен в LDAP')
-    else:
-        flash('Произошла ошибка при добавлении пользователя в LDAP')
-        return False
-
-    if _add_to_local_db(data):
-        flash('Пользователь был успешно добавлен в локальную базу данных')
-    else:
+    if not _add_user_to_local_db(login, name, surname, email, department, mobile_phone, inner_phone):
         flash('Произошла ошибка при добавлении пользователя в локальную базу данных')
         return False
+    flash('Пользователь был успешно добавлен в локальную базу данных')
 
-    if sms_service.send_password(data['mobile_phone'].strip('+'), data['login'], password):
-        flash('Сообщение с логином и паролем было успешно отослано пользователю')
+    if not _add_user_to_ldap(login, ldap_user_attr, groups):
+        user = User.get_by_login(login)
+        db.session.delete(user)
+        db.session.commit()
+        flash('Произошла ошибка при добавлении пользователя в LDAP')
+        return False
+    flash('Пользователь был успешно добавлен в LDAP')
+
+    if sms_service.send_password(mobile_phone.strip('+'), login, password):
+        flash('Запрос на сообщение с логином и пароле пользователя был отослан SMS-сервису')
     else:
-        flash('Произошла ошибка при отправлении сообщения с логином и паролем пользователю')
+        flash('Произошла ошибка при отправлении запроса на сообщение '
+              'с логином и паролем пользователя SMS-сервису')
 
     return True
 
 
-def _add_to_ldap(ldap_user_attr, ldap_groups):
+def _add_user_to_ldap(user, user_attr, groups):
     try:
-        ldap.add_user(user=ldap_user_attr['cn'], attributes=ldap_user_attr)
-        ldap.add_user_to_groups(user=ldap_user_attr['cn'], groups=ldap_groups)
+        ldap.add_user(user=user, attributes=user_attr)
+        ldap.add_user_to_groups(user=user, groups=groups)
         return True
     except Exception:
         return False
 
 
-def _add_to_local_db(data):
+def _add_user_to_local_db(login, name, surname, email, department, mobile_phone, inner_phone):
     try:
-        user = User(login=data['login'],
-                    full_name="{0} {1}".format(data['name'], data['surname']),
-                    mobile_phone=data['mobile_phone'],
-                    inner_phone=data['inner_phone'],
-                    email=data['email'])
+        user = User(login=login,
+                    full_name="{0} {1}".format(name, surname),
+                    mobile_phone=mobile_phone,
+                    inner_phone=inner_phone,
+                    email=email)
         db.session.add(user)
         db.session.commit()
+        return True
     except Exception:
         return False

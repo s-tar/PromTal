@@ -147,7 +147,7 @@ def add_user_post():
             return jsonify({"status": "fail",
                             "errors": v.errors})
 
-        if not create_user(data):  # MAIN FUNCTION
+        if not create_user(**data):  # MAIN FUNCTION
             redirect(url_for('admin.add_user'))
 
         return jsonify({"status": "ok"})
