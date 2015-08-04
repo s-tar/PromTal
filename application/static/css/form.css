@@ -73,6 +73,16 @@ textarea.editor {
   border-radius: 3px;
   padding: 12px 15px 10px;
 }
+.custom-form .button[disabled],
+.custom-form input[type=button][disabled],
+.custom-form input[type=submit][disabled] {
+  opacity: 0.7;
+}
+.custom-form .button[disabled]:hover,
+.custom-form input[type=button][disabled]:hover,
+.custom-form input[type=submit][disabled]:hover {
+  background: #fd8a16;
+}
 .custom-form .button:hover,
 .custom-form input[type=button]:hover,
 .custom-form input[type=submit]:hover {

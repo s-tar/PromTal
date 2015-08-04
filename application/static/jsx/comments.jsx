@@ -141,7 +141,9 @@ var NewComment = React.createClass({
 
     },
     updateSubmitDisabled: function(data){
-        this.setState({disabled: this.refs.mediaHolder.state.count == 0 && !this.state.text})
+        this.state.disabled =
+            (this.refs.mediaHolder.state.count == 0 && !this.state.text) || this.refs.mediaUploader.state.opened
+        this.setState({disabled: this.state.disabled })
     },
     componentDidMount: function(){
         var self = this
@@ -156,6 +158,7 @@ var NewComment = React.createClass({
         var action = '/comment/new'
         if(!!this.props.quote_for)
             action = '/comment/quote/new'
+
         return(
             <ul className="comments new">
                 <li className="comment">
@@ -170,7 +173,7 @@ var NewComment = React.createClass({
                                     <input type="hidden" name="quote_for" value={this.props.quote_for}/>
                                     <TextArea ref="comment" focus={!!this.props.quote_for} name="comment" autosize={true} onKeyDown={this.onKeyDown} onChange={this.onChange} placeholder="Оставить комментарий" value={this.state.text}></TextArea>
                                     <div className="right-buttons">
-                                        <MediaUploader stream={this.state.stream} holder={this}/>
+                                        <MediaUploader ref="mediaUploader" stream={this.state.stream} holder={this}/>
                                         <button type="submit" disabled={this.state.disabled} className="button send" title="Отправить"><span className="fa fa-send"></span></button>
                                     </div>
                                     <MediaHolder ref="mediaHolder" stream={this.state.stream} holder={this}/>
