@@ -334,7 +334,6 @@ var Comment = React.createClass({
                         {deleteButton}
                         {editButton}
                         {answerButton}
-                        {deleteButton}
                     </div>
                     <div className="text" dangerouslySetInnerHTML={{__html: text}}></div>
                     {media}
