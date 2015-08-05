@@ -30,11 +30,10 @@ var CommentForm = React.createClass({
         return {text: '', disabled: true, stream: new Rx.Subject(), media: []}
     },
     onSuccess: function(data){
-        var storage = CommentStorageFactory.get(this.props.entity, this.props.entity_id)
         this.setState({text: ''})
-        if(!!this.props.root)
-            this.props.root.showAnswerForm(null)
-        storage.add(data.comment)
+        this.props.stream.onNext({action: 'save', comment: this.props.comment, new_comment: data.comment})
+        this.props.stream.onNext({action: 'quote', comment: null})
+        this.props.stream.onNext({action: 'edit', comment: null})
         this.state.stream.onNext({action: 'clearMedia'});
         this.updateSubmitDisabled()
     },
@@ -103,11 +102,12 @@ var CommentForm = React.createClass({
                                         <span className="fa fa-send"></span>
                                     </button>
                                 </div>
-                                <MediaHolder ref="mediaHolder" stream={this.state.stream} holder={this}/>
+                                <MediaHolder ref="mediaHolder" files={this.props.comment.files} stream={this.state.stream} holder={this}/>
                             </div>
                         </AJAXForm>
                     </div>
                 </div>
+                {this.props.quotes}
             </li>
         )
     }
@@ -116,20 +116,11 @@ var CommentForm = React.createClass({
 var Comments = React.createClass({
     getInitialState: function() {
         return {
+            all_comments: {},
             comments: [],
             quotes: [],
             stream: new Rx.Subject()
         }
-    },
-    showAnswerForm: function(comment){
-        this.state.stream.onNext({action: 'SOME'})
-        if(!!comment)
-            this.setState({quote_form_for: comment.id})
-        else
-            this.setState({quote_form_for: null})
-    },
-    showEditForm: function(comment) {
-        this.setState({edit_form_for: comment.id})
     },
     componentWillMount: function(){
         var self = this
@@ -144,28 +135,80 @@ var Comments = React.createClass({
                 }else{
                     comments.push(res.data[i])
                 }
+                self.state.all_comments[res.data[i].id] = res.data[i]
             }
             self.setState({comments: comments, quotes: quotes})
         });
 
-        commentsStream.filter(function(data) { return data.sender != self && data.entity == self.props.entity && data.entity_id == self.props.entity_id}).subscribe(function(data){
+        commentsStream.filter(function(data) {
+            return data.sender != self &&
+                data.entity == self.props.entity &&
+                data.entity_id == self.props.entity_id
+        }).subscribe(function(data){
             self.state.stream.onNext(data)
-        })
+        });
 
         this.state.stream.subscribe(function(data){
-            data.entity = self.props.entity
-            data.entity_id = self.props.entity_id
-            data.sender = self
+            data.entity = self.props.entity;
+            data.entity_id = self.props.entity_id;
+            data.sender = self;
             commentsStream.onNext(data)
+        });
+
+        this.state.stream.filter(function(data){ return data.action == 'save'}).subscribe(function(data){
+            var comment = data.comment;
+            var new_comment = data.new_comment;
+            var quote_for = new_comment.quote_for_id;
+
+            if(!comment.id) {
+                self.state.all_comments[new_comment.id] = new_comment;
+                !quote_for ? self.state.comments.unshift(new_comment) : self.state.quotes[quote_for].push(new_comment);
+            }else{
+                if(!quote_for)
+                    self.state.comments[self.state.comments.indexOf(comment)] = new_comment;
+                else if(!!self.state.quotes[quote_for])
+                    self.state.quotes[quote_for][self.state.quotes[quote_for].indexOf(comment)] = new_comment;
+                self.state.all_comments[comment.id] = new_comment
+            }
+            self.setState({comments: self.state.comments, quotes: self.state.quotes})
+        });
+
+        this.state.stream.filter(function(data){ return data.action == 'delete'}).subscribe(function(data){
+            var comment = data.comment;
+            var quotes = self.state.quotes;
+            var comments = self.state.comments;
+            var all_comments = self.state.all_comments;
+
+            var quote_for_id = comment.quote_for_id;
+            var list = !quote_for_id ? comments : quotes[quote_for_id];
+            var i = list.indexOf(comment);
+
+            function delete_parent(comment) {
+                if(!comment) return;
+                if(!quotes[comment.id].length && comment.status == 'deleted') {
+                    delete all_comments[comment.id];
+                    quotes[comment.quote_for_id].splice(quotes[comment.quote_for_id].indexOf(comment), 1);
+                    if(!comment.quote_for_id)
+                        comments.splice(comments.indexOf(comment), 1);
+                    delete_parent(all_comments[comment.quote_for_id])
+                }
+            }
+
+            list.splice(i, 1);
+            delete all_comments[comment.id];
+            delete_parent(all_comments[comment.quote_for_id])
+
+            self.setState({comments: self.state.comments, quotes: self.state.quotes})
         })
+
     },
     render: function() {
-        var className = (this.props.className || '') + ' comments'
+        var className = (this.props.className || '') + ' comments';
         var self = this
         return(
             <div>
                 <ul className={className}>
-                    <CommentForm entity={this.props.entity} entity_id={this.props.entity_id} root={this}/>
+                    <CommentForm entity={this.props.entity} entity_id={this.props.entity_id} stream={this.state.stream} root={this}/>
                     {this.state.comments.map(function(comment, i) {
                         return <Comment entity={self.props.entity} entity_id={self.props.entity_id} key={'comment'+i} comment={comment} stream={self.state.stream} root={self}/>;
                     })}
@@ -177,8 +220,8 @@ var Comments = React.createClass({
 
 var Quotes = React.createClass({
     render: function() {
-        var self = this
-        var comments = this.props.comments || []
+        var self = this;
+        var comments = this.props.comments || [];
         return(
             <ul className='quotes'>
                 {comments.map(function(comment, i) {
@@ -192,21 +235,19 @@ var Quotes = React.createClass({
 
 var Comment = React.createClass({
     getInitialState: function(){
-        return {
-            'showForm': null
-        }
+        return { 'showForm': null }
     },
     showQuoteForm: function(e){
-        e.preventDefault()
+        e.preventDefault();
         this.props.stream.onNext({action: 'quote', comment: this})
     },
     showEditForm: function(e){
-        e.preventDefault()
+        e.preventDefault();
         this.props.stream.onNext({action: 'edit', comment: this})
     },
     deleteComment: function(e){
-        e.preventDefault()
-        var self = this
+        e.preventDefault();
+        var self = this;
         Popup.show({
             title: 'Удалить комментарий',
             content: 'Вы уверены,что хотите удалить комментарий?',
@@ -220,8 +261,10 @@ var Comment = React.createClass({
                             url: '/comment/'+self.props.comment.id,
                             type: 'DELETE',
                             success: function(res) {
-                                var storage = CommentStorageFactory.get(self.props.entity, self.props.entity_id)
-                                storage.remove(self.props.comment, res.comment)
+                                if(!res.comment)
+                                    self.props.stream.onNext({action: 'delete', comment: self.props.comment})
+                                else
+                                    self.props.stream.onNext({action: 'save', comment: self.props.comment, new_comment: res.comment})
                                 popup.onClose()
                             }
                         });
@@ -238,91 +281,69 @@ var Comment = React.createClass({
         })
     },
     componentWillMount: function(){
-        var self = this
+        var self = this;
         this.props.stream.filter(function(data){ return data.action == 'quote'}).subscribe(function(data){
-            if(self.state.showForm) self.setState({showForm: null})
+            if(self.state.showForm) self.setState({showForm: null});
             if(self == data.comment) self.setState({showForm: 'quote'})
         })
         this.props.stream.filter(function(data){ return data.action == 'edit'}).subscribe(function(data){
-            if(self.state.showForm) self.setState({showForm: null})
+            if(self.state.showForm) self.setState({showForm: null});
             if(self == data.comment) self.setState({showForm: 'edit'})
-        })
-    },
-    deleteComment: function(e){
-        e.preventDefault()
-        var self = this
-        Popup.show({
-            title: 'Удалить комментарий',
-            content: 'Вы уверены,что хотите удалить комментарий?',
-            closeButton: false,
-            buttons: [
-                {
-                    name: 'Да',
-                    className: 'left',
-                    action: function(popup){
-                        $.ajax({
-                            url: '/comment/'+self.props.comment.id,
-                            type: 'DELETE',
-                            success: function(res) {
-                                var storage = CommentStorageFactory.get(self.props.entity, self.props.entity_id)
-                                storage.remove(self.props.comment, res.comment)
-                                popup.onClose()
-                            }
-                        });
-                    }
-                },
-                {
-                    name: 'Нет',
-                    className: 'right',
-                    action: function(popup){
-                        popup.onClose()
-                    }
-                },
-            ]
         })
     },
     componentDidMount: function(){
         $(this.getDOMNode()).find("a.image").fancybox({});
     },
     render: function() {
-        var comment = this.props.comment
-        var root = this.props.root
+        var comment = this.props.comment;
+        var root = this.props.root;
         var answerButton = null;
         var deleteButton = null;
         var editButton = null;
         var media = null;
         var quoteForm = null;
+        var editForm = null;
+        var quotes = null;
         var text = markup(comment.text);
 
-        if(this.state.showForm == 'edit')
-            return <CommentForm comment={comment} stream={this.props.stream} root={root}/>
 
         if(this.state.showForm == 'quote')
-            quoteForm =  <CommentForm entity={comment.entity} entity_id={comment.entity_id} quote_for={comment.id} root={root}/>
+            quoteForm =  <CommentForm entity={comment.entity} entity_id={comment.entity_id} stream={this.props.stream} quote_for={comment.id} root={root}/>;
 
-        if(current_user.is_authorized && comment.status != 'deleted') {
-            if(current_user.id != comment.author.id) {
-                answerButton = <a href="#"  className="answer-button" onClick={this.showQuoteForm}>Ответить</a>
-            } else {
-                deleteButton = <a href="#"  className="delete-button" onClick={this.deleteComment}>Удалить</a>
-                editButton = <a href="#"  className="edit-button" onClick={this.showEditForm}>Редактировать</a>
+        quotes = <Quotes quoteForm={quoteForm} comments={root.state.quotes[comment.id]} entity={this.props.entity} entity_id={this.props.entity_id} stream={this.props.stream} root={root}/>
+
+        if(this.state.showForm == 'edit')
+            editForm = <CommentForm quotes={quotes} comment={comment} stream={this.props.stream} root={root}/>;
+
+        if(!editForm) {
+            if (current_user.is_authorized && comment.status != 'deleted') {
+                if (current_user.id != comment.author.id) {
+                    answerButton = <a href="#"  className="answer-button" onClick={this.showQuoteForm}>Ответить</a>
+                } else {
+                    deleteButton = <a href="#"  className="delete-button" onClick={this.deleteComment}>Удалить</a>;
+                    editButton = <a href="#"  className="edit-button" onClick={this.showEditForm}>Редактировать</a>
+                }
+            }
+            if (comment.files.length) {
+                media = (
+                    <div className={"media-holder  count-" + comment.files.length}>
+                    {comment.files.map(function (file) {
+                        return (
+                            <div key={"comment_" + comment.id + "_id_" + file.id}  className="media approved">
+                                <a href={file.origin}  data-fancybox-group={"comment_" + comment.id} className="image" style={{'backgroundImage': "url('" + file.url + "')"}}></a>
+                            </div>
+                        )
+                    })}
+                    </div>
+                )
+            }
+            if (comment.status == 'deleted') {
+                text = '<span class="system-message" >' + comment.text + '</span>';
+                media = null
             }
         }
-        if(comment.files.length){
-            media = (
-                <div className={"media-holder  count-"+comment.files.length}>
-                {comment.files.map(function(file){ return(
-                    <div key={"comment_"+comment.id+"_id_"+file.id}  className="media approved">
-                        <a href={file.origin}  data-fancybox-group={"comment_"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
-                    </div>
-                )})}
-                </div>
-            )
-        }
-        if(comment.status == 'deleted') {
-            text = '<span class="system-message" >'+comment.text+'</span>'
-            media = null
-        }
+
+        if(!!editForm) return editForm
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -339,7 +360,7 @@ var Comment = React.createClass({
                     {media}
                     <div className="footer"></div>
                 </div>
-                <Quotes quoteForm={quoteForm} comments={root.state.quotes[comment.id]} entity={this.props.entity} entity_id={this.props.entity_id} stream={this.props.stream} root={root}/>
+                {quotes}
              </li>
         )
     }

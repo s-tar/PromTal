@@ -37,9 +37,10 @@ class Comment(db.Model, Mixin):
 
     @property
     def files(self):
-        if not self.__files:
-            self.__files = File.get(module='comments', entity=self)
-        return self.__files
+        return File.get(module='comments', entity=self)
+        # if not self.__files:
+        #     self.__files = File.get(module='comments', entity=self)
+        # return self.__files
 
     def to_json(self):
         return comment_schema.dump(self)

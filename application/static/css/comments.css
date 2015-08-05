@@ -9,11 +9,14 @@
   list-style: none;
   padding-left: 40px;
 }
-.comments .comment.form {
+.comments > .comment.form {
   padding-top: 0px;
 }
-.comments .comment.form:first-child {
+.comments > .comment.form:first-child {
   margin-bottom: 15px;
+}
+.comments > .comment.form:first-child .user-icon {
+  margin-top: -5px;
 }
 .comments .comment {
   position: relative;
@@ -25,6 +28,11 @@
   position: absolute;
 }
 .comments .comment .message {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
   padding: 5px 10px;
   margin-left: 60px;
   -webkit-border-radius: 3px;
@@ -79,29 +87,24 @@
 .comments .quotes .comment .message .arrow {
   top: 5px;
 }
-.comment.form .user-icon {
-/*width: 40px*/
-/*height: 40px*/
-  margin-top: -5px;
-}
-.comment.form .message {
+.comment.form > .message {
   padding: 0;
-  min-height: 39px;
+  min-height: 30px;
 }
-.comment.form .message .text {
+.comment.form > .message .text {
   white-space: normal;
 }
-.comment.form form {
+.comment.form > .message form {
   padding: 0;
   float: none;
   text-align: right;
   position: relative;
 }
-.comment.form form .wrapper {
+.comment.form > .message form .wrapper {
   position: relative;
   padding-right: 80px;
 }
-.comment.form textarea {
+.comment.form > .message textarea {
   border: 0 none;
   min-height: 39px;
   height: 39px;
@@ -113,13 +116,13 @@
   resize: none;
   overflow: hidden;
 }
-.comment.form .right-buttons {
+.comment.form > .message .right-buttons {
   top: 0;
   right: 0;
   position: absolute;
   height: 100%;
 }
-.comment.form .send {
+.comment.form > .message .send {
   display: inline-block;
   outline: none;
   padding: 0;
@@ -134,7 +137,7 @@
   text-align: center;
   font-size: 1.2em;
 }
-.comment.form .media-uploader {
+.comment.form > .message .media-uploader {
   margin: 0;
   display: inline-block;
   height: 39px;
@@ -145,7 +148,13 @@
 .comments .media-holder {
   margin: 3px -9px -4px;
 }
-.comments .comment.new .media-holder {
+.comments .media-holder .cancel {
+  display: none;
+}
+.comments .comment.form .media-holder {
   margin: 0;
   margin-right: -40px;
+}
+.comments .comment.form .media-holder .cancel {
+  display: block;
 }
