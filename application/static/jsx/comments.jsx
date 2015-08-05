@@ -333,7 +333,7 @@ var Comment = React.createClass({
 
         var answerButton = current_user.is_authorized  && current_user.id != comment.author.id ?
             <a href="#"  className="answer-button" onClick={this.showQuoteForm}>Ответить</a> : ''
-        var deleteButton = current_user.is_authorized && current_user.id == comment.author.id?
+        var deleteButton = current_user.is_authorized && current_user.id == comment.author.id && comment.status != 'deleted'?
             <a href="#"  className="delete-button" onClick={this.deleteComment}>Удалить</a> : ''
         var media = ''
         if(comment.files.length){
