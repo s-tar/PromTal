@@ -290,12 +290,9 @@
 .media-holder .media.approved {
   display: inline-block;
   vertical-align: top;
-  position: relative;
 }
 .media-holder .media.approved input {
-  position: absolute;
-  top: 0;
-  display: block;
+  display: none;
 }
 .media-holder .media.approved img {
   max-width: 100%;
