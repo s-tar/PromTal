@@ -58,7 +58,8 @@ class Config:
     INNER_PHONE_DIAPASON_END = 9999
 
     files = {
-        'path': './application/files'
+        'path': './application/files',
+        'url': 'file'
     }
 
 

@@ -6,6 +6,7 @@ from application.models.mixin import Mixin
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
 from application.models.serializers.news import news_schema
+from sqlalchemy import event
 
 
 class NewsTagAssociation(db.Model):
@@ -51,9 +52,14 @@ class News(db.Model, Mixin, HasComments):
         self.views_count = (self.views_count or 0) + 1
         db.session.commit()
 
+    def after_delete_comment(self, comment=None):
+        self.__recount_comments()
+
     def after_add_comment(self, comment=None):
-        self.comments_count = (self.comments_count or 0) + 1
-        db.session.commit()
+        self.__recount_comments()
+
+    def __recount_comments(self):
+        self.comments_count = len(self.comments_all)
 
     def to_json(self):
         return news_schema.dump(self)

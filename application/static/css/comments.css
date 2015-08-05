@@ -12,6 +12,9 @@
 .comments .comment {
   position: relative;
 }
+.comments .comment .comments.new {
+  padding-top: 0px;
+}
 .comments .comment .user-icon {
   position: absolute;
 }
@@ -25,10 +28,12 @@
   position: relative;
   overflow: visible;
 }
-.comments .comment .message:hover .answer-button {
+.comments .comment .message:hover .answer-button,
+.comments .comment .message:hover .delete-button {
   display: block;
 }
-.comments .comment .message .answer-button {
+.comments .comment .message .answer-button,
+.comments .comment .message .delete-button {
   float: right;
   display: none;
 }
@@ -50,9 +55,6 @@
 .comments .comment .message .smile {
   margin-top: -4px;
 }
-.comments .comments.new {
-  padding-top: 0px;
-}
 .comments .quotes ul,
 .comments .comments.new ul {
   padding-left: 20px;
@@ -71,19 +73,6 @@
 .comments .quotes .comment .message .arrow,
 .comments .comments.new .comment .message .arrow {
   top: 5px;
-}
-/*.comments*/
-/*border-radius 5px*/
-/*margin: 0px 10px*/
-/*margin-top: -10px*/
-/*background: #FFFFFF*/
-/*padding: 10px*/
-/*.comment .text*/
-/*-box-shadow none*/
-/*border-bottom: 1px solid #f6f6f6*/
-.comments .comments.new .user-icon {
-  width: 40px;
-  height: 40px;
 }
 .comments.new .user-icon {
 /*width: 40px*/
@@ -105,7 +94,7 @@
 }
 .comments.new form .wrapper {
   position: relative;
-  padding-right: 40px;
+  padding-right: 80px;
 }
 .comments.new textarea {
   border: 0 none;
@@ -119,16 +108,19 @@
   resize: none;
   overflow: hidden;
 }
-.comments.new .send {
-  outline: none;
-  padding: 0;
-  margin: 0;
+.comments.new .right-buttons {
   top: 0;
   right: 0;
   position: absolute;
+  height: 100%;
+}
+.comments.new .send {
+  display: inline-block;
+  outline: none;
+  padding: 0;
+  margin: 0;
   width: 40px;
   height: 100%;
-  background: #fd8a16;
   color: #fff;
   border: 0 none;
   -webkit-border-radius: 0 3px 3px 0;
@@ -136,4 +128,19 @@
   border-radius: 0 3px 3px 0;
   text-align: center;
   font-size: 1.2em;
+}
+.comments.new .media-uploader {
+  margin: 0;
+  display: inline-block;
+  height: 39px;
+  width: 39px;
+  font-size: 1.5em;
+  padding: 4px;
+}
+.comments .media-holder {
+  margin: 3px -9px -4px;
+}
+.comments.new .media-holder {
+  margin: 0;
+  margin-right: -40px;
 }

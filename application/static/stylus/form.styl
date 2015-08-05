@@ -1,7 +1,14 @@
 @import 'mixins'
 
-input, textarea
-    display: inline-block !important
+button
+  outline: none
+  &[disabled]
+    opacity: 0.7
+    &:hover
+      background: #fd8a16
+
+input[type], textarea
+    display: inline-block
 .mce-tinymce
   display: inline-block !important
   width: 100% !important
@@ -19,7 +26,7 @@ textarea.editor
   width: 100%
   textarea
     min-height: 100px
-  input, textarea
+  input[type=text],input[type=password], textarea
     background: #FFFFFF
     border: 1px solid #EEEEEE
     border-bottom-color: #cccccc
@@ -33,7 +40,6 @@ textarea.editor
     resize:vertical
     &:focus
       border-color: #fd8a16
-
   .button,
   input[type=button],
   input[type=submit]
@@ -49,8 +55,20 @@ textarea.editor
     text-decoration: none
     -border-radius(3px)
     padding: 12px 15px 10px
+    &[disabled]
+      opacity: 0.7
+      &:hover
+        background: #fd8a16
     &:hover
       background: #fd9e3f
+    &.cancel
+      background: #e7422c
+      &:hover
+        background: #FF6961
+    &.success
+      background: #77DD77
+      &:hover
+        background: #89dd89
   .field-label
     color: #777777
     width: 100%

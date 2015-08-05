@@ -1,6 +1,5 @@
 @import 'mixins'
 
-
 .comments
   padding: 0
   padding-top: 5px
@@ -12,6 +11,8 @@
     padding-left: 40px
   .comment
     position: relative
+    .comments.new
+      padding-top: 0px
     .user-icon
       position: absolute
     .message
@@ -21,9 +22,10 @@
       min-height: 50px
       position: relative
       overflow: visible
-      &:hover .answer-button
+
+      &:hover .answer-button, &:hover .delete-button
         display: block
-      .answer-button
+      .answer-button, .delete-button
         float: right
         display: none
       .text
@@ -40,8 +42,7 @@
         top: 5px
       .smile
         margin-top: -4px
-  .comments.new
-    padding-top: 0px
+
   .quotes, .comments.new
     ul
       padding-left: 20px
@@ -56,19 +57,6 @@
         .arrow
           top: 5px
 
-/*.comments*/
-  /*border-radius 5px*/
-  /*margin: 0px 10px*/
-  /*margin-top: -10px*/
-  /*background: #FFFFFF*/
-  /*padding: 10px*/
-  /*.comment .text*/
-    /*-box-shadow none*/
-    /*border-bottom: 1px solid #f6f6f6*/
-.comments .comments.new
-  .user-icon
-    width: 40px
-    height: 40px
 .comments.new
   .user-icon
     /*width: 40px*/
@@ -86,7 +74,7 @@
     position: relative
     .wrapper
       position: relative
-      padding-right: 40px
+      padding-right: 80px
   textarea
     border: 0 none
     min-height: 39px
@@ -96,18 +84,36 @@
     padding-top: 12px
     resize: none
     overflow: hidden
-  .send
-    outline: none
-    padding: 0
-    margin: 0
+  .right-buttons
     top: 0
     right: 0
     position: absolute
+    height: 100%
+  .send
+    display: inline-block
+    outline: none
+    padding: 0
+    margin: 0
     width: 40px
     height: 100%
-    background: #fd8a16
     color: white
     border: 0 none
     -border-radius 0 3px 3px 0
     text-align: center
     font-size: 1.2em
+
+  .media-uploader
+    margin: 0
+    display: inline-block
+    height: 39px
+    width: 39px
+    font-size: 1.5em
+    padding: 4px
+
+.comments
+  .media-holder
+    margin: 3px -9px -4px
+  &.new .media-holder
+      margin: 0
+      margin-right: -40px
+
