@@ -11,6 +11,46 @@ from flask.json import jsonify
 
 module = Module('comment', __name__, url_prefix='/comment')
 
+@module.delete("/<int:id>")
+def delete(id):
+    user = auth.service.get_user()
+    if user.is_authorized():
+        comment = Comment.get(id)
+        if comment:
+            comment_json = None
+
+            def delete_parent(comment):
+                should_delete = True
+
+                if comment is not None and comment.status == Comment.Status.DELETED:
+                    for quote in comment.quotes:
+                        if quote.status != Comment.Status.DELETED:
+                            should_delete = False
+                    if should_delete:
+                        db.session.delete(comment)
+                        db.session.flush()
+                        delete_parent(comment.quote_for)
+
+            if comment.quotes:
+                comment.status = Comment.Status.DELETED
+                comment_json = get_comment_json(comment)
+            else:
+                db.session.delete(comment)
+                db.session.flush()
+                delete_parent(comment.quote_for)
+
+            db.session.flush()
+            entity = comment.get_entity()
+
+            if entity:
+                entity.after_delete_comment(comment)
+
+            db.session.commit()
+            return jsonify({'status': 'ok',
+                            'comment': comment_json})
+
+    return jsonify({'status': 'fail'})
+
 
 @module.post("/new")
 @module.post("/edit/<int:id>")
@@ -19,14 +59,13 @@ def save_comment(id=None):
     data = dict(request.form)
     data['upload'] = request.files.getlist('upload')
     v = Validator(data)
-
-    v.field('comment').required(message="Напишите хоть что-нибудь...")
     v.fields('upload').image()
-
     if v.is_valid():
         if not id:
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
+                v.field('comment').required(message="Напишите хоть что-нибудь...")
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
             if not id:
@@ -53,12 +92,15 @@ def save_quote(id=None):
     data['upload'] = request.files.getlist('upload')
 
     v = Validator(data)
-    v.field('comment').required(message="Напишите хоть что-нибудь")
     v.fields('upload').image()
 
     if v.is_valid():
         if not id:
             v.field('quote_for').integer().required()
+            v.field('entity_name').required()
+            v.field('entity_id').integer(nullable=True).required()
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
+                v.field('comment').required(message="Напишите хоть что-нибудь...")
 
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
@@ -126,6 +168,7 @@ def json_all_comments(entity, entity_id):
 
 def get_file_json(file):
     return {
+        'id': file.id,
         'url': file.get_url(),
         'origin': file.get_url(sufix='origin')
     }
@@ -136,13 +179,17 @@ def get_comment_json(comment, files=[]):
         author = {
             'id': comment.author.id,
             'full_name': comment.author.full_name,
-            'photo': comment.author.photo,
-            'photo_s': comment.author.photo_s,
+            'photo': comment.author.photo.get_url() if comment.author.photo else '',
+            'photo_s': comment.author.photo.get_url('thumbnail') if comment.author.photo else '',
         }
         d = comment.as_dict()
+        d['status'] = Comment.Status.TITLES.get(comment.status, Comment.Status.TITLES[Comment.Status.ACTIVE])
         d['author'] = author
         d['files'] = files
-        d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
+        if comment.status == Comment.Status.DELETED:
+            d['text'] = 'Сообщение удалено'
+        else:
+            d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
         return d
 
     return {}

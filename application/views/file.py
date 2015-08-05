@@ -19,12 +19,12 @@ def get(filepath):
     name = re.sub(r'(.*)\._(.*)_\.(.*)', r'\1.\3', name)
     full_path = os.path.join(path, name)
 
-    mdate = datetime.fromtimestamp(os.stat(full_path).st_mtime)
-    delta = datetime.now().date() - mdate.date()
-    if filepath.startswith('uploads/') and delta.days > 0:
-        os.system('touch %s' % full_path)   # Update modified date
-
     if os.path.exists(full_path):
+        if filepath.startswith('uploads/'):
+            mdate = datetime.fromtimestamp(os.stat(full_path).st_mtime)
+            delta = datetime.now().date() - mdate.date()
+            if delta.days > 0:
+                os.system('touch %s' % full_path)   # Update modified date
         return send_from_directory(path, name)
     else:
         abort(404)

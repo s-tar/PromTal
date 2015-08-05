@@ -1,14 +1,16 @@
 var MediaUploader = React.createClass({
     getInitialState: function() {
-        return { content: null }
+        return { content: null, opened: false }
     },
     close: function() {
-        this.props.holder.setState({disabled: false})
-        this.setState({ content: null })
+        this.state.opened = false
+        this.setState({ content: null, opened: this.state.opened })
+        this.props.stream.onNext({action: 'updateSubmitDisabled'});
     },
     showUploader: function(type){
-        this.props.holder.setState({disabled: true})
-        this.setState({content: <FileUploader stream={this.props.stream} holder={this.props.holder} type={type} close={this.close}/>})
+        this.state.opened = true
+        this.setState({opened: this.state.opened, content: <FileUploader stream={this.props.stream} holder={this.props.holder} type={type} close={this.close}/>})
+        this.props.stream.onNext({action: 'updateSubmitDisabled'});
     },
     onClick: function(event){
         if(!this.state.content)
@@ -67,13 +69,15 @@ var Media = React.createClass({
             this.props.holder.state.count -= 1
             this.props.holder.setState({count: this.props.holder.state.count})
         }
-        this.setState({status: 'canceled'})
+        this.state.status = 'canceled'
+        this.setState({status: this.state.status})
         this.props.stream.onNext({action: 'updateSubmitDisabled'});
     },
     approve: function(){
-        var count = this.props.holder.state.count
-        this.props.holder.setState({count: count+1})
-        this.setState({status: 'approved'})
+        this.props.holder.state.count++
+        this.props.holder.setState({count: this.props.holder.state.count})
+        this.state.status = 'approved'
+        this.setState({status: this.state.status})
     },
     onInputFileChange: function(){
         var self = this

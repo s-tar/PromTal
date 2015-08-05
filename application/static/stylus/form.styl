@@ -40,31 +40,35 @@ textarea.editor
     resize:vertical
     &:focus
       border-color: #fd8a16
-    .button,
-    input[type=button],
-    input[type=submit]
-      display: inline-block
-      background: #fd8a16
-      color: white
-      text-transform: uppercase
-      border: 0 none
-      width: auto
-      float: right
-      margin-top: 20px
-      margin-left: 10px
-      text-decoration: none
-      -border-radius(3px)
-      padding: 12px 15px 10px
+  .button,
+  input[type=button],
+  input[type=submit]
+    display: inline-block
+    background: #fd8a16
+    color: white
+    text-transform: uppercase
+    border: 0 none
+    width: auto
+    float: right
+    margin-top: 20px
+    margin-left: 10px
+    text-decoration: none
+    -border-radius(3px)
+    padding: 12px 15px 10px
+    &[disabled]
+      opacity: 0.7
       &:hover
-        background: #fd9e3f
-      &.cancel
-        background: #e7422c
-        &:hover
-          background: #FF6961
-      &.success
-        background: #77DD77
-        &:hover
-          background: #89dd89
+        background: #fd8a16
+    &:hover
+      background: #fd9e3f
+    &.cancel
+      background: #e7422c
+      &:hover
+        background: #FF6961
+    &.success
+      background: #77DD77
+      &:hover
+        background: #89dd89
   .field-label
     color: #777777
     width: 100%

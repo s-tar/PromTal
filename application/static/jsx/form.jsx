@@ -78,7 +78,7 @@ var TextArea = React.createClass({
 
 var AJAXForm = React.createClass({
     getInitialState: function() {
-        return {errors: {}, data: {}};
+        return {errors: {}, data: {}, processing: false};
     },
     registerError: function(name, index) {
         var self = this
@@ -101,6 +101,9 @@ var AJAXForm = React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault();
+        if(this.state.processing) return false;
+
+        this.state.processing = true;
         var self = this
         var form = e.target;
         $.ajax({
@@ -117,7 +120,10 @@ var AJAXForm = React.createClass({
                     if(typeof self.props.onSuccess == 'function')
                         self.props.onSuccess(json)
                 }
-
+                self.setState({processing: false});
+            },
+            error: function(){
+                self.setState({processing: false});
             }
          });
     },

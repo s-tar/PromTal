@@ -36,6 +36,7 @@ var CommentForm = React.createClass({
             this.props.root.showAnswerForm(null)
         storage.add(data.comment)
         this.state.stream.onNext({action: 'clearMedia'});
+        this.updateSubmitDisabled()
     },
     onChange: function(e){
         this.state.text = e.target.value
@@ -50,8 +51,10 @@ var CommentForm = React.createClass({
         }
 
     },
-    updateSubmitDisabled: function(data){
-        this.setState({disabled: this.refs.mediaHolder.state.count == 0 && !this.state.text})
+    updateSubmitDisabled: function(){
+        this.state.disabled =
+            (this.refs.mediaHolder.state.count == 0 && !this.state.text) || this.refs.mediaUploader.state.opened
+        this.setState({disabled: this.state.disabled })
     },
     componentWillMount: function(){
         this.state.text = this.props.comment.text
@@ -245,6 +248,39 @@ var Comment = React.createClass({
             if(self == data.comment) self.setState({showForm: 'edit'})
         })
     },
+    deleteComment: function(e){
+        e.preventDefault()
+        var self = this
+        Popup.show({
+            title: 'Удалить комментарий',
+            content: 'Вы уверены,что хотите удалить комментарий?',
+            closeButton: false,
+            buttons: [
+                {
+                    name: 'Да',
+                    className: 'left',
+                    action: function(popup){
+                        $.ajax({
+                            url: '/comment/'+self.props.comment.id,
+                            type: 'DELETE',
+                            success: function(res) {
+                                var storage = CommentStorageFactory.get(self.props.entity, self.props.entity_id)
+                                storage.remove(self.props.comment, res.comment)
+                                popup.onClose()
+                            }
+                        });
+                    }
+                },
+                {
+                    name: 'Нет',
+                    className: 'right',
+                    action: function(popup){
+                        popup.onClose()
+                    }
+                },
+            ]
+        })
+    },
     componentDidMount: function(){
         $(this.getDOMNode()).find("a.image").fancybox({});
     },
@@ -271,20 +307,18 @@ var Comment = React.createClass({
                 deleteButton = <a href="#"  className="delete-button" onClick={this.deleteComment}>Удалить</a>
                 editButton = <a href="#"  className="edit-button" onClick={this.showEditForm}>Редактировать</a>
             }
-
         }
         if(comment.files.length){
             media = (
                 <div className={"media-holder  count-"+comment.files.length}>
                 {comment.files.map(function(file){ return(
-                    <div key={"comment_"+comment.id}  className="media approved">
-                        <a href={file.origin}  className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
+                    <div key={"comment_"+comment.id+"_id_"+file.id}  className="media approved">
+                        <a href={file.origin}  data-fancybox-group={"comment_"+comment.id} className="image" style={{'backgroundImage': "url('"+file.url+"')"}}></a>
                     </div>
                 )})}
                 </div>
             )
         }
-
         if(comment.status == 'deleted') {
             text = '<span class="system-message" >'+comment.text+'</span>'
             media = null
@@ -300,8 +334,9 @@ var Comment = React.createClass({
                         {deleteButton}
                         {editButton}
                         {answerButton}
+                        {deleteButton}
                     </div>
-                    <div className="text" dangerouslySetInnerHTML={{__html: markup(comment.text)}}></div>
+                    <div className="text" dangerouslySetInnerHTML={{__html: text}}></div>
                     {media}
                     <div className="footer"></div>
                 </div>
@@ -320,5 +355,4 @@ $(document).ready(function(){
         var count = parseInt($(this).attr('data-count')) || 0;
         React.render( <CommentsCounter entity={entity} entity_id={entity_id} count={count}/>, $(this)[0]);
     });
-
 });
