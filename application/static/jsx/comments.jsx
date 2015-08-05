@@ -41,16 +41,16 @@ CommentStorage = (function(){
         return this.comments_count || 0;
     }
     CommentStorage.prototype.recount = function () {
-        console.log(this.quotes)
-        console.log(this.comments)
         var self = this
         function count(comments){
-            if(!comments) return 0;
-            console.log(comments, comments.length)
-            var c = comments.length;
+            var c = 0;
             for(var i in comments) {
-                console.log(comments[i].id)
-                c+= count(self.quotes[comments[i].id])
+                c+= comments[i].status == 'active' ? 1 : 0
+                var quotes = self.quotes[comments[i].id]
+                for(var j in quotes){
+                    c+= quotes[j].status == 'active' ? 1 : 0
+                    c+= count(self.quotes[quotes[j].id])
+                }
             }
             return c;
         }
@@ -61,7 +61,6 @@ CommentStorage = (function(){
         this.loadDataStream.subscribe(function(response) {
             self.comments = []
             self.quotes = []
-            self.comments_count = response.data.length;
             for(var i in response.data){
                 var quote_for = response.data[i].quote_for_id;
                 if(!!quote_for){
@@ -71,6 +70,7 @@ CommentStorage = (function(){
                     self.comments.push(response.data[i])
                 }
             }
+            self.recount()
             self.updateNotify();
         });
     };
@@ -91,20 +91,23 @@ CommentStorage = (function(){
         this.comments = comments;
     };
 
-    CommentStorage.prototype.remove = function(comment){
+    CommentStorage.prototype.remove = function(comment, new_comment){
         var qid = comment.quote_for_id;
         var comments = !qid ? this.comments : this.quotes[qid]
 
-        console.log(this.id)
-        console.log(this.comments)
         var index = null
         for(var i in comments)
             if(comments[i].id == comment.id) {index=i; break;}
-        if(index != null) {
-            comments.splice(index, 1)
-            delete this.quotes[comment.id]
-            this.recount()
 
+        if(index != null) {
+            if(!new_comment) {
+                comments.splice(index, 1)
+                delete this.quotes[comment.id]
+            }else{
+                comments[i] = new_comment
+            }
+
+            this.load()
             this.updateNotify();
         }
     };
@@ -301,9 +304,9 @@ var Comment = React.createClass({
                         $.ajax({
                             url: '/comment/'+self.props.comment.id,
                             type: 'DELETE',
-                            success: function() {
+                            success: function(res) {
                                 var storage = CommentStorageFactory.get(self.props.entity, self.props.entity_id)
-                                storage.remove(self.props.comment)
+                                storage.remove(self.props.comment, res.comment)
                                 popup.onClose()
                             }
                         });
@@ -344,7 +347,11 @@ var Comment = React.createClass({
                 </div>
             )
         }
-
+        var text = markup(comment.text);
+        if(comment.status == 'deleted') {
+            text = '<span class="system-message" >'+comment.text+'</span>'
+            media = null
+        }
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -356,7 +363,7 @@ var Comment = React.createClass({
                         {answerButton}
                         {deleteButton}
                     </div>
-                    <div className="text" dangerouslySetInnerHTML={{__html: markup(comment.text)}}></div>
+                    <div className="text" dangerouslySetInnerHTML={{__html: text}}></div>
                     {media}
                     <div className="footer"></div>
                 </div>

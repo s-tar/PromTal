@@ -17,7 +17,28 @@ def delete(id):
     if user.is_authorized():
         comment = Comment.get(id)
         if comment:
-            db.session.delete(comment)
+            comment_json = None
+
+            def delete_parent(comment):
+                should_delete = True
+
+                if comment is not None and comment.status == Comment.Status.DELETED:
+                    for quote in comment.quotes:
+                        if quote.status != Comment.Status.DELETED:
+                            should_delete = False
+                    if should_delete:
+                        db.session.delete(comment)
+                        db.session.flush()
+                        delete_parent(comment.quote_for)
+
+            if comment.quotes:
+                comment.status = Comment.Status.DELETED
+                comment_json = get_comment_json(comment)
+            else:
+                db.session.delete(comment)
+                db.session.flush()
+                delete_parent(comment.quote_for)
+
             db.session.flush()
             entity = comment.get_entity()
 
@@ -25,9 +46,11 @@ def delete(id):
                 entity.after_delete_comment(comment)
 
             db.session.commit()
-            return jsonify({'status': 'ok'})
+            return jsonify({'status': 'ok',
+                            'comment': comment_json})
 
     return jsonify({'status': 'fail'})
+
 
 @module.post("/new")
 @module.post("/edit/<int:id>")
@@ -160,9 +183,13 @@ def get_comment_json(comment, files=[]):
             'photo_s': comment.author.photo.get_url('thumbnail') if comment.author.photo else '',
         }
         d = comment.as_dict()
+        d['status'] = Comment.Status.TITLES.get(comment.status, Comment.Status.TITLES[Comment.Status.ACTIVE])
         d['author'] = author
         d['files'] = files
-        d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
+        if comment.status == Comment.Status.DELETED:
+            d['text'] = 'Сообщение удалено'
+        else:
+            d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
         return d
 
     return {}

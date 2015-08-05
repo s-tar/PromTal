@@ -1,3 +1,4 @@
+from enum import Enum
 from application.models.file import File
 from datetime import datetime
 from collections import defaultdict
@@ -10,6 +11,14 @@ from sqlalchemy.orm import backref, Session
 
 
 class Comment(db.Model, Mixin):
+
+    class Status:
+        (
+            ACTIVE,
+            DELETED,
+        ) = range(2)
+        TITLES = dict([(ACTIVE, 'active'), (DELETED, 'deleted')])
+
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -18,7 +27,7 @@ class Comment(db.Model, Mixin):
     entity = db.Column(db.String(255))
     entity_id = db.Column(db.Integer)
     quote_for_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
-
+    status = db.Column(db.Integer, default=Status.ACTIVE)
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref=backref("quotes", cascade="all"))
     author = db.relationship("User", backref="comments", lazy='joined')
 

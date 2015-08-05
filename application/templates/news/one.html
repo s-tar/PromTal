@@ -9,7 +9,7 @@
         {% if current_user == news.author %}
         <div class="edit-buttons">
             <a href="/news/edit/{{ news.id }}"><span class="fa fa-edit"></span></a>
-            <a href="javascript: news.delete({{ news.id }})"><span class="fa fa-times"></span></a>
+            <a href="javascript: news.delete({{ news.id }})"><span class="fa fa-trash-o"></span></a>
         </div>
         {% endif %}
         <h3 class="title">{{ news.title or '' }}</h3>
