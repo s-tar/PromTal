@@ -9,10 +9,14 @@
   ul
     list-style: none
     padding-left: 40px
+  .comment.form
+    padding-top: 0px
+    &:first-child
+      margin-bottom: 15px
   .comment
     position: relative
-    .comments.new
-      padding-top: 0px
+    .system-message
+      color: #cccccc
     .user-icon
       position: absolute
     .message
@@ -23,11 +27,12 @@
       position: relative
       overflow: visible
 
-      &:hover .answer-button
+      &:hover .answer-button, &:hover .edit-button, &:hover .delete-button
         display: block
-      .answer-button
+      .answer-button,  .edit-button, .delete-button
         float: right
         display: none
+        margin-left: 10px
       .text
         white-space: pre-wrap
       .datetime
@@ -43,7 +48,7 @@
       .smile
         margin-top: -4px
 
-  .quotes, .comments.new
+  .quotes
     ul
       padding-left: 20px
     .comment
@@ -57,7 +62,7 @@
         .arrow
           top: 5px
 
-.comments.new
+.comment.form
   .user-icon
     /*width: 40px*/
     /*height: 40px*/
@@ -113,7 +118,6 @@
 .comments
   .media-holder
     margin: 3px -9px -4px
-  &.new .media-holder
+  .comment.new .media-holder
       margin: 0
       margin-right: -40px
-

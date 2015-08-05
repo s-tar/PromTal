@@ -8,6 +8,14 @@ from application.models.serializers.comment import comment_schema
 
 
 class Comment(db.Model, Mixin):
+    class Status:
+        (
+            ACTIVE,
+            DELETED,
+            MODIFIED
+        ) = range(3)
+        TITLES = dict([(ACTIVE, 'active'), (DELETED, 'deleted'), (MODIFIED, 'modified')])
+
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
