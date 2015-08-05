@@ -306,7 +306,7 @@ var Comment = React.createClass({
                     <div className="footer"></div>
                 </div>
                 <Quotes quoteForm={quoteForm} comments={root.state.quotes[comment.id]} entity={this.props.entity} entity_id={this.props.entity_id} stream={this.props.stream} root={root}/>
-            </li>
+             </li>
         )
     }
 })
