@@ -41,7 +41,7 @@ def save_comment(id=None):
         if not id:
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
-            if v.valid_data.list('entity_id') == 0:
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
                 v.field('comment').required(message="Напишите хоть что-нибудь...")
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
@@ -76,7 +76,7 @@ def save_quote(id=None):
             v.field('quote_for').integer().required()
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
-            if v.valid_data.list('entity_id') == 0:
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
                 v.field('comment').required(message="Напишите хоть что-нибудь...")
 
         if v.is_valid() and user.is_authorized():

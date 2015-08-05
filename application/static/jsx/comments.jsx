@@ -159,6 +159,7 @@ var NewComment = React.createClass({
             this.props.root.showAnswerForm(null)
         storage.add(data.comment)
         this.state.stream.onNext({action: 'clearMedia'});
+        this.updateSubmitDisabled()
     },
     onChange: function(e){
         this.state.text = e.target.value
@@ -173,7 +174,7 @@ var NewComment = React.createClass({
         }
 
     },
-    updateSubmitDisabled: function(data){
+    updateSubmitDisabled: function(){
         this.state.disabled =
             (this.refs.mediaHolder.state.count == 0 && !this.state.text) || this.refs.mediaUploader.state.opened
         this.setState({disabled: this.state.disabled })
