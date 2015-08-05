@@ -149,15 +149,20 @@
   -border-radius: 0px 0px 0px 3px
   overflow: hidden
   padding: 2px
+  .media > div
+    width: 100%
+    height: 100%
   &.count-0
     padding: 0
     display: none
   &.hidden
     display: none
-  .media.approved
+  .media.deleted
+    display: none
+  .approved
     width: 20%
     height: 75px
-    &:first-child
+    &:first-of-type
       width: 100%
       height: 225px
   &.count-1 .media.approved
@@ -169,7 +174,7 @@
   &.count-3 .media.approved
     width: 50%
     height: 150px
-    &:nth-of-type(3)
+    &:first-of-type
       width: 100%
   &.count-4 .media.approved
     width: 50%
@@ -177,13 +182,13 @@
   &.count-5 .media.approved
     width: 25%
     height: 75px
-    &:first-child
+    &:first-of-type
       width: 100%
       height: 225px
   &.count-6 .media.approved
     width: 20%
     height: 75px
-    &:first-child
+    &:first-of-type
       width: 100%
       height: 225px
   .media
@@ -217,7 +222,10 @@
     &.approved
       display: inline-block
       vertical-align: top
+      position: relative
       input
-        display: none
+        position: absolute
+        top: 0
+        display: block
       img
         max-width: 100%

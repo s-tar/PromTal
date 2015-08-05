@@ -62,14 +62,14 @@ var SelectMediaButtons = React.createClass({
 
 var Media = React.createClass({
     getInitialState: function(){
-        return {src: null, status: 'active', fromFile: null, url: null}
+        return {id: null, file: this.props.file, src: null, status: 'active', fromFile: null, url: null}
     },
     cancel: function(){
         if(this.state.status == 'approved') {
             this.props.holder.state.count -= 1
             this.props.holder.setState({count: this.props.holder.state.count})
         }
-        this.state.status = 'canceled'
+        this.state.status = this.state.file ? 'deleted' : 'canceled';
         this.setState({status: this.state.status})
         this.props.stream.onNext({action: 'updateSubmitDisabled'});
     },
@@ -98,6 +98,11 @@ var Media = React.createClass({
     componentWillMount: function(){
         var self = this
         var activeStream = this.props.stream.filter(function(){ return self.state.status == 'active' })
+        if(this.state.file) {
+            this.state.id = this.state.file.id;
+            this.state.url = this.state.file.url;
+            this.state.status = 'approved';
+        }
         activeStream.filter(function(data){ return data.action == 'selectMediaFile'})
             .subscribe(function(){
                 self.refs.fileInput.getDOMNode().click();
@@ -125,13 +130,19 @@ var Media = React.createClass({
         var file_input = <input ref="fileInput"  type="file" name="upload" onChange={this.onInputFileChange}/>
         if(this.state.status == 'approved') {
             file_input = !this.state.src ? '' : file_input
+        }else if(this.state.status == 'deleted') {
+            file_input = ''
         }
         if(this.state.status == 'canceled')
             return null
-        else
-            return (
-                <div className={"media "+this.state.status}>
-                    <button className="cancel" onClick={this.cancel}><span className="fa fa-times"></span></button>
+        else {
+            var inner = (
+                <div>
+                    <button type="button" className="cancel" onClick={this.cancel}>
+                        <span className="fa fa-times"></span>
+                    </button>
+                    <input type="hidden" name="file.id" value={this.state.id}/>
+                    <input type="hidden" name="file.status" value={this.state.status}/>
                     {image}
                     {type_input}
                     {url_input}
@@ -139,21 +150,36 @@ var Media = React.createClass({
                 </div>
             )
 
+            if(this.state.status == 'approved' || this.state.status == 'active'){
+                return <div className={"media " + this.state.status}>{inner}</div>
+            }else{
+                return <span className={"media " + this.state.status}>{inner}</span>
+            }
+        }
     }
 })
 
 var MediaHolder = React.createClass({
+    getDefaultProps: function(){
+        return { files: []}
+    },
     getInitialState: function(){
         return {media: [], key: 0, count: 0}
     },
-    createMedia: function(type) {
-        var key = this.state.key + 1;
+    createMedia: function(type, file) {
+        this.state.key += 1;
         var media = this.state.media;
-        media.push(<Media holder={this} key={"media_"+key} type={type} stream={this.props.stream}/>)
-        this.setState({media: media, key: key})
+        media.push(<Media holder={this} key={"media_"+this.state.key} type={type} file={file} stream={this.props.stream}/>)
+        this.setState({media: this.state.media, key: this.state.key})
     },
+
     componentWillMount: function(){
         var self = this
+        self.props.files.map(function(file){
+            self.createMedia(file.type, file);
+            self.state.count++;
+        });
+
         this.props.stream
             .filter(function(data){ return data.action == 'createMedia'})
             .subscribe(function(data){
