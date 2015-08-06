@@ -11,5 +11,10 @@ manager.add_command("shell", Shell)
 manager.add_command('db', MigrateCommand)
 
 
+@manager.command
+def sync_permissions():
+    pass
+
+
 if __name__ == '__main__':
     manager.run()

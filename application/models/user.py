@@ -32,25 +32,15 @@ class Permission(db.Model):
 
     __tablename__ = 'permissions'
 
-    (
-        COMMENT,
-        EDIT_COMMENTS,
-        WRITE_ARTICLES,
-        MODERATE_COMMENTS,
-        ADD_USER,
-        SET_PERMISSIONS,
-        ADMINISTER,
-    ) = range(7)
-
     PERMISSIONS = [
-        (COMMENT, 'Comment'), (EDIT_COMMENTS, 'Edit comments'),
-        (WRITE_ARTICLES, 'Write articles'), (MODERATE_COMMENTS, 'Moderate comments'),
-        (ADD_USER, 'Add user'), (SET_PERMISSIONS, 'Set permissions'),
-        (ADMINISTER, 'Administer')
+        ('post_comment', 'Post comment'), ('edit_comments', 'Edit comments'),
+        ('write_articles', 'Write articles'), ('moderate_comments', 'Moderate comments'),
+        ('add_user', 'Add user'), ('set_permissions', 'Set permissions'),
     ]
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
+    title = db.Column(db.String(64))
 
 
 class Role(db.Model):
@@ -98,7 +88,9 @@ class User(db.Model, AuthUser, Mixin):
     skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+    is_admin = db.Column(db.Boolean, default=False)
 
+    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users", lazy='dynamic')
     roles = db.relationship("Role", secondary=user_role_associate, backref="users", lazy='dynamic')
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
@@ -152,6 +144,9 @@ class User(db.Model, AuthUser, Mixin):
                 image.resize(photo).save(p.get_path())
             db.session.commit()
         return u
+
+    def get_permissions(self):
+        return set(self.permissions + [role.permissions for role in self.roles])
 
     @property
     def age(self):
