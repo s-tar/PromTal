@@ -14,15 +14,15 @@ from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
 
 
-RolePermission = db.Table('role_permission', db.Model.metadata,
+role_permission_associate = db.Table('role_permission', db.Model.metadata,
     db.Column('role_id', db.Integer, db.ForeignKey('roles.id')),
     db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
 )
-UserPermission = db.Table('user_permission', db.Model.metadata,
+user_permission_associate = db.Table('user_permission', db.Model.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
 )
-UserRole = db.Table('user_role', db.Model.metadata,
+user_role_associate = db.Table('user_role', db.Model.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
 )
@@ -50,12 +50,7 @@ class Permission(db.Model):
     ]
 
     id = db.Column(db.Integer, primary_key=True)
-    roles = db.relationship(
-        "Role",
-        secondary='user_permission',
-        backref="permissions",
-        lazy='dynamic',
-    )
+    name = db.Column(db.String(64), unique=True)
 
 
 class Role(db.Model):
@@ -72,8 +67,7 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    permissions = db.relationship("Permission", secondary='user_permission', backref="roles", lazy='dynamic')
-    users = db.relationship('User', secondary='user_role', backref='roles', lazy='dynamic')
+    permissions = db.relationship("Permission", secondary=role_permission_associate, backref="roles", lazy='dynamic')
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -105,7 +99,7 @@ class User(db.Model, AuthUser, Mixin):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
 
-    roles = db.relationship("Role", secondary='user_role', backref="users", lazy='dynamic')
+    roles = db.relationship("Role", secondary=user_role_associate, backref="users", lazy='dynamic')
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 
