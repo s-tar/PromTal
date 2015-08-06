@@ -1,11 +1,9 @@
 import hashlib
-import logging
 
 import ldap3
 from ldap3.extend.standard.modifyPassword import ModifyPassword
 
 from flask import current_app
-
 
 # TODO add method for customizing filters
 class LDAP(object):
@@ -83,6 +81,7 @@ class LDAP(object):
                         current_app.config['LDAP_USER_PASSWORD_FIELD']: [(ldap3.MODIFY_REPLACE, h_new_password)]
                     })
         conn.unbind()
+        return True if conn.result['description'] == 'success' else False
 
     def modify_password(self, user, old_password, new_password):
         conn = self.bind_user(user, old_password, get_connection=True)
@@ -96,8 +95,8 @@ class LDAP(object):
         modification = ModifyPassword(conn, user_dn, h_old_password, h_new_password)
         modification.send()
         conn.unbind()
+        return True if conn.result['description'] == 'success' else False
 
-    # TODO test it
     def add_user(self,
                  user,
                  attributes,
@@ -119,9 +118,8 @@ class LDAP(object):
                      'environment': ['workstation'],
                      'description': 'no description'
                  })
-        result = conn.result
         conn.unbind()
-        return result
+        return True if conn.result['description'] == 'success' else False
 
     def add_user_to_groups(self, user, groups):
         conn = self.bind()
@@ -136,17 +134,18 @@ class LDAP(object):
             conn.modify(dn=group_dn,
                         changes=changes)
         conn.unbind()
+        return True if conn.result['description'] == 'success' else False
 
-    # TODO test it
     def modify_user(self, user, attributes):
         conn = self.bind()
-        ldap_user = self.get_object_details(user=user)
-        if ldap_user is None:
+        user_dn = self.get_object_details(user=user, dn_only=True)
+        if user_dn is None:
             return
-        changes = {attr_name: {ldap3.MODIFY_REPLACE, attributes.get(attr_name, ldap_user[attr_name])}
+        changes = {attr_name: [(ldap3.MODIFY_REPLACE, attributes[attr_name])]
                    for attr_name in attributes.keys()}
-        conn.modify(dn=ldap_user['dn'], changes=changes)
+        conn.modify(dn=user_dn, changes=changes)
         conn.unbind()
+        return True if conn.result['description'] == 'success' else False
 
     def get_user_groups(self, user):
         user_dn = self.get_object_details(user=user, dn_only=True)
