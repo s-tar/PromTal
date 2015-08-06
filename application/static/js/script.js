@@ -105,9 +105,8 @@ function mediaFill(img) {
     var cls = 'contain';
     var h = media[0].offsetHeight;
     var w = media[0].offsetWidth;
-    var ih = image[0].offsetHeight;
-    var iw = image[0].offsetWidth;
-
+    var ih = image[0].naturalHeight;
+    var iw = image[0].naturalWidth;
     if(ih >= h && iw >= w) cls = 'cover'
     media.removeClass('contain').removeClass('cover').addClass(cls);
 }
