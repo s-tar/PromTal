@@ -1,3 +1,4 @@
+import datetime
 from application.models.file import File
 from application.utils import image
 from collections import defaultdict
@@ -77,6 +78,9 @@ def save_comment(id=None):
                 comment.entity_id = data.entity_id
             else:
                 comment = Comment.get(id)
+                if comment:
+                    comment.datetime = datetime.datetime.now()
+                    comment.status = Comment.Status.MODIFIED
 
             if comment:
                 return save(comment, data)
@@ -117,10 +121,12 @@ def save_quote(id=None):
                     comment.entity_id = quote_for.entity_id
             else:
                 comment = Comment.get(id)
+                if comment:
+                    comment.datetime = datetime.datetime.now()
+                    comment.status = Comment.Status.MODIFIED
 
             if comment:
                 return save(comment, data)
-
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
 
@@ -166,7 +172,7 @@ def save_files(data, comment):
             if file.is_local():
                 file.makedir()
                 img = uploads.pop(0)
-                image.thumbnail(img, width=450, height=300, fill=image.COVER).save(file.get_path())
+                image.thumbnail(img, width=700, height=400, fill=image.COVER).save(file.get_path())
                 image.resize(img).save(file.get_path(sufix='origin'))
 
 

@@ -7,7 +7,7 @@ var CommentsCounter = React.createClass({
     recount: function(data){
         var count = 0;
         for(var i in data.comments) {
-            if(data.comments[i].status == 'active') count++;
+            if(data.comments[i].status != 'deleted') count++;
         }
         this.setState({count: count})
     },
@@ -58,9 +58,11 @@ var CommentForm = React.createClass({
 
     },
     updateSubmitDisabled: function(){
-        this.state.disabled =
-            (this.refs.mediaHolder.state.count == 0 && !this.state.text) || this.refs.mediaUploader.state.opened
-        this.setState({disabled: this.state.disabled })
+        var opened = this.refs.mediaUploader ? this.refs.mediaUploader.state.opened : false
+        var hasData = this.refs.mediaHolder ? this.refs.mediaHolder.state.count == 0 && !this.state.text : false
+        this.state.disabled = opened || hasData
+        if(this.isMounted())
+            this.setState({disabled: this.state.disabled })
     },
     componentWillMount: function(){
         this.state.text = this.props.comment.text
@@ -169,7 +171,12 @@ var Comments = React.createClass({
 
             if(!comment.id) {
                 self.state.all_comments[new_comment.id] = new_comment;
-                !quote_for ? self.state.comments.unshift(new_comment) : self.state.quotes[quote_for].push(new_comment);
+                if(!quote_for) {
+                    self.state.comments.unshift(new_comment)
+                }else{
+                    self.state.quotes[quote_for] = self.state.quotes[quote_for] || []
+                    self.state.quotes[quote_for].push(new_comment)
+                }
             }else{
                 if(!quote_for)
                     self.state.comments[self.state.comments.indexOf(comment)] = new_comment;
@@ -292,12 +299,16 @@ var Comment = React.createClass({
     componentWillMount: function(){
         var self = this;
         this.props.stream.filter(function(data){ return data.action == 'quote'}).subscribe(function(data){
-            if(self.state.showForm) self.setState({showForm: null});
-            if(self == data.comment) self.setState({showForm: 'quote'})
+            if(self.isMounted()) {
+                if(self.state.showForm) self.setState({some: null});
+                if(self == data.comment) self.setState({showForm: 'quote'})
+            }
         })
         this.props.stream.filter(function(data){ return data.action == 'edit'}).subscribe(function(data){
-            if(self.state.showForm) self.setState({showForm: null});
-            if(self == data.comment) self.setState({showForm: 'edit'})
+            if(self.isMounted()) {
+                if (self.state.showForm) self.setState({showForm: null});
+                if (self == data.comment) self.setState({showForm: 'edit'});
+            }
         })
     },
     componentDidMount: function(){
@@ -353,6 +364,7 @@ var Comment = React.createClass({
         }
 
         if(!!editForm) return editForm
+        var niceDate = niceDateFormat(comment.datetime)
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -360,7 +372,7 @@ var Comment = React.createClass({
                     <div className="fa fa-caret-left arrow"></div>
                     <div className="header">
                         <a href={'/user/profile/'+comment.author.id}>{comment.author.full_name}</a>
-                        <span className="datetime">{niceDateFormat(comment.datetime)}</span>
+                        <span className="datetime">{comment.status == 'modified' ? 'Изменено '+niceDate.toLowerCase() : niceDate}</span>
                         {deleteButton}
                         {editButton}
                         {answerButton}

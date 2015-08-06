@@ -188,7 +188,7 @@ var MediaHolder = React.createClass({
         this.props.stream
             .filter(function(data){ return data.action == 'clearMedia'})
             .subscribe(function(){
-                self.setState({media: [], key: 0, count: 0})
+                if(self.isMounted()) self.setState({media: [], key: 0, count: 0})
         });
     },
     render:function(){
