@@ -97,27 +97,17 @@ class LDAP(object):
         conn.unbind()
         return True if conn.result['description'] == 'success' else False
 
-    def add_user(self,
-                 user,
-                 attributes,
-                 object_classes=['puppetClient', 'top', 'inetOrgPerson']):
+    def add_user(self, attributes, object_classes=['puppetClient', 'top', 'inetOrgPerson']):
         conn = self.bind()
-        conn.add(dn="cn={0},{1}".format(user, current_app.config['LDAP_USER_BASE_DN']),
+        attributes.update({
+            'userPassword': hashlib.sha1(attributes['userPassword'].encode()).hexdigest(),
+            'puppetClass': ['workstation'],
+            'environment': ['workstation'],
+            'description': 'no description'
+        })
+        conn.add(dn="cn={0},{1}".format(attributes['cn'], current_app.config['LDAP_USER_BASE_DN']),
                  object_class=object_classes,
-                 attributes={
-                     'cn': user,
-                     'userPassword': hashlib.sha1(attributes['userPassword'].encode()).hexdigest(),
-                     'displayName': attributes['displayName'],
-                     'givenName':  attributes['givenName'],
-                     'sn': attributes['sn'],
-                     'mail': attributes['mail'],
-                     'mobile': attributes['mobile'],
-                     'telephoneNumber': attributes['telephoneNumber'],
-                     'departmentNumber': attributes['departmentNumber'],
-                     'puppetClass': ['workstation'],
-                     'environment': ['workstation'],
-                     'description': 'no description'
-                 })
+                 attributes=attributes)
         conn.unbind()
         return True if conn.result['description'] == 'success' else False
 
@@ -141,8 +131,8 @@ class LDAP(object):
         user_dn = self.get_object_details(user=user, dn_only=True)
         if user_dn is None:
             return
-        changes = {attr_name: [(ldap3.MODIFY_REPLACE, attributes[attr_name])]
-                   for attr_name in attributes.keys()}
+        changes = {attr_name: [(ldap3.MODIFY_REPLACE, attr_value if isinstance(attr_value, list) else [attr_value])]
+                   for attr_name, attr_value in attributes.items()}
         conn.modify(dn=user_dn, changes=changes)
         conn.unbind()
         return True if conn.result['description'] == 'success' else False
