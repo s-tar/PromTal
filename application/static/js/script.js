@@ -82,6 +82,7 @@ $( window ).load(function() {
 
 
 function niceDateFormat(date){
+    if(!date) return ''
     var now = new Date()
     date = new Date(date)
     if(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
@@ -91,3 +92,21 @@ function niceDateFormat(date){
     return date.format("dd.mm.yy в HH:MM");
 }
 
+$(window).resize(function(){
+    $('.media-holder .approved img').each(function(){
+        mediaFill($(this));
+    });
+});
+$(window).load(function(){$(window).trigger('resize')})
+
+function mediaFill(img) {
+    var image = $(img);
+    var media = $(img).closest('.media');
+    var cls = 'contain';
+    var h = media[0].offsetHeight;
+    var w = media[0].offsetWidth;
+    var ih = image[0].naturalHeight;
+    var iw = image[0].naturalWidth;
+    if(ih >= h && iw >= w) cls = 'cover'
+    media.removeClass('contain').removeClass('cover').addClass(cls);
+}

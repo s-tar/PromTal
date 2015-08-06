@@ -9,13 +9,20 @@
   ul
     list-style: none
     padding-left: 40px
+  > .comment.form
+    padding-top: 0px
+    &:first-child
+      margin-bottom: 15px
+      .user-icon
+        margin-top: -5px
   .comment
     position: relative
-    .comments.new
-      padding-top: 0px
+    .system-message
+      color: #cccccc
     .user-icon
       position: absolute
     .message
+      -transition all 0.3s ease
       padding: 5px 10px
       margin-left: 60px
       -border-radius 3px
@@ -23,11 +30,12 @@
       position: relative
       overflow: visible
 
-      &:hover .answer-button, &:hover .delete-button
+      &:hover .answer-button, &:hover .edit-button, &:hover .delete-button
         display: block
-      .answer-button, .delete-button
+      .answer-button,  .edit-button, .delete-button
         float: right
         display: none
+        margin-left: 10px
       .text
         white-space: pre-wrap
       .datetime
@@ -43,7 +51,7 @@
       .smile
         margin-top: -4px
 
-  .quotes, .comments.new
+  .quotes
     ul
       padding-left: 20px
     .comment
@@ -57,63 +65,63 @@
         .arrow
           top: 5px
 
-.comments.new
-  .user-icon
-    /*width: 40px*/
-    /*height: 40px*/
-    margin-top: -5px
-  .message
+.comment.form
+  > .message
     padding: 0
-    min-height: 39px
+    min-height: 30px
     .text
       white-space: normal
-  form
-    padding: 0
-    float: none
-    text-align: right
-    position: relative
-    .wrapper
+    form
+      padding: 0
+      float: none
+      text-align: right
       position: relative
-      padding-right: 80px
-  textarea
-    border: 0 none
-    min-height: 39px
-    height: 39px
-    margin-bottom: -5px
-    -border-radius 3px 0 0 3px
-    padding-top: 12px
-    resize: none
-    overflow: hidden
-  .right-buttons
-    top: 0
-    right: 0
-    position: absolute
-    height: 100%
-  .send
-    display: inline-block
-    outline: none
-    padding: 0
-    margin: 0
-    width: 40px
-    height: 100%
-    color: white
-    border: 0 none
-    -border-radius 0 3px 3px 0
-    text-align: center
-    font-size: 1.2em
+      .wrapper
+        position: relative
+        padding-right: 80px
+    textarea
+      border: 0 none
+      min-height: 39px
+      height: 39px
+      margin-bottom: -5px
+      -border-radius 3px 0 0 3px
+      padding-top: 12px
+      resize: none
+      overflow: hidden
+    .right-buttons
+      top: 0
+      right: 0
+      position: absolute
+      height: 100%
+    .send
+      display: inline-block
+      outline: none
+      padding: 0
+      margin: 0
+      width: 40px
+      height: 100%
+      color: white
+      border: 0 none
+      -border-radius 0 3px 3px 0
+      text-align: center
+      font-size: 1.2em
 
-  .media-uploader
-    margin: 0
-    display: inline-block
-    height: 39px
-    width: 39px
-    font-size: 1.5em
-    padding: 4px
+    .media-uploader
+      margin: 0
+      display: inline-block
+      height: 39px
+      width: 39px
+      font-size: 1.5em
+      padding: 4px
 
 .comments
   .media-holder
     margin: 3px -9px -4px
-  &.new .media-holder
+    .cancel
+      display: none
+
+  .comment.form .media-holder
       margin: 0
       margin-right: -40px
-
+      .cancel
+        display: block

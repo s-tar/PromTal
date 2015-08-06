@@ -1,5 +1,6 @@
+from enum import Enum
 from application.models.file import File
-from datetime import datetime
+from datetime import datetime as _datetime
 from collections import defaultdict
 
 from application.db import db
@@ -10,15 +11,26 @@ from sqlalchemy.orm import backref, Session
 
 
 class Comment(db.Model, Mixin):
+
+    class Status:
+        (
+            ACTIVE,
+            DELETED,
+            MODIFIED
+        ) = range(3)
+
+        TITLES = dict([(ACTIVE, 'active'), (DELETED, 'deleted'), (MODIFIED, 'modified')])
+
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     text = db.Column(db.Text())
-    datetime = db.Column(db.DateTime, default=datetime.now)
+    datetime = db.Column(db.DateTime, default=_datetime.now)
+    modify_datetime = db.Column(db.DateTime, default=_datetime.now)
     entity = db.Column(db.String(255))
     entity_id = db.Column(db.Integer)
     quote_for_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
-
+    status = db.Column(db.Integer, default=Status.ACTIVE)
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref=backref("quotes", cascade="all"))
     author = db.relationship("User", backref="comments", lazy='joined')
 
@@ -26,9 +38,10 @@ class Comment(db.Model, Mixin):
 
     @property
     def files(self):
-        if not self.__files:
-            self.__files = File.get(module='comments', entity=self)
-        return self.__files
+        return File.get(module='comments', entity=self)
+        # if not self.__files:
+        #     self.__files = File.get(module='comments', entity=self)
+        # return self.__files
 
     def to_json(self):
         return comment_schema.dump(self)

@@ -1,3 +1,4 @@
+import datetime
 from application.models.file import File
 from application.utils import image
 from collections import defaultdict
@@ -17,7 +18,28 @@ def delete(id):
     if user.is_authorized():
         comment = Comment.get(id)
         if comment:
-            db.session.delete(comment)
+            comment_json = None
+
+            def delete_parent(comment):
+                should_delete = True
+
+                if comment is not None and comment.status == Comment.Status.DELETED:
+                    for quote in comment.quotes:
+                        if quote.status != Comment.Status.DELETED:
+                            should_delete = False
+                    if should_delete:
+                        db.session.delete(comment)
+                        db.session.flush()
+                        delete_parent(comment.quote_for)
+
+            if comment.quotes:
+                comment.status = Comment.Status.DELETED
+                comment_json = get_comment_json(comment)
+            else:
+                db.session.delete(comment)
+                db.session.flush()
+                delete_parent(comment.quote_for)
+
             db.session.flush()
             entity = comment.get_entity()
 
@@ -25,9 +47,11 @@ def delete(id):
                 entity.after_delete_comment(comment)
 
             db.session.commit()
-            return jsonify({'status': 'ok'})
+            return jsonify({'status': 'ok',
+                            'comment': comment_json})
 
     return jsonify({'status': 'fail'})
+
 
 @module.post("/new")
 @module.post("/edit/<int:id>")
@@ -35,13 +59,15 @@ def save_comment(id=None):
     user = auth.service.get_user()
     data = dict(request.form)
     data['upload'] = request.files.getlist('upload')
+
     v = Validator(data)
     v.fields('upload').image()
+    v.fields('file.id').integer(nullable=True)
     if v.is_valid():
         if not id:
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
-            if v.valid_data.list('entity_id') == 0:
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
                 v.field('comment').required(message="Напишите хоть что-нибудь...")
         if v.is_valid() and user.is_authorized():
             data = v.valid_data
@@ -52,6 +78,9 @@ def save_comment(id=None):
                 comment.entity_id = data.entity_id
             else:
                 comment = Comment.get(id)
+                if comment:
+                    comment.modify_datetime = datetime.datetime.now()
+                    comment.status = Comment.Status.MODIFIED
 
             if comment:
                 return save(comment, data)
@@ -70,13 +99,13 @@ def save_quote(id=None):
 
     v = Validator(data)
     v.fields('upload').image()
-
+    v.fields('file.id').integer(nullable=True)
     if v.is_valid():
         if not id:
             v.field('quote_for').integer().required()
             v.field('entity_name').required()
             v.field('entity_id').integer(nullable=True).required()
-            if v.valid_data.list('entity_id') == 0:
+            if not v.valid_data.list('url') and not v.valid_data.list('upload'):
                 v.field('comment').required(message="Напишите хоть что-нибудь...")
 
         if v.is_valid() and user.is_authorized():
@@ -92,10 +121,12 @@ def save_quote(id=None):
                     comment.entity_id = quote_for.entity_id
             else:
                 comment = Comment.get(id)
+                if comment:
+                    comment.modify_datetime = datetime.datetime.now()
+                    comment.status = Comment.Status.MODIFIED
 
             if comment:
                 return save(comment, data)
-
 
         v.add_error('comment', 'Что-то пошло не так... Попробуйте позже.')
 
@@ -109,7 +140,8 @@ def save(comment, data):
     db.session.add(comment)
     db.session.flush()
 
-    save_files(data.list("url"), data.list("upload"), data.list('file.type'), comment)
+
+    save_files(data, comment)
     entity = comment.get_entity()
 
     if entity:
@@ -122,15 +154,27 @@ def save(comment, data):
                     'comment': get_comment_json(comment, files)})
 
 
-def save_files(urls, uploads, types, comment):
-    for url, type in zip(urls, types):
-        file = File.create(name='image.png', module='comments', entity=comment, external_link=url or None)
+def save_files(data, comment):
+    ids = data.list('file.id')
+    statuses = data.list('file.status')
+    types = data.list('file.type')
+    uploads = data.list('upload')
+    urls = data.list('url')
 
-        if file.is_local():
-            file.makedir()
-            img = uploads.pop(0)
-            image.thumbnail(img, width=450, height=300, fill=image.COVER).save(file.get_path())
-            image.resize(img).save(file.get_path(sufix='origin'))
+    files = {f.id: f for f in comment.files}
+    for id, status, type, url in zip(ids, statuses, types, urls):
+        if id:
+            file = files.get(id)
+            if file and status == 'deleted':
+                db.session.delete(file)
+        else:
+            file = File.create(name='image.png', module='comments', entity=comment, external_link=url or None)
+
+            if file.is_local():
+                file.makedir()
+                img = uploads.pop(0)
+                image.thumbnail(img, width=700, height=400, fill=image.COVER).save(file.get_path())
+                image.resize(img).save(file.get_path(sufix='origin'))
 
 
 @module.get('/<entity>/<int:entity_id>/json/all')
@@ -146,6 +190,7 @@ def json_all_comments(entity, entity_id):
 def get_file_json(file):
     return {
         'id': file.id,
+        'type': file.name,
         'url': file.get_url(),
         'origin': file.get_url(sufix='origin')
     }
@@ -160,9 +205,13 @@ def get_comment_json(comment, files=[]):
             'photo_s': comment.author.photo.get_url('thumbnail') if comment.author.photo else '',
         }
         d = comment.as_dict()
+        d['status'] = Comment.Status.TITLES.get(comment.status, Comment.Status.TITLES[Comment.Status.ACTIVE])
         d['author'] = author
         d['files'] = files
-        d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
+        if comment.status == Comment.Status.DELETED:
+            d['text'] = 'Сообщение удалено'
+        else:
+            d['text'] = d['text'].replace('<', '&lt;').replace('>', '&gt;')
         return d
 
     return {}

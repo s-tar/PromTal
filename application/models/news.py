@@ -1,5 +1,4 @@
-from datetime import datetime, date, timedelta
-
+from datetime import datetime
 from application.db import db
 from application.models.comment import Comment, HasComments
 from application.models.mixin import Mixin
@@ -59,7 +58,7 @@ class News(db.Model, Mixin, HasComments):
         self.__recount_comments()
 
     def __recount_comments(self):
-        self.comments_count = len(self.comments_all)
+        self.comments_count = len([c for c in self.comments_all if c.status != Comment.Status.DELETED])
 
     def to_json(self):
         return news_schema.dump(self)
