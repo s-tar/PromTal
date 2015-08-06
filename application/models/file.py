@@ -72,6 +72,7 @@ class File(db.Model, Mixin):
 
     def get_name(self, sufix=None, hash=False):
         name = []
+        if self.name: name.append(self.name)
         name.append('id'+str(self.id))
         if sufix: name.append(sufix)
         if hash and self.hash: name.append('_'+self.hash+'_')
@@ -100,12 +101,13 @@ class File(db.Model, Mixin):
                 os.makedirs(path)
 
     def remove_files(self):
-        path, name = self.get_path().rsplit(os.sep, 1)
-        name = self.name.split('/')[-1]+'.id'+str(self.id)
-        if os.path.exists(path):
-            for f in os.listdir(path):
-                if not os.path.isdir(f) and f.startswith(name):
-                    os.remove(os.path.join(path, f))
+        if self.is_local():
+            path, name = self.get_path().rsplit(os.sep, 1)
+            name = self.name.split('/')[-1]+'.id'+str(self.id)
+            if os.path.exists(path):
+                for f in os.listdir(path):
+                    if not os.path.isdir(f) and f.startswith(name):
+                        os.remove(os.path.join(path, f))
 
     @staticmethod
     def stringify_entity(entity):

@@ -196,6 +196,10 @@
   overflow: hidden;
   padding: 2px;
 }
+.media-holder .media > div {
+  width: 100%;
+  height: 100%;
+}
 .media-holder.count-0 {
   padding: 0;
   display: none;
@@ -203,19 +207,51 @@
 .media-holder.hidden {
   display: none;
 }
+.media-holder .media.deleted {
+  display: none;
+}
+.media-holder .approved {
+  width: 20%;
+  height: 75px;
+}
+.media-holder .approved:first-of-type {
+  width: 100%;
+  height: 225px;
+}
+.media-holder.count-1 .media.approved {
+  width: 100%;
+  height: 300px;
+}
 .media-holder.count-2 .media.approved {
   width: 50%;
+  height: 300px;
 }
 .media-holder.count-3 .media.approved {
   width: 50%;
   height: 150px;
 }
-.media-holder.count-3 .media.approved:nth-of-type(3) {
+.media-holder.count-3 .media.approved:first-of-type {
   width: 100%;
 }
 .media-holder.count-4 .media.approved {
   width: 50%;
   height: 150px;
+}
+.media-holder.count-5 .media.approved {
+  width: 25%;
+  height: 75px;
+}
+.media-holder.count-5 .media.approved:first-of-type {
+  width: 100%;
+  height: 225px;
+}
+.media-holder.count-6 .media.approved {
+  width: 20%;
+  height: 75px;
+}
+.media-holder.count-6 .media.approved:first-of-type {
+  width: 100%;
+  height: 225px;
 }
 .media-holder .media {
   padding: 1px;
