@@ -116,14 +116,16 @@ var AJAXForm = React.createClass({
 
             success: function(json) {
                 self.showErrors(json.errors)
+                if(typeof self.props.onDone == 'function')
+                    self.props.onDone(json);
                 if(json.status == 'ok'){
                     if(typeof self.props.onSuccess == 'function')
                         self.props.onSuccess(json)
                 }
-                self.setState({processing: false});
+                if(self.isMounted()) self.setState({processing: false});
             },
             error: function(){
-                self.setState({processing: false});
+                if(self.isMounted())self.setState({processing: false});
             }
          });
     },

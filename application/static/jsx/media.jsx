@@ -95,6 +95,15 @@ var Media = React.createClass({
         }
 
     },
+    onImageLoad: function(e){
+        mediaFill(e.target)
+    },
+    componentDidMount: function(){
+        $(window).trigger('resize');
+    },
+    componentDidUpdate: function(){
+       if(this.refs.mediaImage) mediaFill(this.refs.mediaImage.getDOMNode());
+    },
     componentWillMount: function(){
         var self = this
         var activeStream = this.props.stream.filter(function(){ return self.state.status == 'active' })
@@ -124,7 +133,7 @@ var Media = React.createClass({
     },
     render: function(){
         var src = this.state.url || this.state.src
-        var image = !src ? '' : <div className="image" style={{'backgroundImage': "url('"+src+"')"}}></div>
+        var image = !src ? '' : <div className="image"><img ref="mediaImage" src={src} alt="" onLoad={this.onImageLoad}/></div>
         var url_input = <input type="hidden" name="url" value={this.state.url}/>
         var type_input = <input type="hidden" name="file.type" value={this.props.type}/>
         var file_input = <input ref="fileInput"  type="file" name="upload" onChange={this.onInputFileChange}/>
@@ -151,7 +160,7 @@ var Media = React.createClass({
             )
 
             if(this.state.status == 'approved' || this.state.status == 'active'){
-                return <div className={"media " + this.state.status}>{inner}</div>
+                return <div className={"media " + this.state.status}  style={!src ? {} : {backgroundImage: 'url("'+src+'")'}}>{inner}</div>
             }else{
                 return <span className={"media " + this.state.status}>{inner}</span>
             }
@@ -188,7 +197,7 @@ var MediaHolder = React.createClass({
         this.props.stream
             .filter(function(data){ return data.action == 'clearMedia'})
             .subscribe(function(){
-                self.setState({media: [], key: 0, count: 0})
+                if(self.isMounted()) self.setState({media: [], key: 0, count: 0})
         });
     },
     render:function(){
