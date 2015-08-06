@@ -50,10 +50,11 @@ class Permission(db.Model):
     ]
 
     id = db.Column(db.Integer, primary_key=True)
-    permissions = db.relationship(
-        "Permission",
-        secondary=RolePermission,
-        backref="role"
+    roles = db.relationship(
+        "Role",
+        secondary='user_permission',
+        backref="permissions",
+        lazy='dynamic',
     )
 
 
@@ -71,8 +72,8 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    permission = db.relationship("Permission", backref="role_permission", lazy='dynamic')
-    users = db.relationship('User', backref='user_role', lazy='dynamic')
+    permissions = db.relationship("Permission", secondary='user_permission', backref="roles", lazy='dynamic')
+    users = db.relationship('User', secondary='user_role', backref='roles', lazy='dynamic')
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -104,7 +105,7 @@ class User(db.Model, AuthUser, Mixin):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
 
-    roles = db.relationship("Roles", backref="user_role", lazy='dynamic')
+    roles = db.relationship("Role", secondary='user_role', backref="users", lazy='dynamic')
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 
