@@ -3,6 +3,11 @@ import logging
 
 from flask import current_app
 
+logger = logging.getLogger("sms")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(fmt="%(name)s:%(levelname)s - - [%(asctime)s] %(message)s",
+                              datefmt='%y/%b/%d %H:%M:%S')
+
 SUBMIT_SM = 'http://sms.skysms.net/api/submit_sm'
 
 RETURNCODE = 'RETURNCODE'
@@ -37,41 +42,43 @@ class SkySMS(object):
                 raise ValueError('SKYSMS_{0} cannot be None!'.format(option))
 
         if app.config['SKYSMS_LOGFILE'] is not None:
-            logging.basicConfig(filename=app.config['SKYSMS_LOGFILE'],
-                                filemode='a+',
-                                format="%(levelname)s (%(asctime)s): %(message)s",
-                                datefmt='%m/%d/%Y %I:%M:%S %p',
-                                level=logging.INFO)
+            file_handler = logging.FileHandler(filename=app.config['SKYSMS_LOGFILE'])
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
         else:
-            logging.basicConfig(format="%(levelname)s (%(asctime)s): %(message)s",
-                                datefmt='%m/%d/%Y %I:%M:%S %p',
-                                level=logging.INFO)
-            logging.warning('s')
+            stream_handler = logging.StreamHandler()
+            stream_handler.setLevel(logging.INFO)
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
+            logger.warning('log file was not specified')
 
-    def send_message(self, phone_number, message):
-        logging.info('Отправление запроса на отправку сообщения')
+    def send_message(self, mobile_phone, message):
+        logger.info('Sending request to sms service')
         response = requests.get(SUBMIT_SM,
                                 params={'login': current_app.config['SKYSMS_USERNAME'],
                                         'passwd': current_app.config['SKYSMS_PASSWORD'],
-                                        'destaddr': phone_number,
+                                        'destaddr': mobile_phone,
                                         'msgchrset': current_app.config['SKYSMS_MSGCHRSET'],
-                                        'msgtext': message.encode(current_app.config['SKYSMS_MSGENCODING'])})
+                                        'msgtext': message.encode(current_app.config['SKYSMS_MSGENCODING'])},
+                                timeout=5)
         if not response.ok:
-            logging.error('Проблемы с запросом. Статус HTTP: {code} {reason}'.format(code=response.status_code,
-                                                                                     reason=response.reason))
+            logger.error('Some problem has occurred with sent request. '
+                          'HTTP status: {code} {reason}'.format(code=response.status_code,
+                                                                reason=response.reason))
             return False
         result = self._parse_response_text(response.text)
         if result[RETURNCODE] == SUCCESS_CODE:
-            logging.info("{code} {value}".format(code=result[RETURNCODE], value=CODEVALUE[result[RETURNCODE]]))
+            logger.info("{code} {value}".format(code=result[RETURNCODE], value=CODEVALUE[result[RETURNCODE]]))
             return True
         else:
-            logging.error("{code} {value}".format(code=result[RETURNCODE], value=CODEVALUE[result[RETURNCODE]]))
+            logger.error("{code} {value}".format(code=result[RETURNCODE], value=CODEVALUE[result[RETURNCODE]]))
             return False
 
-    def send_password(self, phone_number, login, password):
-        message = current_app('SKYSMS_PASSWORD_MESSAGE') % {'login': login, 'password': password}
-        return self.send_message(phone_number, message)
+    def send_password(self, mobile_phone, login, password):
+        message = current_app.config['SKYSMS_PASSWORD_MESSAGE'] % {'login': login, 'password': password}
+        return self.send_message(mobile_phone, message)
 
     @staticmethod
     def _parse_response_text(text):
-        return {key: value for key, value in [pair.split('=') for pair in text.strip().split('\n')]}
+        return {key: value for key, value in [pair.split('=') for pair in text.splitlines()]}

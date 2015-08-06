@@ -206,7 +206,7 @@ class Field:
         for i, val in enumerate(self.val):
             if val is not None:
                 val = val.strip()
-                if re.match(r"((\+|\d{2,3})?\d{12}|\d{10,12})", val):  # TODO Create more flexible matching
+                if re.match(r"((\+|\d{2})?\d{12}|\d{10,12})", val):  # TODO Create more flexible matching
                     self.validator.valid_data.list(self.name)[i] = val
                 else:
                     self.validator.add_error(self.name, message, code, index=i)

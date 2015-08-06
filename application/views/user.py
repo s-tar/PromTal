@@ -1,4 +1,4 @@
-from application import Module, ldap, db
+from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
 from application.utils.image_processing.user_foto import save_user_fotos, NotImage
@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-from application.bl.user import restore_password, modify_password, PasswordError
+from application.bl.user import restore_password, modify_password, PasswordError, update_user
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -40,27 +40,26 @@ def edit_profile_post():
 
     v = Validator(data)
     v.field('full_name').required()
-    v.field('email').email().required()
+    v.field('email').required().email()
+    v.field('mobile_phone').required().phone_number()
+    v.field('inner_phone').required()
     v.field('birth_date').datetime(format="%d.%m.%Y")
     v.field('file').image()
     if v.is_valid():
-        full_name = request.form.get("full_name")
-        birth_date = request.form.get("birth_date")
-        if birth_date:
-            birth_date = datetime.strptime(birth_date, "%d.%m.%Y")
-        mobile_phone = request.form.get("mobile_phone")
-        inner_phone = request.form.get("inner_phone")
-        email = request.form.get("email")
-        skype = request.form.get("skype")
+        data = {
+            'login': current_user.login,
+            'full_name': v.valid_data.full_name,
+            'mobile_phone': v.valid_data.mobile_phone,
+            'inner_phone': v.valid_data.inner_phone,
+            'email': v.valid_data.email,
+            'skype': v.valid_data.skype,
+            'photo': v.valid_data.photo,
+            'birth_date': v.valid_data.birth_date
+        }
 
-        User.edit_user(current_user.id,
-                       full_name=full_name,
-                       mobile_phone=mobile_phone,
-                       inner_phone=inner_phone,
-                       email=email,
-                       birth_date=birth_date,
-                       skype=skype,
-                       photo=v.valid_data.file)
+        if not update_user(**data):
+            redirect(url_for('user.edit_profile'))
+
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
