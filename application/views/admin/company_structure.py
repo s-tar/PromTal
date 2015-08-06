@@ -28,7 +28,10 @@ def company_structure():
 @admin.get('/company-structure/edit/<int:dep_id>')
 def edit_structure(dep_id):
     department = Department.get_by_id(dep_id)
-    return render_template('admin/company_structure/edit_structure.html', department=department)
+    dep_parents = Department.get_parent_all(dep_id)
+    return render_template('admin/company_structure/edit_structure.html',
+                            department=department,
+                            dep_parents = dep_parents)
 
 
 @admin.post('/company-structure/edit-post/')
@@ -38,6 +41,8 @@ def edit_structure_post():
     if v.is_valid():
         name_structure = v.valid_data.name_structure
         Department.rename(request.form.get("department_id"), name_structure)
+        Department.set_parent(request.form.get("department_id"), request.form.get("parent"))
+        print(request.form.get("parent"))
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})

@@ -63,7 +63,7 @@ var TextArea = React.createClass({
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
     },
-    componentDidUpdate() {
+    componentDidUpdate: function() {
         this.updateHeight()
     },
     render: function() {
@@ -78,7 +78,7 @@ var TextArea = React.createClass({
 
 var AJAXForm = React.createClass({
     getInitialState: function() {
-        return {errors: {}, data: {}};
+        return {errors: {}, data: {}, processing: false};
     },
     registerError: function(name, index) {
         var self = this
@@ -101,6 +101,9 @@ var AJAXForm = React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault();
+        if(this.state.processing) return false;
+
+        this.state.processing = true;
         var self = this
         var form = e.target;
         $.ajax({
@@ -113,11 +116,16 @@ var AJAXForm = React.createClass({
 
             success: function(json) {
                 self.showErrors(json.errors)
+                if(typeof self.props.onDone == 'function')
+                    self.props.onDone(json);
                 if(json.status == 'ok'){
                     if(typeof self.props.onSuccess == 'function')
                         self.props.onSuccess(json)
                 }
-
+                if(self.isMounted()) self.setState({processing: false});
+            },
+            error: function(){
+                if(self.isMounted())self.setState({processing: false});
             }
          });
     },

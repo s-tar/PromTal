@@ -20,6 +20,17 @@ class Department(db.Model):
         return cls.query.filter_by(id=uid).first()
 
     @classmethod
+    def get_parent_all(cls, uid):
+        return cls.query.filter(Department.id!=uid).all()
+
+    @classmethod
+    def set_parent(cls, uid, pid):
+        dep = cls.query.filter_by(id=uid).first()
+        dep.parent_id = pid
+        db.session.add(dep)
+        db.session.commit()
+
+    @classmethod
     def rename(cls, uid, new_name):
         dep = cls.query.filter_by(id=uid).first()
         dep.name = new_name

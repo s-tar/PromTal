@@ -7,49 +7,6 @@ button[disabled] {
 button[disabled]:hover {
   background: #fd8a16;
 }
-.button,
-input[type=button],
-input[type=submit] {
-  display: inline-block;
-  background: #fd8a16;
-  color: #fff;
-  text-transform: uppercase;
-  border: 0 none;
-  width: auto;
-  float: right;
-  margin-top: 20px;
-  margin-left: 10px;
-  text-decoration: none;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  padding: 12px 15px 10px;
-}
-.button:hover,
-input[type=button]:hover,
-input[type=submit]:hover {
-  background: #fd9e3f;
-}
-.button.cancel,
-input[type=button].cancel,
-input[type=submit].cancel {
-  background: #e7422c;
-}
-.button.cancel:hover,
-input[type=button].cancel:hover,
-input[type=submit].cancel:hover {
-  background: #ff6961;
-}
-.button.success,
-input[type=button].success,
-input[type=submit].success {
-  background: #7d7;
-}
-.button.success:hover,
-input[type=button].success:hover,
-input[type=submit].success:hover {
-  background: #89dd89;
-}
 input[type],
 textarea {
   display: inline-block;
@@ -97,6 +54,59 @@ textarea.editor {
 .custom-form input[type=password]:focus,
 .custom-form textarea:focus {
   border-color: #fd8a16;
+}
+.custom-form .button,
+.custom-form input[type=button],
+.custom-form input[type=submit] {
+  display: inline-block;
+  background: #fd8a16;
+  color: #fff;
+  text-transform: uppercase;
+  border: 0 none;
+  width: auto;
+  float: right;
+  margin-top: 20px;
+  margin-left: 10px;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 12px 15px 10px;
+}
+.custom-form .button[disabled],
+.custom-form input[type=button][disabled],
+.custom-form input[type=submit][disabled] {
+  opacity: 0.7;
+}
+.custom-form .button[disabled]:hover,
+.custom-form input[type=button][disabled]:hover,
+.custom-form input[type=submit][disabled]:hover {
+  background: #fd8a16;
+}
+.custom-form .button:hover,
+.custom-form input[type=button]:hover,
+.custom-form input[type=submit]:hover {
+  background: #fd9e3f;
+}
+.custom-form .button.cancel,
+.custom-form input[type=button].cancel,
+.custom-form input[type=submit].cancel {
+  background: #e7422c;
+}
+.custom-form .button.cancel:hover,
+.custom-form input[type=button].cancel:hover,
+.custom-form input[type=submit].cancel:hover {
+  background: #ff6961;
+}
+.custom-form .button.success,
+.custom-form input[type=button].success,
+.custom-form input[type=submit].success {
+  background: #7d7;
+}
+.custom-form .button.success:hover,
+.custom-form input[type=button].success:hover,
+.custom-form input[type=submit].success:hover {
+  background: #89dd89;
 }
 .custom-form .field-label {
   color: #777;

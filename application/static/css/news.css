@@ -6,6 +6,15 @@
   padding: 10px;
   display: none;
 }
+.edit-buttons a {
+  vertical-align: top;
+  display: inline-block;
+  height: 20px;
+  padding: 5px;
+}
+.edit-buttons a:first-child span {
+  padding-top: 4px;
+}
 .news-list > .title,
 .news-one > .title {
   text-align: center;
@@ -20,6 +29,10 @@
 .news-list article:hover .edit-buttons,
 .news-one article:hover .edit-buttons {
   display: block;
+}
+.news-list article > .title,
+.news-one article > .title {
+  padding-right: 80px;
 }
 .news-list article .text,
 .news-one article .text {

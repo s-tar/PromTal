@@ -57,6 +57,10 @@ def create_app(config_name):
     def page_not_found(e):
         return render_template('404.html'), 404
 
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('403.html'), 403
+
     @app.context_processor
     def inject_user():
         return dict(current_user=get_user())

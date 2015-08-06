@@ -87,7 +87,7 @@ class Field:
     def integer(self, message=None, nullable=False):
         code, message = get_message("not_integer", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
@@ -99,7 +99,7 @@ class Field:
     def float(self, message=None, nullable=False):
         code, message = get_message("not_float", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
