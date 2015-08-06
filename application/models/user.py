@@ -14,6 +14,67 @@ from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
 
 
+RolePermission = db.Table('role_permission', db.Model.metadata,
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id')),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
+)
+UserPermission = db.Table('user_permission', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
+)
+UserRole = db.Table('user_role', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
+
+
+class Permission(db.Model):
+
+    __tablename__ = 'permissions'
+
+    (
+        COMMENT,
+        EDIT_COMMENTS,
+        WRITE_ARTICLES,
+        MODERATE_COMMENTS,
+        ADD_USER,
+        SET_PERMISSIONS,
+        ADMINISTER,
+    ) = range(7)
+
+    PERMISSIONS = [
+        (COMMENT, 'Comment'), (EDIT_COMMENTS, 'Edit comments'),
+        (WRITE_ARTICLES, 'Write articles'), (MODERATE_COMMENTS, 'Moderate comments'),
+        (ADD_USER, 'Add user'), (SET_PERMISSIONS, 'Set permissions'),
+        (ADMINISTER, 'Administer')
+    ]
+
+    id = db.Column(db.Integer, primary_key=True)
+    permissions = db.relationship(
+        "Permission",
+        secondary=RolePermission,
+        backref="role"
+    )
+
+
+class Role(db.Model):
+
+    __tablename__ = 'roles'
+
+    (
+        ROLE_ADMIN,
+        ROLE_MODERATOR,
+        ROLE_USER,
+    ) = range(3)
+
+    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    permission = db.relationship("Permission", backref="role_permission", lazy='dynamic')
+    users = db.relationship('User', backref='user_role', lazy='dynamic')
+
+
 class User(db.Model, AuthUser, Mixin):
     '''
     при добавлении полей не забыть их добавить в
@@ -30,20 +91,12 @@ class User(db.Model, AuthUser, Mixin):
 
     STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
 
-    (
-        ROLE_ADMIN,
-        ROLE_MODERATOR,
-        ROLE_USER,
-    ) = range(3)
-
-    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
     login = db.Column(db.String(64), unique=True)
     status = db.Column(db.Integer, default=STATUS_ACTIVE)
-    roles = db.Column(ARRAY(db.Integer), default=[ROLE_USER])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
@@ -51,6 +104,7 @@ class User(db.Model, AuthUser, Mixin):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
 
+    roles = db.relationship("Roles", backref="user_role", lazy='dynamic')
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 

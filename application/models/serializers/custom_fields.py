@@ -9,6 +9,7 @@ class RolesField(fields.Field):
         if value is None:
             return {}
         roles = dict(obj.ROLES)
+        print(roles)
         return [{'value': x, 'title': roles.get(x)} for x in obj.roles]
 
 
