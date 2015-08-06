@@ -116,6 +116,8 @@ var AJAXForm = React.createClass({
 
             success: function(json) {
                 self.showErrors(json.errors)
+                if(typeof self.props.onDone == 'function')
+                    self.props.onDone(json);
                 if(json.status == 'ok'){
                     if(typeof self.props.onSuccess == 'function')
                         self.props.onSuccess(json)

@@ -313,8 +313,13 @@ var Comment = React.createClass({
     },
     componentDidMount: function(){
         $(this.getDOMNode()).find("a.image").fancybox({});
+        $(window).trigger('resize');
+    },
+    onImageLoad: function(e){
+        mediaFill(e.target)
     },
     render: function() {
+        var self = this;
         var comment = this.props.comment;
         var root = this.props.root;
         var answerButton = null;
@@ -346,11 +351,13 @@ var Comment = React.createClass({
             }
             if (comment.files.length) {
                 media = (
-                    <div className={"media-holder  count-" + comment.files.length}>
+                    <div ref="mediaHolder" className={"media-holder  count-" + comment.files.length}>
                     {comment.files.map(function (file) {
                         return (
-                            <div key={"comment_" + comment.id + "_id_" + file.id}  className="media approved">
-                                <a href={file.origin}  data-fancybox-group={"comment_" + comment.id} className="image" style={{'backgroundImage': "url('" + file.url + "')"}}></a>
+                            <div key={"comment_" + comment.id + "_id_" + file.id}  className="media approved" style={{backgroundImage: 'url("'+file.url+'")'}}>
+                                <a href={file.origin}  data-fancybox-group={"comment_" + comment.id} className="image">
+                                    <img src={file.url} alt="" onLoad={self.onImageLoad}/>
+                                </a>
                             </div>
                         )
                     })}
@@ -364,7 +371,8 @@ var Comment = React.createClass({
         }
 
         if(!!editForm) return editForm
-        var niceDate = niceDateFormat(comment.datetime)
+        var dateTime = niceDateFormat(comment.datetime)
+        var modifyDateTime = niceDateFormat(comment.modify_datetime)
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -372,7 +380,7 @@ var Comment = React.createClass({
                     <div className="fa fa-caret-left arrow"></div>
                     <div className="header">
                         <a href={'/user/profile/'+comment.author.id}>{comment.author.full_name}</a>
-                        <span className="datetime">{comment.status == 'modified' ? 'Изменено '+niceDate.toLowerCase() : niceDate}</span>
+                        <span className="datetime">{comment.status == 'modified' ? 'Изменено '+modifyDateTime.toLowerCase() : dateTime}</span>
                         {deleteButton}
                         {editButton}
                         {answerButton}

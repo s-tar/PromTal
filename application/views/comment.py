@@ -79,7 +79,7 @@ def save_comment(id=None):
             else:
                 comment = Comment.get(id)
                 if comment:
-                    comment.datetime = datetime.datetime.now()
+                    comment.modify_datetime = datetime.datetime.now()
                     comment.status = Comment.Status.MODIFIED
 
             if comment:
@@ -122,7 +122,7 @@ def save_quote(id=None):
             else:
                 comment = Comment.get(id)
                 if comment:
-                    comment.datetime = datetime.datetime.now()
+                    comment.modify_datetime = datetime.datetime.now()
                     comment.status = Comment.Status.MODIFIED
 
             if comment:
@@ -139,6 +139,7 @@ def save(comment, data):
 
     db.session.add(comment)
     db.session.flush()
+
 
     save_files(data, comment)
     entity = comment.get_entity()
