@@ -4,17 +4,24 @@ var CommentsCounter = React.createClass({
     getInitialState: function() {
         return {count: this.props.count || 0}
     },
+    recount: function(data){
+        var count = 0;
+        for(var i in data.comments) {
+            if(data.comments[i].status == 'active') count++;
+        }
+        this.setState({count: count})
+    },
     componentWillMount: function(){
         var self = this
         var entity = this.props.entity
         var entity_id = this.props.entity_id
 
-        //commentsStream.filter(function(data){ return data.action == 'update' &&
-        //        data.entity == entity &&
-        //        data.entity_id == entity_id })
-        //    .subscribe(function(data){
-        //        self.setState({count: storage.getCommentsCount()});
-        //})
+        commentsStream.filter(function(data){ return data.action == 'update' &&
+                data.entity == entity &&
+                data.entity_id == entity_id })
+            .subscribe(function(data){
+                self.recount(data)
+        })
     },
     render: function() {
         return(
@@ -170,7 +177,8 @@ var Comments = React.createClass({
                     self.state.quotes[quote_for][self.state.quotes[quote_for].indexOf(comment)] = new_comment;
                 self.state.all_comments[comment.id] = new_comment
             }
-            self.setState({comments: self.state.comments, quotes: self.state.quotes})
+            self.setState({comments: self.state.comments, quotes: self.state.quotes});
+            self.state.stream.onNext({action: 'update', comments: self.state.all_comments})
         });
 
         this.state.stream.filter(function(data){ return data.action == 'delete'}).subscribe(function(data){
@@ -199,6 +207,7 @@ var Comments = React.createClass({
             delete_parent(all_comments[comment.quote_for_id])
 
             self.setState({comments: self.state.comments, quotes: self.state.quotes})
+            self.state.stream.onNext({action: 'update', comments: self.state.all_comments})
         })
 
     },
