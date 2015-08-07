@@ -1,8 +1,8 @@
-from flask import flash
+import ldap3
 
 from application import ldap, db, sms_service
-from application.utils.datagen import generate_password, generate_inner_phone
 from application.models.user import User
+from application.utils.datagen import generate_password, generate_inner_phone
 
 
 class DataProcessingError(Exception):
@@ -11,6 +11,25 @@ class DataProcessingError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
+class PasswordError(LookupError):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+def restore_password(login, new_password):
+    return ldap.restore_password(login, new_password)
+
+
+def modify_password(login, old_password, new_password):
+    try:
+        return ldap.modify_password(login, old_password, new_password)
+    except ldap3.LDAPBindError:
+        raise PasswordError("wrong password has been passed.")
 
 
 def create_user(login, name, surname, email, mobile_phone, department, groups):
@@ -72,16 +91,12 @@ def update_user(login, full_name, email, mobile_phone, inner_phone, birth_date, 
     }
 
     if not _edit_user_at_local_db(login, full_name, email, mobile_phone, inner_phone, birth_date, photo, skype):
-        flash('Произошла ошибка при обновлении пользователя в локальной базе данных', 'error')
-        return False
-    flash('Пользователь был успешно обновлен в локальной базе данных', 'info')
+        raise DataProcessingError('Произошла ошибка при обновлении пользователя в локальной базе данных')
 
     if not _edit_user_at_ldap(login, ldap_user_attr):
-        flash('Произошла ошибка при обновлении пользователя в каталоге LDAP', 'error')
-        return False
-    flash('Пользователь был успешно обновлен в каталоге LDAP', 'info')
-
-    return True
+        db.session.rollback()
+        raise DataProcessingError('Произошла ошибка при обновлении пользователя в каталоге LDAP')
+    db.session.commit()
 
 
 def _edit_user_at_local_db(login, full_name, email, mobile_phone, inner_phone, birth_date, photo, skype):

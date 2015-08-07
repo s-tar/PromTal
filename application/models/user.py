@@ -17,7 +17,7 @@ from application.utils.auth.user import User as AuthUser
 class User(db.Model, AuthUser, Mixin):
     '''
     при добавлении полей не забыть их добавить в
-    application/models/serializers/user.py для корректной валидации данных
+    application/models/serializers/users.py для корректной валидации данных
     '''
 
     __tablename__ = 'users'

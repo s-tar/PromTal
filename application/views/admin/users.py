@@ -6,7 +6,7 @@ from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application import db, ldap
 from application.utils.validator import Validator
-from application.bl.admin import create_user, update_user, DataProcessingError
+from application.bl.users import create_user, update_user, DataProcessingError
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
@@ -103,8 +103,12 @@ def edit_user_post(id):
             'birth_date': v.valid_data.birth_date
         }
 
-        if not update_user(**data):
-            redirect(url_for('admin.edit_user', id=id))
+        try:
+            update_user(**data)
+            return jsonify({"status": "ok"})
+        except DataProcessingError as e:
+            return jsonify({'status': 'failOnProcess',
+                            'error': e.value})
 
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
@@ -166,6 +170,7 @@ def add_user_post():
         except DataProcessingError as e:
             return jsonify({'status': 'failOnProcess',
                             'error': e.value})
+
 
     return jsonify({"status": "fail",
                     "errors": v.errors})

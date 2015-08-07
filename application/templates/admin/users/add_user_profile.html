@@ -65,20 +65,17 @@ function wellDone(){
     window.location.href = "{{ url_for('.admin_index') }}";
 }
 
-{#function showErrors( data ) {#}
-{#    if ( data.status == 'failOnProcess' ) {#}
-{#        console.log(data);#}
-{#        Popup.show({#}
-{#            title: 'Greetings',#}
-{#            content: 'Hello, world!',//data.error,#}
-{#            closeButton: true#}
-{#        })#}
-{#    }#}
-<<<<<<< HEAD
+function showErrors( data ) {
+    if (data.status == 'failOnProcess') {
+        console.log(data);
+        Popup.show({
+            content: data.error,
+            closeButton: true,
+            buttons: []
+        });
+    }
+}
 
-=======
-{#}#}
->>>>>>> a.sapyanov
 </script>
 <script>
 window.onload = function () {

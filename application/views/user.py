@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
 from datetime import datetime
-from application.bl.user import restore_password, modify_password, PasswordError, update_user
+from application.bl.users import restore_password, modify_password, PasswordError, DataProcessingError, update_user
 
 user = Module('user', __name__, url_prefix='/user')
 
@@ -57,8 +57,12 @@ def edit_profile_post():
             'birth_date': v.valid_data.birth_date
         }
 
-        if not update_user(**data):
-            redirect(url_for('user.edit_profile'))
+        try:
+            update_user(**data)
+            return jsonify({"status": "ok"})
+        except DataProcessingError as e:
+            return jsonify({'status': 'failOnProcess',
+                            'error': e.value})
 
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
