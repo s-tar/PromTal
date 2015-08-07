@@ -195,7 +195,7 @@
   -moz-border-radius: 0px 0px 0px 3px;
   border-radius: 0px 0px 0px 3px;
   overflow: hidden;
-  padding: 2px;
+  padding: 2px 2px 0px;
   max-height: 400px;
   height: auto;
 }
@@ -225,6 +225,10 @@
 .media-holder.count-1 .media.approved {
   width: 100%;
   max-height: 400px;
+}
+.media-holder.count-1 .media.approved img {
+  max-height: auto;
+  max-width: 100%;
 }
 .media-holder.count-2 .media.approved {
   width: 50%;
