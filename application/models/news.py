@@ -6,6 +6,7 @@ from application.models.mixin import Mixin
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
 from application.models.serializers.news import news_schema
+from application.models.vote import HasVotes
 from sqlalchemy import event
 
 
@@ -17,7 +18,7 @@ class NewsTagAssociation(db.Model):
     tag_id = db.Column(db.Integer, db.ForeignKey('news_tag.id'))
 
 
-class News(db.Model, Mixin, HasComments):
+class News(db.Model, Mixin, HasComments, HasVotes):
     __tablename__ = 'news'
 
     (
@@ -36,7 +37,7 @@ class News(db.Model, Mixin, HasComments):
     category_id = db.Column(db.Integer, db.ForeignKey('news_category.id'))
     datetime = db.Column(db.DateTime, default=datetime.now)
     comments_count = db.Column(db.Integer, default=0)
-    likes_count = db.Column(db.Integer, default=0)
+    votes_count = db.Column(db.Integer, default=0)
     views_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="news")
@@ -61,7 +62,14 @@ class News(db.Model, Mixin, HasComments):
     def __recount_comments(self):
         self.comments_count = len([c for c in self.comments_all if c.status == Comment.Status.ACTIVE])
 
+    def after_delete_vote(self, vote=None):
+        self.votes_count -= 1
+
+    def after_add_vote(self, vote=None):
+        self.votes_count += 1
+
     def to_json(self):
         return news_schema.dump(self)
 
 News.init_comments()
+News.init_votes()

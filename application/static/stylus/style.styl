@@ -124,3 +124,19 @@ h3.title a
             float: left
           &.right
             float: right
+.likes-counter
+  float: left
+  margin-left: 10px
+  font-weight: 1.2em
+  color: #e7422c
+  span
+    padding: 0px 5px
+    display: inline-block
+  .holder
+    cursor: pointer
+    display: block
+    position: relative
+    .icon:before
+      content: '\f08a'
+    .icon.active:before
+      content: '\f004'

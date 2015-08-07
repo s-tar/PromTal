@@ -65,25 +65,12 @@
 }
 .news-list article .footer .comments-counter,
 .news-one article .footer .comments-counter,
-.news-list article .footer .likes,
-.news-one article .footer .likes,
+.news-list article .footer .likes-counter,
+.news-one article .footer .likes-counter,
 .news-list article .footer .views,
 .news-one article .footer .views {
   float: right;
   margin-left: 10px;
-  font-weight: 1.2em;
-}
-.news-list article .footer .comments-counter span,
-.news-one article .footer .comments-counter span,
-.news-list article .footer .likes span,
-.news-one article .footer .likes span,
-.news-list article .footer .views span,
-.news-one article .footer .views span {
-  margin: 0px 5px;
-}
-.news-list article .footer .likes,
-.news-one article .footer .likes {
-  color: #e7422c;
 }
 .news-list article .footer .comments-counter,
 .news-one article .footer .comments-counter {

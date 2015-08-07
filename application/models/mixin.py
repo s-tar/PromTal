@@ -1,3 +1,6 @@
+from sqlalchemy.orm import class_mapper
+
+
 class Mixin:
     @classmethod
     def get(cls, id):
@@ -13,3 +16,15 @@ class Mixin:
             val = getattr(self, c.name)
             d[c.name] = str(val) if val is not None else ''
         return d
+
+    def stringify(self):
+        _key = [self.__table__.name]
+        for f in class_mapper(self.__class__).primary_key:
+            _key.append(str(getattr(self, f.name)))
+        return '.'.join(_key)
+
+    def stringify(self):
+        _key = [self.__table__.name]
+        for f in class_mapper(self.__class__).primary_key:
+            _key.append(str(getattr(self, f.name)))
+        return '.'.join(_key)

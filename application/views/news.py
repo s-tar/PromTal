@@ -19,6 +19,7 @@ def list_all():
 def news_one(id):
     news = News.get(id)
     news.increment_views()
+    print(news.my_vote)
     return render_template('news/one.html', **{'news': news})
 
 @module.get('/new')
