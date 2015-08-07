@@ -3,29 +3,29 @@
 
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('admin.edit_user_profile', id=user.id) }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
+    <AJAXForm action="{{ url_for('admin.edit_user_post', id=user.id) }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
         <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
                 <tbody>
                     <tr>
-                        <td>Full name</td>
+                        <td>Имя и фамилия пользователя</td>
                         <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if user.full_name %}{{ user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
                     </tr>
                     <tr>
-                        <td>Avatar</td>
+                        <td>Аватар</td>
                         <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
                     </tr>
                     <tr>
-                        <td>Office Phone</td>
+                        <td>Внутренний номер</td>
                         <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if user.inner_phone %}{{ user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
                     </tr>
                     <tr>
-                        <td>Birth date</td>
+                        <td>Дата рождения</td>
                         <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
                     </tr>
                     <tr>
-                        <td>Cell Phone</td>
+                        <td>Номер мобильного телефона</td>
                         <td><Input className="form-control" type="text" name="mobile_phone" defaultValue="{% if user.mobile_phone %}{{ user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
                     </tr>
                     <tr>
@@ -47,10 +47,10 @@ React.render(
           </div>
         </div>
     </AJAXForm>,
-    document.getElementById('edit_profile_form'))
+    document.getElementById('edit_user_form'))
 
 function wellDone(){
-    window.location.href = "{{ url_for('user.profile') }}";
+    window.location.href = "{{ url_for('admin.admin_index') }}";
 }
 </script>
 <script>
@@ -66,5 +66,6 @@ window.onload = function () {
 };
 </script>
 
-<div id="edit_profile_form"></div>
+<div id="edit_user_form"></div>
 {% endblock %}
+

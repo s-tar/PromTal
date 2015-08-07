@@ -1,3 +1,5 @@
+import os
+
 
 class Config:
 
@@ -47,6 +49,7 @@ class Config:
     SKYSMS_PASSWORD_MESSAGE = "Логин:%(login)s\nПароль:%(password)s"
     SKYSMS_MSGCHRSET = 'cyr'
     SKYSMS_MSGENCODING = 'cp1251'
+    SKYSMS_LOGFILE = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'log', 'smslog')
 
     session = {
         'session.type': 'file',
@@ -63,7 +66,8 @@ class Config:
     INNER_PHONE_DIAPASON_END = 9999
 
     files = {
-        'path': './application/files'
+        'path': './application/files',
+        'url': 'file'
     }
 
 

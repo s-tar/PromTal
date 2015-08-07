@@ -1,9 +1,11 @@
+from datetime import datetime
 from application.db import db
-from datetime import datetime, date, timedelta
 from application.models.comment import Comment, HasComments
 from application.models.mixin import Mixin
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
+from application.models.serializers.news import news_schema
+from sqlalchemy import event
 
 
 class NewsTagAssociation(db.Model):
@@ -17,9 +19,18 @@ class NewsTagAssociation(db.Model):
 class News(db.Model, Mixin, HasComments):
     __tablename__ = 'news'
 
+    (
+        STATUS_ACTIVE,
+        STATUS_DELETED,
+        STATUS_BLOCKED,
+    ) = range(3)
+
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
     text = db.Column(db.Text())
+    status = db.Column(db.Integer, default=STATUS_ACTIVE)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('news_category.id'))
     datetime = db.Column(db.DateTime, default=datetime.now)
@@ -40,24 +51,16 @@ class News(db.Model, Mixin, HasComments):
         self.views_count = (self.views_count or 0) + 1
         db.session.commit()
 
+    def after_delete_comment(self, comment=None):
+        self.__recount_comments()
+
     def after_add_comment(self, comment=None):
-        self.comments_count = (self.comments_count or 0) + 1
-        db.session.commit()
+        self.__recount_comments()
+
+    def __recount_comments(self):
+        self.comments_count = len([c for c in self.comments_all if c.status != Comment.Status.DELETED])
 
     def to_json(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'text': self.text,
-            'author_id': self.author_id,
-            'category_id': self.category_id,
-            'datetime': self.datetime,
-            'comments_count': self.comments_count,
-            'likes_count': self.likes_count,
-            'author': self.author.full_name,
-            'category': self.category,
-            'tags': self.tags,
-            'comments': self.comments,
-            }
+        return news_schema.dump(self)
 
 News.init_comments()

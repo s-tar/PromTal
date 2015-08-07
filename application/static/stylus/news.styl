@@ -5,6 +5,13 @@
   font-size: 1.5em
   padding: 10px
   display: none
+  a
+    &:first-child span
+      padding-top: 4px
+    vertical-align: top
+    display: inline-block
+    height: 20px
+    padding: 5px
 .news-list, .news-one
   > .title
     text-align: center
@@ -16,6 +23,9 @@
     &:hover
       .edit-buttons
         display: block
+    > .title
+      padding-right: 80px
+
     .text
       padding: 0px 20px
     .datetime

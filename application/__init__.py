@@ -6,6 +6,7 @@ from flask_bootstrap import Bootstrap
 
 from application.db import db, redis
 from application.ldap import ldap
+from application.sms import sms_service
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
@@ -28,6 +29,7 @@ def create_app(config_name):
     db.init_app(app)
     redis.init_app(app)
     ldap.init_app(app)
+    sms_service.init_app(app)
 
     from application import models
 
@@ -54,6 +56,10 @@ def create_app(config_name):
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('404.html'), 404
+
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('403.html'), 403
 
     @app.context_processor
     def inject_user():

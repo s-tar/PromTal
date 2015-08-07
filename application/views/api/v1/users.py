@@ -4,6 +4,7 @@ from . import api_v1
 
 from application.db import db
 from application.models.user import User
+from application.models.serializers.user import user_schema
 from application.views.api.decorators import json
 
 
@@ -25,60 +26,53 @@ def get_users():
             'page': page,
             'pages': p.pages,
         },
-        'objects': [x.to_json() for x in p.items]
+        'objects': [x.to_json().data for x in p.items],
     }
 
 
-@api_v1.get('/users/<int:id>')
+@api_v1.get('/users/<int:id>/')
 @json()
 def get_user(id):
-    user = (
-        User.query.get_or_404(id)
-    )
-    return user.to_json()
+    user = User.query.get_or_404(id)
+    return user.to_json().data
 
 
-@api_v1.delete('/users/<int:id>')
+@api_v1.delete('/users/<int:id>/')
 @json()
 def delete_user(id):
-    user = (
-        User.query.get(id)
-    )
+    user = User.query.get_or_404(id)
     db.session.delete(user)
     db.session.commit()
     return {}, 204
 
 
-@api_v1.put('/users/<int:id>')
+@api_v1.put('/users/<int:id>/')
 @json()
 def edit_user(id):
-    name = request.form.get('name')
-    email = request.form.get('email')
-    full_name = request.form.get('full_name')
-    user = (
-        User.query.get(id)
-    )
-    user.name = name
-    user.email = email
-    user.full_name = full_name
+    user = User.query.get_or_404(id)
 
-    db.session.add(user)
+    result = user_schema.load(request.get_json())
+
+    if result.errors:
+        return result.errors, 400
+
+    for field, value in result.data.items():
+        setattr(user, field, value)
+
     db.session.commit()
-    return {}, 200
+    return user.to_json().data, 200
 
 
 @api_v1.post('/users/')
 @json()
 def create_user():
-    login = request.form.get('login')
-    email = request.form.get('email')
-    full_name = request.form.get('full_name')
-    print(email, full_name)
-    user = User()
-    user.full_name = full_name
-    user.email = email
-    user.login = login
-    print(user, user.id)
+    result = user_schema.load(request.get_json())
+
+    if result.errors:
+        return result.errors, 400
+
+    user = User(**result.data)
+
     db.session.add(user)
     db.session.commit()
-    return user.to_json(), 200
+    return user.to_json().data, 200

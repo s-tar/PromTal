@@ -3,7 +3,7 @@
 
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('.add_user_post') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone}>
+    <AJAXForm action="{{ url_for('.add_user_post') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
@@ -74,7 +74,11 @@ function wellDone(){
 {#            closeButton: true#}
 {#        })#}
 {#    }#}
+<<<<<<< HEAD
 
+=======
+{#}#}
+>>>>>>> a.sapyanov
 </script>
 <script>
 window.onload = function () {

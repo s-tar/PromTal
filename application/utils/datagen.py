@@ -1,6 +1,11 @@
 import random
 import string
 
+from sqlalchemy import func
+
+from application.models.user import User
+from application import db
+
 
 def generate_password(length=8):
     password = ''.join((random.choice(string.ascii_lowercase) for _ in range(length)))
@@ -23,8 +28,12 @@ def generate_password(length=8):
     return password
 
 
-def generate_inner_phone(already_used_numbers, begin, end):
-    all_numbers = {number for number in range(begin, end)}
-    unused_numbers = all_numbers - already_used_numbers
+# def generate_inner_phone(already_used_numbers, begin, end):
+#     all_numbers = {number for number in range(begin, end)}
+#     unused_numbers = all_numbers - already_used_numbers
+#
+#     return str(random.choice(tuple(unused_numbers))) if len(unused_numbers) != 0 else None
 
-    return str(random.choice(tuple(unused_numbers))) if len(unused_numbers) != 0 else None
+
+def generate_inner_phone():
+    return int(db.session.query(func.max(User.inner_phone)).scalar()) + 1

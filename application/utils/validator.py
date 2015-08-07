@@ -56,7 +56,7 @@ class ValidData:
         return str(self.__data)
 
     def list(self, item):
-        return self.__data.get(item)
+        return self.__data.get(item, [])
 
 
 class Field:
@@ -87,7 +87,7 @@ class Field:
     def integer(self, message=None, nullable=False):
         code, message = get_message("not_integer", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
@@ -99,7 +99,7 @@ class Field:
     def float(self, message=None, nullable=False):
         code, message = get_message("not_float", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
@@ -206,7 +206,7 @@ class Field:
         for i, val in enumerate(self.val):
             if val is not None:
                 val = val.strip()
-                if re.match(r"((\+|\d{2,3})?\d{12}|\d{10,12})", val):  # TODO Create more flexible matching
+                if re.match(r"((\+|\d{2})?\d{12}|\d{10,12})", val):  # TODO Create more flexible matching
                     self.validator.valid_data.list(self.name)[i] = val
                 else:
                     self.validator.add_error(self.name, message, code, index=i)

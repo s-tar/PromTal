@@ -1,11 +1,12 @@
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify, abort
+from datetime import datetime
+from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import admin
 from application.models.user import User
 from application.forms.admin.user import EditUserForm
 from application import db, ldap
 from application.utils.validator import Validator
-from application.bl.admin import add_user_data_to_db
+from application.bl.admin import create_user, update_user, DataProcessingError
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
@@ -48,8 +49,8 @@ def s_users_json():
             </a>
         """
         i[last_columns] = manage_html.format(
-            edit_user_profile = url_for('admin.edit_user_profile', id=row_id),
-            delete_user_profile = url_for('admin.delete_user_profile', id=row_id))
+            edit_user_profile = url_for('admin.edit_user', id=row_id),
+            delete_user_profile = url_for('admin.delete_user', id=row_id))
     return jsonify(**a)
 
 
@@ -71,37 +72,49 @@ def users_index():
 
 
 @admin.get('/users/edit/<int:id>')
-def edit_user_profile(id):
+def edit_user(id):
     user = User.get_by_id(id)
-    form = EditUserForm()
-    if form.validate_on_submit():
-        user.full_name = form.full_name.data
-        user.mobile_phone = form.mobile_phone.data
-        user.inner_phone = form.inner_phone.data
-        user.birth_date = form.birth_date.data
-        user.avatar = form.avatar.data
-        user.skype = form.skype.data
-        db.session.add(user)
-        flash('The profile has been updated.')
-        return redirect(url_for('admin.users_index'))
-    form.full_name.data = user.full_name
-    form.mobile_phone.data = user.mobile_phone
-    form.inner_phone.data = user.inner_phone
-    form.birth_date.data = user.birth_date
-    form.avatar.data = user.avatar
-    form.skype.data = user.skype
-    return render_template(
-        'admin/users/edit_user_profile.html',
-        form=form,
-        user=user
-    )
+    return render_template('admin/users/edit_user_profile.html',
+                           user=user)
 
+
+@admin.post('/users/edit/<int:id>')
+def edit_user_post(id):
+    user = User.get_by_id(id)
+    data = dict(request.form)
+    data["file"] = request.files["file"]
+
+    v = Validator(data)
+    v.field('full_name').required()
+    v.field('email').required().email()
+    v.field('mobile_phone').required().phone_number()
+    v.field('inner_phone').required()
+    v.field('birth_date').datetime(format="%d.%m.%Y")
+    v.field('file').image()
+    if v.is_valid():
+        data = {
+            'login': user.login,
+            'full_name': v.valid_data.full_name,
+            'mobile_phone': v.valid_data.mobile_phone,
+            'inner_phone': v.valid_data.inner_phone,
+            'email': v.valid_data.email,
+            'skype': v.valid_data.skype,
+            'photo': v.valid_data.photo,
+            'birth_date': v.valid_data.birth_date
+        }
+
+        if not update_user(**data):
+            redirect(url_for('admin.edit_user', id=id))
+
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
 
 @admin.get('/users/delete/<int:id>')
-def delete_user_profile(id):
-    user = User.get_by_id(id)
-    db.session.delete(user)
-    db.session.commit()
+def delete_user(id):
+    # user = User.get_by_id(id)
+    # db.session.delete(user)
+    # db.session.commit()
     return redirect(url_for('admin.users_index'))
 
 
@@ -147,8 +160,12 @@ def add_user_post():
             return jsonify({"status": "fail",
                             "errors": v.errors})
 
-        add_user_data_to_db(data)
+        try:
+            create_user(**data)
+            return jsonify({"status": "ok"})
+        except DataProcessingError as e:
+            return jsonify({'status': 'failOnProcess',
+                            'error': e.value})
 
-        return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})

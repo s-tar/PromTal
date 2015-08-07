@@ -16,6 +16,7 @@ $( window ).load(function() {
         $('textarea.autosize').textareaAutoSize();
         tinymce.init({
             selector:'textarea.editor',
+            language : "ru",
             height : 200,
             plugins : [
                 "pagebreak",
@@ -26,9 +27,9 @@ $( window ).load(function() {
             pagebreak_separator: "<!-- page break -->",
             file_picker_callback: function(callback, value, meta) {
                 // Provide file and text for the link dialog
-                if (meta.filetype == 'file') {
-                    callback('mypage.html', {text: 'My text'});
-                }
+                //if (meta.filetype == 'file') {
+                //    callback('mypage.html', {text: 'My text'});
+                //}
 
                 // Provide image and alt text for the image dialog
                 if (meta.filetype == 'image') {
@@ -62,9 +63,9 @@ $( window ).load(function() {
                 }
 
                 // Provide alternative source and posted for the media dialog
-                if (meta.filetype == 'media') {
-                    callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
-                }
+                //if (meta.filetype == 'media') {
+                //    callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+                //}
             },
             setup : function(editor) {
                 editor.on('init', function() {
@@ -81,6 +82,7 @@ $( window ).load(function() {
 
 
 function niceDateFormat(date){
+    if(!date) return ''
     var now = new Date()
     date = new Date(date)
     if(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
@@ -88,4 +90,23 @@ function niceDateFormat(date){
         if(date.getDate() == now.getDate()-1) return date.format("Вчера в HH:MM");
     }
     return date.format("dd.mm.yy в HH:MM");
+}
+
+$(window).resize(function(){
+    $('.media-holder .approved img').each(function(){
+        mediaFill($(this));
+    });
+});
+$(window).load(function(){$(window).trigger('resize')})
+
+function mediaFill(img) {
+    var image = $(img);
+    var media = $(img).closest('.media');
+    var cls = 'contain';
+    var h = media[0].offsetHeight;
+    var w = media[0].offsetWidth;
+    var ih = image[0].naturalHeight;
+    var iw = image[0].naturalWidth;
+    if(ih >= h && iw >= w) cls = 'cover'
+    media.removeClass('contain').removeClass('cover').addClass(cls);
 }

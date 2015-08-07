@@ -7,9 +7,13 @@ from application.models.user import User
 
 logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
+AVAILABLE_PARAMS = ('users',)
+
 
 def fill_db():
-    if sys.argv[1] == 'users':
+    if len(sys.argv) < 2 or sys.argv[1] not in AVAILABLE_PARAMS:
+        logging.error("Wrong argument passed.")
+    elif sys.argv[1] == 'users':
         logging.info("Start filling DB ...")
         for user_attr in ldap.get_all_users():
             user = User(login=user_attr.get('cn', [''])[0],
@@ -20,8 +24,6 @@ def fill_db():
             db.session.add(user)
             db.session.commit()
         logging.info("DB has been filled successfully.")
-    else:
-        logging.error("Wrong argument passed.")
 
 if __name__ == '__main__':
     app = create_app('default')
