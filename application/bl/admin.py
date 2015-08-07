@@ -5,6 +5,14 @@ from application.utils.datagen import generate_password, generate_inner_phone
 from application.models.user import User
 
 
+class DataProcessingError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
 def create_user(login, name, surname, email, mobile_phone, department, groups):
     password = generate_password()
     inner_phone = generate_inner_phone()
@@ -21,25 +29,16 @@ def create_user(login, name, surname, email, mobile_phone, department, groups):
     }
 
     if not _add_user_to_local_db(login, name, surname, email, department, mobile_phone, inner_phone):
-        flash('Произошла ошибка при добавлении пользователя в локальную базу данных', 'error')
-        return False
-    flash('Пользователь был успешно добавлен в локальную базу данных', 'info')
+        raise DataProcessingError('Произошла ошибка при добавлении пользователя в локальную базу данных')
 
     if not _add_user_to_ldap(ldap_user_attr, groups):
-        user = User.get_by_login(login)
-        db.session.delete(user)
-        db.session.commit()
-        flash('Произошла ошибка при добавлении пользователя в каталог LDAP', 'error')
-        return False
-    flash('Пользователь был успешно добавлен в каталог LDAP', 'info')
+        db.session.rollback()
+        raise DataProcessingError('Произошла ошибка при добавлении пользователя в каталог LDAP')
 
-    if sms_service.send_password(mobile_phone.strip('+'), login, password):
-        flash('Запрос на сообщение с логином и пароле пользователя был отослан SMS-сервису', 'error')
-    else:
-        flash('Произошла ошибка при отправлении запроса на сообщение '
-              'с логином и паролем пользователя', 'info')
-
-    return True
+    if not sms_service.send_password(mobile_phone.strip('+'), login, password):
+        raise DataProcessingError('Произошла ошибка при отправлении запроса на сообщение '
+                                  'с логином и паролем пользователя')
+    db.session.commit()
 
 
 def _add_user_to_ldap(user_attr, groups):
@@ -59,7 +58,6 @@ def _add_user_to_local_db(login, name, surname, email, department, mobile_phone,
                     inner_phone=inner_phone,
                     email=email)
         db.session.add(user)
-        db.session.commit()
         return True
     except:
         return False
