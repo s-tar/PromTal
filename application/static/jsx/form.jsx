@@ -283,3 +283,85 @@ var NewPass = React.createClass({
 
     }
 });
+
+var ManageUsers = React.createClass({
+
+    getInitialState: function(){
+        return { userName: '', userList: []};
+    },
+
+    userNameChange: function(e){
+        this.setState({userName:e.target.value});
+        var name = e.target.value;
+        var self = this;
+        console.log(name);
+
+        $.ajax({
+          url: "/admin/company-structure/get-users/"+self.props.dep_id+"/"+name+"/",
+          success: function(data){
+            //console.log(data['users']);
+            self.setState({userList:[]});
+            var arr = data['users']
+            self.setState({userList:data['users']});
+            console.log(self.state.userList);
+          }
+        });
+
+    },
+
+    render: function() {
+        var self = this;
+        var users = self.state.userList;
+        console.log(users);
+        console.log(self.props.dep_id);
+        return (
+            <div>
+                <div className="input-group fio">
+                  <span className="input-group-addon" id="basic-addon1"><span className="glyphicon glyphicon-user"></span></span>
+                  <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Фамилия или имя" aria-describedby="basic-addon1" />
+                </div>
+                <ul className="media-list">
+                {users.map(function(user) {
+                  return <UserInSearch userIn={user} dep_id={self.props.dep_id} />;
+                })}
+                </ul>
+            </div>
+        );
+
+    }
+});
+
+var UserInSearch = React.createClass({
+
+    clickedUser: function(){
+        var self = this;
+        console.log("123", self.props.userIn['u_id']);
+        $.ajax({
+          url: "/admin/company-structure/set-user-dep/"+self.props.dep_id+"/"+self.props.userIn['u_id']+"/",
+          success: function(json) {
+                if(json.status == 'ok'){
+                    console.log("OK");
+                    location.reload();
+                }
+          }
+        });
+    },
+
+    render: function() {
+        var self = this;
+        var user = self.props.userIn;
+        console.log(user);
+        console.log(self.props.dep_id);
+        return (
+              <li className="media btn btn-default user-in-search" onClick={self.clickedUser}>
+                <div className="media-left">
+                    <img src={user.src_foto} className="media-object foto-small" />
+                </div>
+                <div className="media-body">
+                  <h4 className="media-heading">{user.full_name}</h4>
+                  {user.dep_name}
+                </div>
+              </li>
+        );
+    }
+});
