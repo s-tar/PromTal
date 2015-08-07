@@ -14,17 +14,28 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="{% if request.path in ['/profile', '/edit_profile', '/login', '/restore', '/new_pass', '/log_out'] %}active{% endif %} dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All links <span class="caret"></span></a>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %} dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Новости <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
-            <li><a href="{{ url_for('user.edit_profile') }}">Edit Profile</a></li>
-            <li><a href="{{ url_for('user.login') }}">Log in</a></li>
-            <li><a href="{{ url_for('user.restore') }}">Restore Pass</a></li>
-            <li><a href="{{ url_for('user.new_pass') }}">New Pass</a></li>
-            <li><a href="{{ url_for('user.log_out') }}">Log out</a></li>
+            <li><a href="/">Внутренняя информация</a></li>
+            <li><a href="/">Новый функционал</a></li>
+            <li><a href="/">Кадровые изменения</a></li>
+            <li><a href="/">Обучение/Семинары/Вебинары</a></li>
+            <li><a href="/">Мы в прессе</a></li>
           </ul>
         </li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %} dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Сотрудники <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/">Поиск сотрудника</a></li>
+            <li><a href="/">Кадровые изменения</a></li>
+            <li><a href="/">Развитие сотрудника</a></li>
+            <li><a href="/">Дни рождения</a></li>
+          </ul>
+        </li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Структура компании </a></li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Группы </a></li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Техническая поддержка </a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 

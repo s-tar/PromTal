@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from sqlalchemy import or_
 from uuid import uuid1
 from application.models.comment import HasComments
 from application.models.mixin import Mixin
@@ -72,6 +73,19 @@ class User(db.Model, AuthUser, Mixin):
     @classmethod
     def count_users_in_department(cls, department):
         return cls.query.filter_by(department_id=department).count()
+
+    @classmethod
+    def find_user(cls, dep_id, name):
+        return cls.query.filter(or_(User.department_id == None, User.department_id != dep_id)).filter(User.full_name.ilike('%'+name+'%')).limit(5).all()
+
+    @classmethod
+    def add_user2dep(cls, dep_id, user_id):
+        u = cls.query.filter_by(id=user_id).first()
+        if dep_id == 0:
+            dep_id = None
+        u.department_id = dep_id
+        db.session.add(u)
+        db.session.commit()
 
     @classmethod
     def edit_user(cls, uid, full_name=full_name,

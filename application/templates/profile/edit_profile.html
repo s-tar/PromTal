@@ -37,7 +37,7 @@ React.render(
                         <td><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
                     </tr>
                     <tr>
-                        <td><a href="/message/ну ты и лошара" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><a href="{{ url_for('user.profile') }}" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
                         <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
                     </tr>
                 </tbody>
