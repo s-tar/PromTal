@@ -77,6 +77,23 @@ window.onload = function () {
     setTimeout(funcfilestyle, 200);
 };
 </script>
+<script>
+$( function() {
+    var customLogin = false;
+    var loginElem = $( "[name='login']" );
+    var emailElem = $( "[name='email']"  );
+
+    loginElem.on( "keyup", function() {
+        customLogin = true;
+    });
+
+    emailElem.on( "keyup", function() {
+        if (!~emailElem.val().indexOf('@') && !customLogin) {
+            loginElem.val(emailElem.val());
+        }
+    });
+});
+</script>
 
 <div id="add_user_form"></div>
 {% endblock %}
