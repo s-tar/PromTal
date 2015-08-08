@@ -1,4 +1,5 @@
 import datetime
+from PIL import Image
 from application.models.file import File
 from application.utils import image
 from collections import defaultdict
@@ -149,9 +150,8 @@ def save(comment, data):
 
     db.session.commit()
 
-    files = [get_file_json(f) for f in comment.files]
     return jsonify({'status': 'ok',
-                    'comment': get_comment_json(comment, files)})
+                    'comment': get_comment_json(comment)})
 
 
 def save_files(data, comment):
@@ -173,17 +173,19 @@ def save_files(data, comment):
             if file.is_local():
                 file.makedir()
                 img = uploads.pop(0)
-                image.thumbnail(img, width=700, height=400, fill=image.COVER).save(file.get_path())
+                _img = Image.open(img)
+                width, height = _img.size
+                if width/700 < height/400:
+                    image.resize(img, max_width=700).save(file.get_path())
+                else:
+                    image.resize(img, max_height=400).save(file.get_path())
                 image.resize(img).save(file.get_path(sufix='origin'))
 
 
 @module.get('/<entity>/<int:entity_id>/json/all')
 def json_all_comments(entity, entity_id):
     comments = Comment.get_for(entity, entity_id, lazy=False)
-    files = defaultdict(list)
-    for f in File.get(module='comments', entity=comments):
-        files[f.entity].append(get_file_json(f))
-    comments = {'data': [get_comment_json(comment, files.get(File.stringify_entity(comment), [])) for comment in comments] }
+    comments = {'data': [get_comment_json(comment) for comment in comments]}
     return jsonify(comments)
 
 
@@ -196,7 +198,7 @@ def get_file_json(file):
     }
 
 
-def get_comment_json(comment, files=[]):
+def get_comment_json(comment):
     if comment:
         author = {
             'id': comment.author.id,
@@ -207,7 +209,8 @@ def get_comment_json(comment, files=[]):
         d = comment.as_dict()
         d['status'] = Comment.Status.TITLES.get(comment.status, Comment.Status.TITLES[Comment.Status.ACTIVE])
         d['author'] = author
-        d['files'] = files
+        d['my_vote'] = comment.my_vote.value if comment.my_vote else 0
+        d['files'] = [get_file_json(f) for f in comment.files]
         if comment.status == Comment.Status.DELETED:
             d['text'] = 'Сообщение удалено'
         else:
