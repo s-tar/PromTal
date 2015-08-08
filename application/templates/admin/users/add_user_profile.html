@@ -3,7 +3,7 @@
 
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('.add_user_post') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
+    <AJAXForm action="{{ url_for('.add_user_post') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
@@ -64,6 +64,18 @@ React.render(
 function wellDone(){
     window.location.href = "{{ url_for('.admin_index') }}";
 }
+
+function showErrors( data ) {
+    if (data.status == 'failOnProcess') {
+        console.log(data);
+        Popup.show({
+            content: data.error,
+            closeButton: true,
+            buttons: []
+        });
+    }
+}
+
 </script>
 <script>
 window.onload = function () {
@@ -76,6 +88,23 @@ window.onload = function () {
     }
     setTimeout(funcfilestyle, 200);
 };
+</script>
+<script>
+$( function() {
+    var customLogin = false;
+    var loginElem = $( "[name='login']" );
+    var emailElem = $( "[name='email']"  );
+
+    loginElem.on( "keyup", function() {
+        customLogin = true;
+    });
+
+    emailElem.on( "keyup", function() {
+        if (!~emailElem.val().indexOf('@') && !customLogin) {
+            loginElem.val(emailElem.val());
+        }
+    });
+});
 </script>
 
 <div id="add_user_form"></div>

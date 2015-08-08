@@ -24,6 +24,10 @@ class Department(db.Model):
         return cls.query.filter(Department.id!=uid).all()
 
     @classmethod
+    def get_all(cls):
+        return cls.query.order_by(Department.name).all()
+
+    @classmethod
     def set_parent(cls, uid, pid):
         dep = cls.query.filter_by(id=uid).first()
         dep.parent_id = pid

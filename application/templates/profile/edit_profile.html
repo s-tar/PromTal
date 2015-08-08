@@ -3,7 +3,7 @@
 
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} >
+    <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <table className="table table-striped">
@@ -37,7 +37,7 @@ React.render(
                         <td><Input className="form-control" type="text" name="skype" defaultValue="{% if current_user.skype %}{{ current_user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
                     </tr>
                     <tr>
-                        <td><a href="/message/ну ты и лошара" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><a href="{{ url_for('user.profile') }}" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
                         <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
                     </tr>
                 </tbody>
@@ -51,6 +51,17 @@ React.render(
 
 function wellDone(){
     window.location.href = "{{ url_for('user.profile') }}";
+}
+
+function showErrors( data ) {
+    if (data.status == 'failOnProcess') {
+        console.log(data);
+        Popup.show({
+            content: data.error,
+            closeButton: true,
+            buttons: []
+        });
+    }
 }
 </script>
 <script>
