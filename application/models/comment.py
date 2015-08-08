@@ -8,10 +8,11 @@ from application.models.mixin import Mixin
 from application.models.serializers.comment import comment_schema
 from application.models.vote import HasVotes, Vote
 from application.utils import auth
-from sqlalchemy import event, select, and_
+from sqlalchemy import event, select, and_, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, Session, object_session
 import application
+from sqlalchemy import orm
 
 
 class Comment(db.Model, Mixin, HasVotes):
@@ -39,8 +40,10 @@ class Comment(db.Model, Mixin, HasVotes):
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref=backref("quotes", cascade="all"))
     author = db.relationship("User", backref="comments", lazy='joined')
 
-    __my_vote = None
-    __files = []
+    @orm.reconstructor
+    def init_on_load(self):
+        self.__my_vote = None
+        self.__files = []
 
     @hybrid_property
     def my_vote(self):
@@ -50,22 +53,18 @@ class Comment(db.Model, Mixin, HasVotes):
     def my_vote_setter(self, val):
         self.__my_vote = val
 
-    def get_entity(self):
-        return
-    #
-    #
-    # @my_vote.expression
-    # def my_vote_exp(cls):
-    #     print('EXPRESSION!')
-    #     user = auth.service.get_user()
-    #     return select(Vote).where(Vote.entity == cls.__tablename__, Vote.entity_id == cls.id, Vote.user == user).first()
+    def add_file(self, file):
+        self.__files.append(file)
 
-    @property
+    @hybrid_property
     def files(self):
+        if self.__files:
+            return self.__files
         return File.get(module='comments', entity=self)
-        # if not self.__files:
-        #     self.__files = File.get(module='comments', entity=self)
-        # return self.__files
+
+    @files.setter
+    def files_setter(self, files):
+        self.__files = files
 
     def to_json(self):
         return comment_schema.dump(self)
@@ -79,17 +78,18 @@ class Comment(db.Model, Mixin, HasVotes):
         else:
             query = Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
                 .outerjoin(Vote, and_(Vote.entity == Comment.__tablename__, Vote.entity_id == Comment.id, Vote.user == user)) \
+                .outerjoin(File, File.entity == func.concat(Comment.__tablename__, '.', Comment.id)) \
                 .add_entity(Vote) \
-                .order_by(Comment.datetime.desc())
-            comments_votes = query.all()
-
-            def gen():
-                for comment, vote in comments_votes:
-                    comment.my_vote = vote
-                    yield comment
-
-            return gen()
-
+                .add_entity(File) \
+                .order_by(Comment.datetime.desc(), File.id)
+            comments_votes_files = query.all()
+            comments = []
+            for comment, vote, file in comments_votes_files:
+                if file:
+                    comment.add_file(file)
+                comment.my_vote = vote
+                comments.append(comment)
+            return comments
 
     def get_entity(self):
         return Comment.get_entities().get(self.entity, {}).get(self.entity_id)
