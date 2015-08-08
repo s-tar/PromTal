@@ -32,7 +32,7 @@ $(document).ready(function(){
         var entity = $(this).attr('data-entity');
         var entity_id = $(this).attr('data-entity-id');
         var count = parseInt($(this).attr('data-count')) || 0;
-        var my = Boolean($(this).attr('data-my-vote') != '0');
+        var my = Boolean($(this).attr('data-my-vote') == '1');
         React.render( <LikesCounter entity={entity} entity_id={entity_id} count={count} my={my}/>, $(this)[0]);
     });
 });

@@ -8,9 +8,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 log/
-migrations/
 files/
-migrations/
+migrations/versions/
 env/
 build/
 develop-eggs/

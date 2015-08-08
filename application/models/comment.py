@@ -40,6 +40,10 @@ class Comment(db.Model, Mixin, HasVotes):
     quote_for = db.relationship('Comment', remote_side=[id], order_by="Comment.datetime", backref=backref("quotes", cascade="all"))
     author = db.relationship("User", backref="comments", lazy='joined')
 
+    def __init__(self, *args, **kwargs):
+        self.__my_vote = None
+        self.__files = []
+
     @orm.reconstructor
     def init_on_load(self):
         self.__my_vote = None

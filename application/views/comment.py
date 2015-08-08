@@ -1,4 +1,5 @@
 import datetime
+from PIL import Image
 from application.models.file import File
 from application.utils import image
 from collections import defaultdict
@@ -172,7 +173,12 @@ def save_files(data, comment):
             if file.is_local():
                 file.makedir()
                 img = uploads.pop(0)
-                image.resize(img, max_width=700, max_height=400).save(file.get_path())
+                _img = Image.open(img)
+                width, height = _img.size
+                if width/700 < height/400:
+                    image.resize(img, max_width=700).save(file.get_path())
+                else:
+                    image.resize(img, max_height=400).save(file.get_path())
                 image.resize(img).save(file.get_path(sufix='origin'))
 
 
