@@ -173,6 +173,7 @@ def save_files(data, comment):
 @module.get('/<entity>/<int:entity_id>/json/all')
 def json_all_comments(entity, entity_id):
     comments = Comment.get_for(entity, entity_id, lazy=False)
+
     files = defaultdict(list)
     for f in File.get(module='comments', entity=comments):
         files[f.entity].append(get_file_json(f))
@@ -200,6 +201,7 @@ def get_comment_json(comment, files=[]):
         d = comment.as_dict()
         d['status'] = Comment.Status.TITLES.get(comment.status, Comment.Status.TITLES[Comment.Status.ACTIVE])
         d['author'] = author
+        d['my_vote'] = comment.my_vote.value if comment.my_vote else 0
         d['files'] = files
         if comment.status == Comment.Status.DELETED:
             d['text'] = 'Сообщение удалено'

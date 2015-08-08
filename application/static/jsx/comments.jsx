@@ -210,7 +210,7 @@ var Comments = React.createClass({
                 <ul className={className}>
                     <CommentForm entity={this.props.entity} entity_id={this.props.entity_id} stream={this.state.stream} root={this}/>
                     {this.state.comments.map(function(comment, i) {
-                        return <Comment entity={self.props.entity} entity_id={self.props.entity_id} key={'comment'+i} comment={comment} stream={self.state.stream} root={self}/>;
+                        return <Comment entity={self.props.entity} entity_id={self.props.entity_id} key={'comment_'+comment.id} comment={comment} stream={self.state.stream} root={self}/>;
                     })}
                 </ul>
             </div>
@@ -344,6 +344,7 @@ var Comment = React.createClass({
         }
 
         if(!!editForm) return editForm
+        console.log(comment.votes_count, comment.my_vote)
         return(
             <li className="comment">
                 <UserIcon user={comment.author}/>
@@ -352,6 +353,8 @@ var Comment = React.createClass({
                     <div className="header">
                         <a href={'/user/profile/'+comment.author.id}>{comment.author.full_name}</a>
                         <span className="datetime">{niceDateFormat(comment.datetime)}</span>
+                        <LikesCounter title="Понравилось" count={comment.votes_count || 0} entity="comment" entity_id={comment.id} my={comment.my_vote} />
+
                         {deleteButton}
                         {editButton}
                         {answerButton}

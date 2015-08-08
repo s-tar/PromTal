@@ -19,7 +19,7 @@
             <div class="author">
                 {{ user.icon(news.author) }}
                 <div class="comments-counter" title="Комментарии" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
-                <div class="likes-counter" title="Понравилось" data-count="{{ news.likes_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}" data-my-vote="{{ news.my_vote.value }}"></div>
+                <div class="likes-counter-component" title="Понравилось" data-count="{{ news.votes_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}" data-my-vote="{{ news.my_vote.value }}"></div>
                 <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
         </div>

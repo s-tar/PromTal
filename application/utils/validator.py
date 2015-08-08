@@ -91,7 +91,7 @@ class Field:
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
-                    self.validator.valid_data.list(self.name)[i] = int(val)
+                    self.validator.valid_data.list(self.name)[i] = int(val or 0)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
         return self

@@ -36,7 +36,10 @@ class Vote(db.Model, Mixin):
     entity = db.Column(db.String(255))
     entity_id = db.Column(db.Integer)
     type = db.Column(db.Integer, default=Type.VOTE)
+    votes_count = db.Column(db.Integer, default=0)
+
     user = db.relationship("User", backref="votes",)
+
 
     @staticmethod
     def get_for(entity, entity_id, user=None):
@@ -56,12 +59,15 @@ class HasVotes:
     __entities__ = {}
 
     @property
-    def entity(self):
+    def vote_entity(self):
+        return self.get_entity()
+
+    def get_vote_entity(self):
         return {'name': self.__tablename__, 'id': self.id}
 
     @property
     def votes(self):
-        return Vote.get_for(self.entity['name'], self.entity['id'])
+        return Vote.get_for(self.get_vote_entity()['name'], self.get_vote_entity()['id'])
 
     @property
     def my_vote(self):
@@ -70,7 +76,7 @@ class HasVotes:
 
     @classmethod
     def init_votes(cls):
-        cls.__entities__[cls.__tablename__] = cls
+        HasVotes.__entities__[cls.__tablename__] = cls
         event.listen(cls, 'after_delete', HasVotes.after_entity_delete)
 
     @staticmethod
@@ -85,3 +91,5 @@ class HasVotes:
     def after_delete_vote(self, vote=None):
         pass
 
+    def after_update_vote(self, value):
+        pass

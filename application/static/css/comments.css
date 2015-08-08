@@ -21,6 +21,15 @@
 .comments .comment {
   position: relative;
 }
+.comments .comment .likes-counter {
+  margin-left: 10px;
+}
+.comments .comment .likes-counter:not(.active) {
+  opacity: 0.3;
+}
+.comments .comment .likes-counter:hover {
+  opacity: 1;
+}
 .comments .comment .system-message {
   color: #ccc;
 }

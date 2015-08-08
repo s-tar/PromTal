@@ -65,12 +65,20 @@
 }
 .news-list article .footer .comments-counter,
 .news-one article .footer .comments-counter,
-.news-list article .footer .likes-counter,
-.news-one article .footer .likes-counter,
+.news-list article .footer .likes-counter-component,
+.news-one article .footer .likes-counter-component,
 .news-list article .footer .views,
 .news-one article .footer .views {
   float: right;
-  margin-left: 10px;
+  margin-left: 15px;
+}
+.news-list article .footer .comments-counter span,
+.news-one article .footer .comments-counter span,
+.news-list article .footer .likes-counter-component span,
+.news-one article .footer .likes-counter-component span,
+.news-list article .footer .views span,
+.news-one article .footer .views span {
+  padding: 0px 3px;
 }
 .news-list article .footer .comments-counter,
 .news-one article .footer .comments-counter {

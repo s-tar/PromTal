@@ -63,10 +63,13 @@ class News(db.Model, Mixin, HasComments, HasVotes):
         self.comments_count = len([c for c in self.comments_all if c.status == Comment.Status.ACTIVE])
 
     def after_delete_vote(self, vote=None):
-        self.votes_count -= 1
+        self.votes_count = (self.votes_count or 0) - 1
 
     def after_add_vote(self, vote=None):
-        self.votes_count += 1
+        self.votes_count = (self.votes_count or 0) + 1
+
+    def after_update_vote(self, value):
+        self.votes_count = (self.votes_count or 0) + value
 
     def to_json(self):
         return news_schema.dump(self)
