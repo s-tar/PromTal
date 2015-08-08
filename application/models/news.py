@@ -1,5 +1,4 @@
-from datetime import datetime, date, timedelta
-
+from datetime import datetime
 from application.db import db
 from application.models.comment import Comment, HasComments
 from application.models.mixin import Mixin
@@ -60,7 +59,7 @@ class News(db.Model, Mixin, HasComments, HasVotes):
         self.__recount_comments()
 
     def __recount_comments(self):
-        self.comments_count = len([c for c in self.comments_all if c.status == Comment.Status.ACTIVE])
+        self.comments_count = len([c for c in self.comments_all if c.status != Comment.Status.DELETED])
 
     def after_delete_vote(self, vote=None):
         self.votes_count = (self.votes_count or 0) - 1

@@ -1,6 +1,6 @@
 from enum import Enum
 from application.models.file import File
-from datetime import datetime
+from datetime import datetime as _datetime
 from collections import defaultdict
 
 from application.db import db
@@ -29,7 +29,8 @@ class Comment(db.Model, Mixin, HasVotes):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     text = db.Column(db.Text())
-    datetime = db.Column(db.DateTime, default=datetime.now)
+    datetime = db.Column(db.DateTime, default=_datetime.now)
+    modify_datetime = db.Column(db.DateTime, default=_datetime.now)
     entity = db.Column(db.String(255))
     entity_id = db.Column(db.Integer)
     quote_for_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
