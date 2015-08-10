@@ -1,4 +1,5 @@
 import ldap3
+from flask import current_app
 
 from application import ldap, db, sms_service
 from application.models.user import User
@@ -35,7 +36,8 @@ def modify_password(login, old_password, new_password):
 
 def create_user(login, name, surname, email, mobile_phone, department, groups):
     password = generate_password()
-    inner_phone = generate_inner_phone()
+    inner_phone = generate_inner_phone(current_app.config['INNER_PHONE_DIAPASON_BEGIN'],
+                                       current_app.config['INNER_PHONE_DIAPASON_END'])
     ldap_user_attr = {
         'cn': login,
         'userPassword': password,
