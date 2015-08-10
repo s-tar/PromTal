@@ -170,6 +170,35 @@ class LDAP(object):
             yield entry['attributes']
         conn.unbind()
 
+    def get_all_departments(self):
+        departments = set()
+        conn = self.bind()
+        conn.search(search_base=current_app.config['LDAP_USER_BASE_DN'],
+                    search_filter=current_app.config['LDAP_USER_OBJECT_FILTER'] % '*',  # TODO remove hard-code
+                    search_scope=ldap3.SUBTREE,
+                    attributes=['departmentNumber'])
+        for entry in conn.response:
+            department = entry['attributes'].get('departmentNumber', [None])[0]
+            if department is not None and department not in departments:
+                departments.add(department)
+                yield department
+        conn.unbind()
+
+    def get_department_info(self):
+        departments_info = {}
+        conn = self.bind()
+        conn.search(search_base=current_app.config['LDAP_USER_BASE_DN'],
+                    search_filter=current_app.config['LDAP_USER_OBJECT_FILTER'] % '*',  # TODO remove hard-code
+                    search_scope=ldap3.SUBTREE,
+                    attributes=['departmentNumber', 'cn'])
+        for entry in conn.response:
+            department = entry['attributes'].get('departmentNumber', [None])[0]
+            user = entry['attributes'].get('cn', [None])[0]
+            if department is not None and user is not None:
+                departments_info.setdefault(department, set()).add(user)
+        conn.unbind()
+        return departments_info
+
     def get_object_details(self, user=None, group=None, dn_only=False):
         filter = None
         attributes = None
