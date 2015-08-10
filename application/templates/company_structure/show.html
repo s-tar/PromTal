@@ -1,8 +1,65 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="row">
-    <div class="col-sm-6 col-md-4 col-md-offset-4">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <h1>Структура компании</h1>
+
+
+    <script>
+    jQuery(document).ready(function() {
+        $("#org").jOrgChart({
+			chartElement : '#chart'
+		});
+		
+		/* Extra Code */
+		$("#show-list").click(function(e){
+			e.preventDefault();
+			
+			$('#list-html').toggle('fast', function(){
+				if($(this).is(':visible')){
+					$('#show-list').text('Hide underlying list.');
+					$(".topbar").fadeTo('fast',0.9);
+				}else{
+					$('#show-list').text('Show underlying list.');
+					$(".topbar").fadeTo('fast',1);					
+				}
+			});
+		});
+    });
+    </script>
+
+
+    <ul id="org" style="display:none">
+    {%- for dep in departments recursive %}
+        <li>
+            <p>{{ dep.name }}</p>
+        {%- if dep.dep_list -%}
+            <ul><p>{{ loop(dep.dep_list) }}</p></ul>
+        {%- endif %}</li>
+    {%- endfor %}
+    </ul>
+	
+	<div id="chart" class="orgChart"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
 </div>
 {% endblock %}
