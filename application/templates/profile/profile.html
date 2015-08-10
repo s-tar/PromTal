@@ -4,7 +4,6 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <h2>{% if user.full_name %}{{ user.full_name }}{% else %}R2D2{% endif %}</h2>
-    <p># Astromech droid</p>
 
     {% if user.id == current_user.id %}
     <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a> &nbsp; 
@@ -28,21 +27,27 @@
                 <td># Manager</td>
                 <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
             </tr>
+            {% if user.department %}
+                <tr>
+                    <td>Подразделение</td>
+                    <td><span class="glyphicon glyphicon-tower"></span> {{ user.department.name }}</td>
+                </tr>
+            {% endif %}
             {% if user.inner_phone %}
                 <tr>
-                    <td>Office Phone</td>
+                    <td>Внутренний номер</td>
                     <td><span class="glyphicon glyphicon-home"></span> {{ user.inner_phone }}</td>
                 </tr>
             {% endif %}
             {% if user.birth_date %}
                 <tr>
-                    <td>Birth date</td>
+                    <td>Дата рождения</td>
                     <td><span class="glyphicon glyphicon-glass"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
                 </tr>
             {% endif %}
             {% if user.mobile_phone %}
                 <tr>
-                    <td>Cell Phone</td>
+                    <td>Номер мобильного телефона</td>
                     <td><span class="glyphicon glyphicon-headphones"></span> {{ user.mobile_phone }}</td>
                 </tr>
             {% endif %}

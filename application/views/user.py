@@ -7,6 +7,7 @@ from flask.json import jsonify
 from werkzeug.utils import secure_filename
 from application.mail_sender import send_mail_restore_pass
 from application.models.user import User, PasswordRestore
+from application.models.department import Department
 from datetime import datetime
 from application.bl.users import restore_password, modify_password, PasswordError, DataProcessingError, update_user
 
@@ -29,7 +30,9 @@ def profile_id(user_id):
 
 @user.get("/profile/edit")
 def edit_profile():
-    return render_template('profile/edit_profile.html')
+    departments = Department.query.all()
+    return render_template('profile/edit_profile.html',
+                           departments={department.name for department in departments})
 
 
 @user.post('/profile/edit')
@@ -43,6 +46,7 @@ def edit_profile_post():
     v.field('email').required().email()
     v.field('mobile_phone').required().phone_number()
     v.field('inner_phone').required()
+    v.field('department').required()
     v.field('birth_date').datetime(format="%d.%m.%Y")
     v.field('file').image()
     if v.is_valid():
@@ -51,6 +55,7 @@ def edit_profile_post():
             'full_name': v.valid_data.full_name,
             'mobile_phone': v.valid_data.mobile_phone,
             'inner_phone': v.valid_data.inner_phone,
+            'department': v.valid_data.department,
             'email': v.valid_data.email,
             'skype': v.valid_data.skype,
             'photo': v.valid_data.photo,
@@ -64,7 +69,6 @@ def edit_profile_post():
             return jsonify({'status': 'failOnProcess',
                             'error': e.value})
 
-        return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
 
