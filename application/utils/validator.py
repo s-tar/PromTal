@@ -87,11 +87,11 @@ class Field:
     def integer(self, message=None, nullable=False):
         code, message = get_message("not_integer", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
-                    self.validator.valid_data.list(self.name)[i] = int(val)
+                    self.validator.valid_data.list(self.name)[i] = int(val or 0)
                 except ValueError:
                     self.validator.add_error(self.name, message, code, index=i)
         return self
@@ -99,7 +99,7 @@ class Field:
     def float(self, message=None, nullable=False):
         code, message = get_message("not_float", message)
         for i, val in enumerate(self.val):
-            if nullable and val is "":
+            if nullable and (val is "" or val is None):
                 self.validator.valid_data.list(self.name)[i] = None
             else:
                 try:
@@ -201,9 +201,15 @@ class Field:
             self.validator.add_error(self.name, message % {'field': field.name}, code)
         return self
 
-    def old_password(self, message=None):
-        code, message = get_message("old_password", message)
-        self.validator.add_error(self.name, message, code)
+    def phone_number(self, message=None):
+        code, message = get_message('phone_number', message)
+        for i, val in enumerate(self.val):
+            if val is not None:
+                val = val.strip()
+                if re.match(r"((\+|\d{2})?\d{12}|\d{10,12})", val):  # TODO Create more flexible matching
+                    self.validator.valid_data.list(self.name)[i] = val
+                else:
+                    self.validator.add_error(self.name, message, code, index=i)
         return self
 
 
@@ -221,7 +227,7 @@ def get_message(code, message):
         'wrong_email_format': 'Введен неверный адрес электронной почты',
         'wrong_datetime_format': 'Неверный формат',
         'equal': "Должно повторять значение поля %(field)s",
-        'old_password': 'Неверный старый пароль',
+        'phone_number': 'Введен неверный номер мобильного телефона'
     }
     if message is None:
         message = messages[code]

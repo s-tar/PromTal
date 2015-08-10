@@ -24,14 +24,19 @@
     <script src="/static/js/lib/fancybox/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" ></script>
     <script src="/static/js/script.js"></script>
     <script src="/static/js/markup.js"></script>
+    <script src="/static/js/news.js"></script>
+
     <script src="/static/jsx/form.jsx" type="text/jsx"></script>
+    <script src="/static/jsx/popup.jsx" type="text/jsx"></script>
     <script src="/static/jsx/user.jsx" type="text/jsx"></script>
     <script src="/static/jsx/media.jsx" type="text/jsx"></script>
     <script src="/static/jsx/comments.jsx" type="text/jsx"></script>
+    <script src="/static/jsx/vote.jsx" type="text/jsx"></script>
 
 </head>
 <body>
     {% include 'header.html' %}
+    <div id="popup"></div>
     <div class="container">
         <div class="row">
             <div classs="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -44,8 +49,8 @@
         var current_user = {
             id: {{ current_user.id or 0 }},
             full_name: '{{ current_user.full_name or '' }}',
-            photo: '{{ current_user.photo or '' }}',
-            photo_s: '{{ current_user.photo_s or '' }}',
+            photo: '{{ current_user.photo.get_url if current_user.photo else '' }}',
+            photo_s: '{{ current_user.photo.get_url('thumbnail') if current_user.photo else '' }}',
             is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }}
         }
     </script>

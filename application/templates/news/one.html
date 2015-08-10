@@ -3,12 +3,15 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="row">
-<div class="col-sm-6 col-sm-offset-3">
+<div class="col-sm-8 col-sm-offset-2">
 <div class="news-one">
     <article class="frame">
+        {% if current_user == news.author %}
         <div class="edit-buttons">
             <a href="/news/edit/{{ news.id }}"><span class="fa fa-edit"></span></a>
+            <a href="javascript: news.delete({{ news.id }})"><span class="fa fa-trash-o"></span></a>
         </div>
+        {% endif %}
         <h3 class="title">{{ news.title or '' }}</h3>
         <div class="text">{{ news.text|safe or '' }}</div>
         <div class="datetime">{{ news.datetime|datetime(time=False) or '' }}</div>
@@ -16,7 +19,7 @@
             <div class="author">
                 {{ user.icon(news.author) }}
                 <div class="comments-counter" title="Комментарии" data-count="{{ news.comments_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
-                <div class="likes" title="Понравилось"><span class="fa fa-heart"></span>{{ news.likes_count or 0 }}</div>
+                <div class="likes-counter-component" title="Понравилось" data-count="{{ news.votes_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}" data-my-vote="{{ news.my_vote.value }}"></div>
                 <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
         </div>
@@ -27,8 +30,6 @@
             <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
             document.getElementById('comments'))
     </script>
-    <!--{{ comments.new(current_user, news.entity.name, news.entity.id) }}-->
-    <!--{{ comments.show(news.comments_all) }}-->
 </div>
 </div>
 </div>

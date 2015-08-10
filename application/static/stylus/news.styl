@@ -5,6 +5,13 @@
   font-size: 1.5em
   padding: 10px
   display: none
+  a
+    &:first-child span
+      padding-top: 4px
+    vertical-align: top
+    display: inline-block
+    height: 20px
+    padding: 5px
 .news-list, .news-one
   > .title
     text-align: center
@@ -16,6 +23,9 @@
     &:hover
       .edit-buttons
         display: block
+    > .title
+      padding-right: 80px
+
     .text
       padding: 0px 20px
     .datetime
@@ -38,14 +48,11 @@
         height: 30px
         top: -15px
         left: 20px
-      .comments-counter, .likes, .views
+      .comments-counter, .likes-counter-component, .views
         float: right
-        margin-left: 10px
-        font-weight: 1.2em
+        margin-left: 15px
         span
-          margin: 0px 5px
-      .likes
-        color: #e7422c
+          padding: 0px 3px
       .comments-counter
         color: #779dca
       .views

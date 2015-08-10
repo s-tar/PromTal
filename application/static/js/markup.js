@@ -99,21 +99,23 @@ function markup(text){
         return wrapper
     }
 
-    out = text.replace('<', '&lt;').replace('>', '&gt;')
-    out = out.replace('...', '&hellip;')
+    out = text.replace('<', '&lt;').replace('>', '&gt;');
+    out = out.replace('...', '&hellip;');
 
-    out = out.replace(/(^|\s)+--(\s|$)+/gi, "$1&mdash;$2")
+    out = out.replace(/(^|\s)+--(\s|$)+/gi, "$1&mdash;$2");
 
-    out = out.replace(/\[raw](.*?)\[\/raw]/gi, removeTags('raw'))
-    out = out.replace(/\[code](.*?)\[\/code]/gi, removeTags('code'))
+    out = out.replace(/\[raw](.*?)\[\/raw]/gi, removeTags('raw'));
+    out = out.replace(/\[code](.*?)\[\/code]/gi, removeTags('code'));
 
-    out = out.replace(/\/\/\/(.+?)\/\/\//gi, '<i>$1</i>')
-    out = out.replace(/\+\+\+(.+?)\+\+\+/gi, '<b>$1</b>')
-    out = out.replace(/---(.+?)---/gi, '<del>$1</del>')
-    out = out.replace(/___(.+?)___/gi, '<ins>$1</ins>')
+    out = out.replace(/\/\/\/(.+?)\/\/\//gi, '<i>$1</i>');
+    out = out.replace(/\+\+\+(.+?)\+\+\+/gi, '<b>$1</b>');
+    out = out.replace(/---(.+?)---/gi, '<del>$1</del>');
+    out = out.replace(/___(.+?)___/gi, '<ins>$1</ins>');
 
-    out = out.replace(/\[raw:(.*?)]/gi, insertTags('{0}'))
-    out = out.replace(/\[code:(.*?)]/gi, insertTags('<code>{0}</code>'))
+    out = out.replace(/(^|\s)(.+):\/\/(.+?)($|\s)/gi, '$1<a href="$2://$3">$2://$3</a>$4');
+
+    out = out.replace(/\[raw:(.*?)]/gi, insertTags('{0}'));
+    out = out.replace(/\[code:(.*?)]/gi, insertTags('<code>{0}</code>'));
 
     out = addSmiles(out)
     return out
