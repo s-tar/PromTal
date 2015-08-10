@@ -146,7 +146,10 @@ class User(db.Model, AuthUser, Mixin):
         return u
 
     def get_permissions(self):
-        return set(self.permissions + [role.permissions for role in self.roles])
+        return set(self.permissions.all() + [role.permissions for role in self.roles.all()])
+
+    def has_role(self, role):
+        return role in self.roles
 
     @property
     def age(self):

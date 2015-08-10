@@ -2,6 +2,7 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from application import db, create_app
+from application.models.user import Permission
 
 app = create_app('default')
 manager = Manager(app)
@@ -13,8 +14,14 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def sync_permissions():
-    pass
-
+    for name, title in Permission.PERMISSIONS:
+        permission = Permission.query.filter_by(name=name).first()
+        if permission is None:
+            p = Permission()
+            p.name = name
+            p.title = title
+            db.session.add(p)
+            db.session.commit()
 
 if __name__ == '__main__':
     manager.run()

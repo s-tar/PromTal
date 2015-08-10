@@ -11,7 +11,7 @@ class UserSchema(Schema):
     full_name = fields.Str()
     login = fields.Str()
     status = StatusField()
-    roles = RolesField()
+    is_admin = fields.Boolean()
     mobile_phone = fields.Str()
     inner_phone = fields.Str()
     birth_date = fields.Date()
