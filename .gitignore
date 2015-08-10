@@ -7,9 +7,9 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-migrations/
+log/
 files/
-migrations/
+migrations/versions/
 env/
 build/
 develop-eggs/

@@ -1,3 +1,4 @@
+import collections
 import application
 from application import db
 from application.config import Config as config
@@ -27,8 +28,8 @@ class File(db.Model, Mixin):
         if name or module or entity:
             query = cls.query
             if entity:
-                if isinstance(entity, list):
-                    query = query.filter(File.entity.in_((File.stringify_entity(e) for e in entity)))
+                if isinstance(entity, collections.Iterable):
+                    query = query.filter(File.entity.in_([File.stringify_entity(e) for e in entity]))
                 else:
                     query = query.filter(File.entity == File.stringify_entity(entity))
             if module: query = query.filter(File.module == module)

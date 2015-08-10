@@ -8,6 +8,7 @@
     {%- for dep in departments recursive %}
         <li>
             <p>{{ dep.name }}
+                <a href="{{ url_for('admin.department_info', dep_id=dep.id) }}"><span class="glyphicon glyphicon-user"></span></a>
                 <a href="{{ url_for('admin.edit_structure', dep_id=dep.id) }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a href="{{ url_for('admin.add_structure', dep_id=dep.id) }}"><span class="glyphicon glyphicon-plus"></span></a>
                 <a href="{{ url_for('admin.delete_structure', dep_id=dep.id) }}"><span class="glyphicon glyphicon-minus"></span></a>

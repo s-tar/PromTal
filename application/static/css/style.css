@@ -161,3 +161,19 @@ h3.title a:hover {
 .popup-wrapper td .popup-window > .buttons button.right {
   float: right;
 }
+.likes-counter {
+  color: #e7422c;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+.likes-counter span {
+  padding: 0px 3px;
+  display: inline-block;
+}
+.likes-counter .icon:before {
+  content: '\f08a';
+}
+.likes-counter.active .icon:before {
+  content: '\f004';
+}

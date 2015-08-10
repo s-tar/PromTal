@@ -124,3 +124,16 @@ h3.title a
             float: left
           &.right
             float: right
+
+.likes-counter
+  color: #e7422c
+  cursor: pointer
+  display: inline-block
+  position: relative
+  span
+    padding: 0px 3px
+    display: inline-block
+  .icon:before
+    content: '\f08a'
+  &.active .icon:before
+    content: '\f004'

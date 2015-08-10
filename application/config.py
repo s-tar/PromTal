@@ -1,3 +1,5 @@
+import os
+
 
 class Config:
 
@@ -37,11 +39,17 @@ class Config:
     LDAP_USER_OBJECT_FILTER = '(cn=%s)'
     LDAP_USER_PASSWORD_FIELD = 'userPassword'
     LDAP_USER_FIELDS = ['cn', 'displayName', 'mail', 'mobile', 'telephoneNumber']
-
     LDAP_GROUP_BASE_DN = 'ou=Group,' + LDAP_BASE_DN
     LDAP_GROUP_OBJECT_FILTER = '(cn=%s)'
     LDAP_GROUP_MEMBER_FIELD = 'member'
     LDAP_GROUP_FIELDS = ['cn']
+
+    SKYSMS_USERNAME = 'username'
+    SKYSMS_PASSWORD = 'password'
+    SKYSMS_PASSWORD_MESSAGE = "Логин:%(login)s\nПароль:%(password)s"
+    SKYSMS_MSGCHRSET = 'cyr'
+    SKYSMS_MSGENCODING = 'cp1251'
+    # SKYSMS_LOGFILE = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'log', 'smslog')
 
     session = {
         'session.type': 'file',
