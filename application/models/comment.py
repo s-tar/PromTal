@@ -81,18 +81,21 @@ class Comment(db.Model, Mixin, HasVotes):
                 .order_by(Comment.datetime.desc()).all()
         else:
             query = Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
-                .outerjoin(Vote, and_(Vote.entity == Comment.__tablename__, Vote.entity_id == Comment.id, Vote.user == user)) \
+                .outerjoin(Vote, and_(Vote.entity == Comment.__tablename__, Vote.entity_id == Comment.id, Vote.user_id == user.id)) \
                 .outerjoin(File, File.entity == func.concat(Comment.__tablename__, '.', Comment.id)) \
                 .add_entity(Vote) \
                 .add_entity(File) \
                 .order_by(Comment.datetime.desc(), File.id)
             comments_votes_files = query.all()
             comments = []
+            added = {}
             for comment, vote, file in comments_votes_files:
                 if file:
                     comment.add_file(file)
                 comment.my_vote = vote
-                comments.append(comment)
+                if not added.get(comment.id):
+                    comments.append(comment)
+                    added[comment.id] = True
             return comments
 
     def get_entity(self):

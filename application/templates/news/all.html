@@ -2,8 +2,6 @@
 {% import "macros/user.html" as user %}
 
 {% block content %}
-<div class="row">
-<div class="col-sm-8 col-sm-offset-2">
 <div class="news-list">
     {% for n in news %}
     <article class="frame">
@@ -14,8 +12,8 @@
         </div>
         {% endif %}
         <h3 class="title"><a href="/news/{{ n.id }}">{{ n.title or '' }}</a></h3>
-        <div class="text">{{ n.announcement|safe or '' }}</div>
-        <div class="datetime">{{ n.datetime|datetime or '' }}</div>
+        <div class="text" onCLick="javascript: window.location.href='/news/{{ n.id }}'">{{ n.announcement|safe or '' }}</div>
+        <div class="datetime">{{ n.datetime|datetime(old_time=False) or '' }}</div>
         <div class="footer">
             <div class="author">
                 {{ user.icon(n.author) }}
@@ -26,13 +24,5 @@
         </div>
     </article>
     {% endfor %}
-</div>
-</div>
-<div class="col-sm-2">
-    {% if current_user.is_authorized() %}
-    <a href="/news/new" class="button new">Новая новость</a>
-    {% endif %}
-
-</div>
 </div>
 {% endblock %}

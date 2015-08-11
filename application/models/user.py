@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, date
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, extract
 from uuid import uuid1
 from application.models.mixin import Mixin
 from application.models.file import File
@@ -76,6 +76,7 @@ class User(db.Model, AuthUser, Mixin):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
     is_admin = db.Column(db.Boolean, default=False)
+    reg_date = db.Column(db.DateTime, default=datetime.now)
 
     permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users")
     roles = db.relationship("Role", secondary=user_role_associate, backref="users")
@@ -104,6 +105,22 @@ class User(db.Model, AuthUser, Mixin):
     @classmethod
     def find_user(cls, dep_id, name):
         return cls.query.filter(or_(User.department_id == None, User.department_id != dep_id)).filter(User.full_name.ilike('%'+name+'%')).limit(5).all()
+
+    @classmethod
+    def get_new(cls):
+        today = date.today()
+        delta = today - timedelta(days=30)
+        return cls.query.filter(User.reg_date > delta).order_by(User.reg_date.desc(), User.full_name).all()
+
+    @classmethod
+    def get_birthday(cls):
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+        return cls.query.filter(
+            or_(
+                and_(extract('month', User.birth_date) == today.month, extract('day', User.birth_date) == today.day),
+                and_(extract('month', User.birth_date) == tomorrow.month, extract('day', User.birth_date) == tomorrow.day)
+            )).order_by(User.birth_date.desc(), User.full_name).all()
 
     @classmethod
     def add_user2dep(cls, dep_id, user_id):

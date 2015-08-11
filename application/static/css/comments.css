@@ -20,6 +20,7 @@
 }
 .comments .comment {
   position: relative;
+  margin: 5px 0px;
 }
 .comments .comment .likes-counter {
   margin-left: 10px;

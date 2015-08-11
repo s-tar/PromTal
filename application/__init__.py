@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 
+from application.utils import widget
 from application.db import db, redis
 from application.ldap import ldap
 from application.sms import sms_service
@@ -40,17 +41,28 @@ def create_app(config_name):
     #     print(rule, rule.methods)
 
     @app.template_filter('datetime')
-    def format_datetime(value, time=True):
+    def format_datetime(value, time=True, old_time=True, check_year=True):
+        _date = value
+        if isinstance(value, datetime):
+            _date = value.date()
+
         time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
-        if value.date() == datetime.today().date():
-            date_str = ' '.join(("Сегодня", time_str))
-        elif value.date() == date.today() - timedelta(1):
-            date_str = ' '.join(("Вчера", time_str))
+
+        today = date.today()
+        if not check_year:
+            value = value.replace(year=today.year)
+        if _date == today:
+            date_str = "Сегодня"
+        elif _date == today - timedelta(1):
+            date_str = "Вчера"
+        elif _date == today + timedelta(1):
+            date_str = "Завтра"
         else:
             date_str = value.strftime('%d.%m.%y')
-            date_str = ' '.join((date_str, time_str)) if time else date_str
+            time = time if old_time else False
 
+        date_str = ' '.join((date_str, time_str)) if time else date_str
         return date_str
 
     @app.errorhandler(404)
@@ -63,7 +75,10 @@ def create_app(config_name):
 
     @app.context_processor
     def inject_user():
-        return dict(current_user=get_user())
+        return {
+            'current_user': get_user(),
+            'widget': widget.get
+        }
 
     return app
 

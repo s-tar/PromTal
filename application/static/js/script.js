@@ -81,15 +81,24 @@ $( window ).load(function() {
 });
 
 
-function niceDateFormat(date){
-    if(!date) return ''
+var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+function dateDiffInDays(a, b) {
+  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+function niceDateFormat(date, time){
     var now = new Date()
+    if(!date) return ''
+    time = time || true;
     date = new Date(date)
-    if(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
-        if(date.getDate() == now.getDate()) return date.format("Сегодня в HH:MM");
-        if(date.getDate() == now.getDate()-1) return date.format("Вчера в HH:MM");
-    }
-    return date.format("dd.mm.yy в HH:MM");
+
+    if(dateDiffInDays(now, date) == 0) return date.format("Сегодня" + (time ? " в HH:MM" : ""));
+    if(dateDiffInDays(now, date) == -1) return date.format("Вчера" + (time ? " в HH:MM" : ""));
+    if(dateDiffInDays(now, date) == 1) return date.format("Завтра" + (time ? " в HH:MM" : ""));
+
+    return date.format("dd.mm.yy" + (time ? " в HH:MM" : ""));
 }
 
 $(window).resize(function(){

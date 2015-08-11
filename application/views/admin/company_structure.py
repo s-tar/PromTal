@@ -31,6 +31,12 @@ def company_structure():
     return render_template('admin/company_structure/structure.html', departments=departments)
 
 
+@admin.get('/company-structure-show')
+def company_structure_show():
+    departments = get_departments()
+    return render_template('admin/company_structure/structure_show.html', departments=departments)
+
+
 @admin.get('/department/<int:dep_id>')
 def department_info(dep_id):
     department = Department.get_by_id(dep_id)
@@ -48,10 +54,10 @@ def dep_users_json(dep_id):
     columns.append(ColumnDT('inner_phone', filter=_default_value))
     query = db.session.query(User).filter_by(department_id=dep_id)
     rowTable = DataTables(request, User, query, columns)
-    a = rowTable.output_result()
+    json_result = rowTable.output_result()
     departments = Department.get_all()
-    for i in a['aaData']:
-        row_id = i['0']
+    for row in json_result['aaData']:
+        row_id = row['0']
         last_columns = str(len(columns))
         dep_html = ''
         for dep in departments:
@@ -67,15 +73,15 @@ def dep_users_json(dep_id):
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
           """
-        i[last_columns] = manage_html
+        row[last_columns] = manage_html
         src_foto = ''
         user = User.get_by_id(row_id)
         if user.photo:
             src_foto = user.photo.get_url('thumbnail')
         else:
             src_foto = '/static/img/no_photo.jpg'
-        i['1'] = """<img src="{src}" class="foto-small-struct">""".format(src = src_foto) + i['1']
-    return jsonify(**a)
+        row['1'] = """<img src="{src}" class="foto-small-struct">""".format(src = src_foto) + "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
+    return jsonify(**json_result)
 
 
 @admin.get('/company-structure/edit/<int:dep_id>')
@@ -95,7 +101,6 @@ def edit_structure_post():
         name_structure = v.valid_data.name_structure
         Department.rename(request.form.get("department_id"), name_structure)
         Department.set_parent(request.form.get("department_id"), request.form.get("parent"))
-        print(request.form.get("parent"))
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
@@ -135,7 +140,6 @@ def manage_users(dep_id):
 def get_list_users(dep_id, user_name):
     department = Department.get_by_id(dep_id)
     users = User.find_user(dep_id, user_name)
-    print(users)
     users_list = []
     a = {"users":[]}
     for u in users:
@@ -158,6 +162,5 @@ def get_list_users(dep_id, user_name):
 
 @admin.get('/company-structure/set-user-dep/<int:dep_id>/<int:user_id>/')
 def set_user_to_dep(dep_id, user_id):
-    print("\n\n\n", dep_id, user_id)
     User.add_user2dep(dep_id, user_id)
     return jsonify({'status': 'ok'})

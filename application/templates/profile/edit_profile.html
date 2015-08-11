@@ -5,28 +5,46 @@
 React.render(
     <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
-          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <table className="table table-striped">
                 <tbody>
                     <tr>
-                        <td>Full name</td>
+                        <td>Имя и фамилия</td>
                         <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
                     </tr>
                     <tr>
-                        <td>Avatar</td>
+                        <td>Аватар</td>
                         <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
                     </tr>
                     <tr>
-                        <td>Office Phone</td>
+                        <td>Внутренний номер</td>
                         <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if current_user.inner_phone %}{{ current_user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
                     </tr>
                     <tr>
-                        <td>Birth date</td>
+                        <td>Дата рождения</td>
                         <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if current_user.birth_date %}{{ current_user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
                     </tr>
                     <tr>
-                        <td>Cell Phone</td>
+                        <td>Номер мобильного телефона</td>
                         <td><Input className="form-control" type="text" name="mobile_phone" defaultValue="{% if current_user.mobile_phone %}{{ current_user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
+                    </tr>
+                    <tr>
+                        <td>Подразделение</td>
+                        <td>
+                            <Select className="form-control" type="text" name="department">
+                            {% for department in departments %}
+                                {% if current_user.department %}
+                                    {% if department == current_user.department.name %}
+                                        <option selected="selected">{{ department }}</option>
+                                    {% else %}
+                                        <option>{{ department }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option>{{ department }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            </Select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Email</td>
@@ -42,8 +60,6 @@ React.render(
                     </tr>
                 </tbody>
             </table>
-          </div>
-          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
           </div>
         </div>
     </AJAXForm>,

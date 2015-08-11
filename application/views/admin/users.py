@@ -3,7 +3,7 @@ from flask import render_template, request, current_app, flash, url_for, redirec
 
 from application.views.admin.main import admin
 from application.models.user import User
-from application.forms.admin.user import EditUserForm
+from application.models.department import Department
 from application import db, ldap
 from application.utils.validator import Validator
 from application.bl.users import create_user, update_user, DataProcessingError
@@ -36,9 +36,10 @@ def s_users_json():
     columns.append(ColumnDT('inner_phone', filter=_default_value))
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
-    a = rowTable.output_result()
-    for i in a['aaData']:
-        row_id = i['0']
+    json_result = rowTable.output_result()
+    for row in json_result['aaData']:
+        row_id = row['0']
+        row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
         last_columns = str(len(columns))
         manage_html = """
             <a href="{edit_user_profile}">
@@ -48,10 +49,10 @@ def s_users_json():
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
         """
-        i[last_columns] = manage_html.format(
+        row[last_columns] = manage_html.format(
             edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
-    return jsonify(**a)
+    return jsonify(**json_result)
 
 
 @admin.get('/users')
@@ -74,8 +75,10 @@ def users_index():
 @admin.get('/users/edit/<int:id>')
 def edit_user(id):
     user = User.get_by_id(id)
+    departments = Department.query.all()
     return render_template('admin/users/edit_user_profile.html',
-                           user=user)
+                           user=user,
+                           departments={department.name for department in departments})
 
 
 @admin.post('/users/edit/<int:id>')
@@ -89,6 +92,7 @@ def edit_user_post(id):
     v.field('email').required().email()
     v.field('mobile_phone').required().phone_number()
     v.field('inner_phone').required()
+    v.field('department').required()
     v.field('birth_date').datetime(format="%d.%m.%Y")
     v.field('file').image()
     if v.is_valid():
@@ -97,6 +101,7 @@ def edit_user_post(id):
             'full_name': v.valid_data.full_name,
             'mobile_phone': v.valid_data.mobile_phone,
             'inner_phone': v.valid_data.inner_phone,
+            'department': v.valid_data.department,
             'email': v.valid_data.email,
             'skype': v.valid_data.skype,
             'photo': v.valid_data.photo,
@@ -110,7 +115,6 @@ def edit_user_post(id):
             return jsonify({'status': 'failOnProcess',
                             'error': e.value})
 
-        return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
 
@@ -125,10 +129,10 @@ def delete_user(id):
 @admin.get('/users/add')
 def add_user():
     groups = ldap.get_all_groups()
-    departments = {'This is a mock', 'This is also a mock', 'One more'}  # TODO replace
+    departments = Department.query.all()
     return render_template('admin/users/add_user_profile.html',
                            groups={group['cn'][0] for group in groups},
-                           departments=departments)
+                           departments={department.name for department in departments})
 
 
 @admin.post('/users/add')
@@ -170,7 +174,6 @@ def add_user_post():
         except DataProcessingError as e:
             return jsonify({'status': 'failOnProcess',
                             'error': e.value})
-
 
     return jsonify({"status": "fail",
                     "errors": v.errors})

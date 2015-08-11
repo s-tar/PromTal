@@ -217,3 +217,84 @@ li.media {
     margin-top: 0;
     margin-right: 10px;
 }
+/* Custom chart styling */
+.jOrgChart {
+  margin                : 10px;
+  padding               : 20px;
+}
+.jOrgChart .node {
+    font-size: 14px;
+    border-radius: 2px;
+    border: 1px solid rgb(131, 137, 141);;
+    color: rgb(34, 31, 37);
+    -moz-border-radius  : 8px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e0eafd+0,b1ccfd+100 */
+    background: #e0eafd; /* Old browsers */
+    background: -moz-linear-gradient(top,  #e0eafd 0%, #b1ccfd 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e0eafd), color-stop(100%,#b1ccfd)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #e0eafd 0%,#b1ccfd 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #e0eafd 0%,#b1ccfd 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #e0eafd 0%,#b1ccfd 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #e0eafd 0%,#b1ccfd 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0eafd', endColorstr='#b1ccfd',GradientType=0 ); /* IE6-9 */
+}
+    .node p{
+        font-size       : 10px;
+        line-height     : 11px;
+        padding         : 2px;
+    }
+
+
+
+.arrow {
+float: right;
+}
+.glyphicon.arrow:before {
+content: "\e079";
+}
+.active > a > .glyphicon.arrow:before {
+content: "\e114";
+}
+.fa.arrow:before {
+content: "\f104";
+}
+.active > a > .fa.arrow:before {
+content: "\f107";
+}
+.plus-times {
+float: right;
+}
+.fa.plus-times:before {
+content: "\f067";
+}
+.active > a > .fa.plus-times {
+ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+-webkit-transform: rotate(45deg);
+-moz-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+-o-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+.plus-minus {
+float: right;
+}
+.fa.plus-minus:before {
+content: "\f067";
+}
+.active > a > .fa.plus-minus:before {
+content: "\f068";
+}
+.metisFolder{
+    text-shadow: 0 1px 0 #DDD;
+}
+.dep-icon {
+    float: left;
+    margin-right: 5px;
+}
+.dep-icon-style {
+    font-size: 10px;
+    opacity: 0.5;
+}
+.dep-manager {
+    font-size: 10px;
+}

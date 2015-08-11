@@ -2,6 +2,7 @@ import random
 import string
 
 from sqlalchemy import func
+from sqlalchemy.orm import load_only
 
 from application.models.user import User
 from application import db
@@ -35,5 +36,6 @@ def generate_password(length=8):
 #     return str(random.choice(tuple(unused_numbers))) if len(unused_numbers) != 0 else None
 
 
-def generate_inner_phone():
-    return int(db.session.query(func.max(User.inner_phone)).scalar()) + 1
+def generate_inner_phone(begin, end):
+    inner_phone = int(db.session.query(func.max(User.inner_phone)).filter(User.inner_phone.like('____')).scalar()) + 1
+    return inner_phone if inner_phone in range(begin, end) else None

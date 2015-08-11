@@ -185,6 +185,7 @@ def save_files(data, comment):
 @module.get('/<entity>/<int:entity_id>/json/all')
 def json_all_comments(entity, entity_id):
     comments = Comment.get_for(entity, entity_id, lazy=False)
+
     comments = {'data': [get_comment_json(comment) for comment in comments]}
     return jsonify(comments)
 
