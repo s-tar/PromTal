@@ -1,6 +1,10 @@
 from application import create_app
-from application.utils.datagen import generate_inner_phone
+from application.models.news import News
+from application.models.user import User
 
 app = create_app('default')
 with app.app_context():
-    print(generate_inner_phone(6000, 9999))
+    user = User.query.get_or_404(817)
+    print(len(user.news))
+    # print(user_news)
+    # print(user_news.to_json().data)

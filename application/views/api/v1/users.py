@@ -4,6 +4,8 @@ from . import api_v1
 
 from application.db import db
 from application.models.user import User
+from application.models.news import News
+from application.models.comment import Comment
 from application.models.serializers.user import user_schema
 from application.views.api.decorators import json
 
@@ -76,3 +78,49 @@ def create_user():
     db.session.add(user)
     db.session.commit()
     return user.to_json().data, 200
+
+
+@api_v1.get('/users/<int:id>/news/')
+@json()
+def get_user_news(id):
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', current_app.config['PROFILE_NEWS_PER_PAGE'],
+                                    type=int), current_app.config['PROFILE_NEWS_PER_PAGE'])
+    user = User.query.get_or_404(id)
+    user_news = (
+        News.query
+        .filter(News.author == user)
+        .order_by(News.datetime.desc())
+    )
+    p = user_news.paginate(page, per_page)
+
+    return {
+        'paginator': {
+            'page': page,
+            'pages': p.pages,
+        },
+        'objects': [x.to_json().data for x in p.items],
+    }
+
+
+@api_v1.get('/users/<int:id>/comments/')
+@json()
+def get_user_comments(id):
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', current_app.config['PROFILE_COMMENTS_PER_PAGE'],
+                                    type=int), current_app.config['PROFILE_COMMENTS_PER_PAGE'])
+    user = User.query.get_or_404(id)
+    user_comments = (
+        Comment.query
+        .filter(Comment.author == user)
+        .order_by(Comment.datetime.desc())
+    )
+    p = user_comments.paginate(page, per_page)
+
+    return {
+        'paginator': {
+            'page': page,
+            'pages': p.pages,
+        },
+        'objects': [x.to_json().data for x in p.items],
+    }

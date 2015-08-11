@@ -17,6 +17,8 @@ user = Module('user', __name__, url_prefix='/user')
 @user.get("/profile")
 def profile():
     current_user = auth.service.get_user()
+    user_news = current_user.news
+    user_comments = current_user.comments
     return render_template('profile/profile.html', user=current_user)
 
 

@@ -6,8 +6,8 @@
     <h2>{% if user.full_name %}{{ user.full_name }}{% else %}R2D2{% endif %}</h2>
 
     {% if user.id == current_user.id %}
-    <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a> &nbsp; 
-    <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Edit Password</a>
+    <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span>Редактировать профиль</a> &nbsp;
+    <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span>Изменить пароль</a>
     {% endif %}
 
     </div>
@@ -70,5 +70,15 @@
   </div>
 </div>
 
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <h2>Новости ({{ user.news|length }})</h2>
+        <ul id="news"></ul>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <h2>Коментарии ({{ user.comments|length }})</h2>
+        <ul id="comments"></ul>
+    </div>
+</div>
 
 {% endblock %}
