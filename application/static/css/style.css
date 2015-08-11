@@ -182,30 +182,36 @@ h3.title a:hover {
 .left-column .frame .title {
   border-bottom: 1px solid #eee;
 }
-.user-birthdays {
+.user-birthdays,
+.user-new-members {
   list-style: none;
   margin: 0;
   padding: 5px 0px;
 }
-.user-birthdays li.user {
+.user-birthdays li.user,
+.user-new-members li.user {
   padding: 5px 10px;
   position: relative;
 }
-.user-birthdays li.user .user-icon {
+.user-birthdays li.user .user-icon,
+.user-new-members li.user .user-icon {
   position: absolute;
   width: 40px;
   height: 40px;
 }
-.user-birthdays li.user .info {
+.user-birthdays li.user .info,
+.user-new-members li.user .info {
   height: 40px;
   padding: 5px 0px;
   width: 100%;
   margin-left: 50px;
 }
-.user-birthdays li.user .info .birthday {
+.user-birthdays li.user .info .date,
+.user-new-members li.user .info .date {
   color: #999;
 }
-.user-birthdays li.no-one {
+.user-birthdays li.no-one,
+.user-new-members li.no-one {
   padding: 5px;
   color: #999;
   text-align: center;

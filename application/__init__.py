@@ -42,13 +42,13 @@ def create_app(config_name):
 
     @app.template_filter('datetime')
     def format_datetime(value, time=True, check_year=True):
+        value = value.date() if isinstance(value, datetime) else value
         time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
 
         today = date.today()
         if not check_year:
             value = value.replace(year=today.year)
-
         if value == today:
             date_str = "Сегодня"
         elif value == today - timedelta(1):

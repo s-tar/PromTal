@@ -1,12 +1,12 @@
 {% import "macros/user.html" as user_macros %}
-<ul class="user-birthdays">
+<ul class="user-new-members">
     {% for user in users %}
     <li class="user">
         {{ user_macros.icon(user) }}
         <div class="info">
             <a href="/user/profile/{{ user.id }}">{{ user.full_name }}</a>
             <div class="date">
-                {{ user.birth_date|datetime(time=False, check_year=False) }}
+                {{ user.reg_date|datetime(time=False) }}
             </div>
         </div>
     </li>

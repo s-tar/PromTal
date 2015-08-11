@@ -46,6 +46,12 @@
                         {{ widget('user.birthdays')|safe }}
                     </div>
                 </div>
+                <div class="frame">
+                    <h3 class="title">Новые сотрудники</h3>
+                    <div class="user-list">
+                        {{ widget('user.new.members')|safe }}
+                    </div>
+                </div>
             </div>
             <div class="col-sm-7">
                 {% block content %}{% endblock %}
