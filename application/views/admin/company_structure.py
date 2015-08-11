@@ -34,7 +34,6 @@ def company_structure():
 @admin.get('/company-structure-show')
 def company_structure_show():
     departments = get_departments()
-    print(departments)
     return render_template('admin/company_structure/structure_show.html', departments=departments)
 
 
