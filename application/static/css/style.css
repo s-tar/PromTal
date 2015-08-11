@@ -41,7 +41,6 @@ body {
   -moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   -ms-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
-  margin: 5px 10px;
   overflow: hidden;
 }
 .login-frame,
@@ -160,6 +159,51 @@ h3.title a:hover {
 }
 .popup-wrapper td .popup-window > .buttons button.right {
   float: right;
+}
+.profile .header {
+  border-bottom: 1px solid #eee;
+}
+.profile .title {
+  display: inline-block;
+}
+.profile .content {
+  padding: 20px;
+}
+.profile .edit-buttons {
+  float: right;
+  padding: 22px 20px 0px;
+}
+.left-column .frame {
+  margin: 0px 0px 20px 20px;
+}
+.left-column .frame .title {
+  border-bottom: 1px solid #eee;
+}
+.user-birthdays {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.user-birthdays li.user {
+  padding: 5px 10px;
+  position: relative;
+}
+.user-birthdays li.user .user-icon {
+  position: absolute;
+}
+.user-birthdays li.user .info {
+  height: 50px;
+  padding: 10px 0px;
+  width: 100%;
+  margin-left: 60px;
+}
+.user-birthdays li.user .info .birthday {
+  color: #999;
+}
+.user-birthdays li.no-one {
+  padding: 5px;
+  color: #999;
+  text-align: center;
 }
 .likes-counter {
   color: #e7422c;

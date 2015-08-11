@@ -2,8 +2,6 @@
 {% import "macros/user.html" as user %}
 
 {% block content %}
-<div class="row">
-<div class="col-sm-8 col-sm-offset-2">
 <div class="news-list">
     {% for n in news %}
     <article class="frame">
@@ -26,13 +24,5 @@
         </div>
     </article>
     {% endfor %}
-</div>
-</div>
-<div class="col-sm-2">
-    {% if current_user.is_authorized() %}
-    <a href="/news/new" class="button new">Новая новость</a>
-    {% endif %}
-
-</div>
 </div>
 {% endblock %}

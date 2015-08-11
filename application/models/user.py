@@ -79,6 +79,12 @@ class User(db.Model, AuthUser, Mixin):
         return cls.query.filter(or_(User.department_id == None, User.department_id != dep_id)).filter(User.full_name.ilike('%'+name+'%')).limit(5).all()
 
     @classmethod
+    def get_birthday(cls):
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+        return cls.query.filter(User.birth_date.in_((today, tomorrow))).all()
+
+    @classmethod
     def add_user2dep(cls, dep_id, user_id):
         u = cls.query.filter_by(id=user_id).first()
         if dep_id == 0:

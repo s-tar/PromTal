@@ -1,4 +1,5 @@
-.edit-buttons {
+.news-list .edit-buttons,
+.news-one .edit-buttons {
   position: absolute;
   top: 0;
   right: 0;
@@ -6,13 +7,15 @@
   padding: 10px;
   display: none;
 }
-.edit-buttons a {
+.news-list .edit-buttons a,
+.news-one .edit-buttons a {
   vertical-align: top;
   display: inline-block;
   height: 20px;
   padding: 5px;
 }
-.edit-buttons a:first-child span {
+.news-list .edit-buttons a:first-child span,
+.news-one .edit-buttons a:first-child span {
   padding-top: 4px;
 }
 .news-list > .title,

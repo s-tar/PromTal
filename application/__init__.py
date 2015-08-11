@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 
+from application.utils import widget
 from application.db import db, redis
 from application.ldap import ldap
 from application.sms import sms_service
@@ -43,14 +44,16 @@ def create_app(config_name):
     def format_datetime(value, time=True):
         time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
-        if value.date() == datetime.today().date():
-            date_str = ' '.join(("Сегодня", time_str))
-        elif value.date() == date.today() - timedelta(1):
-            date_str = ' '.join(("Вчера", time_str))
+        if value == date.today():
+            date_str = "Сегодня"
+        elif value == date.today() - timedelta(1):
+            date_str = "Вчера"
+        elif value == date.today() + timedelta(1):
+            date_str = "Завтра"
         else:
             date_str = value.strftime('%d.%m.%y')
-            date_str = ' '.join((date_str, time_str)) if time else date_str
 
+        date_str = ' '.join((date_str, time_str)) if time else date_str
         return date_str
 
     @app.errorhandler(404)
@@ -63,7 +66,10 @@ def create_app(config_name):
 
     @app.context_processor
     def inject_user():
-        return dict(current_user=get_user())
+        return {
+            'current_user': get_user(),
+            'widget': widget.get
+        }
 
     return app
 
