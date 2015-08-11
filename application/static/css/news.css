@@ -88,6 +88,9 @@
 .news-one article .footer .views {
   color: #999;
 }
+.news-list .text {
+  cursor: pointer;
+}
 .news-form .title {
   border-bottom: 1px solid #f6f6f6;
   margin-bottom: 10px;
