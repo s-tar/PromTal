@@ -19,6 +19,9 @@ header .logo img {
   height: 30px;
 }
 /* ------------------------ BOOTSTRAP FIX ------------------------------ */
+body > .container-flex > .row {
+  margin: 0;
+}
 .navbar.navbar-default {
   background: #fff;
   -webkit-border-radius: 0;
@@ -41,7 +44,6 @@ body {
   -moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   -ms-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
   box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
-  margin: 5px 10px;
   overflow: hidden;
 }
 .login-frame,
@@ -160,6 +162,65 @@ h3.title a:hover {
 }
 .popup-wrapper td .popup-window > .buttons button.right {
   float: right;
+}
+.profile .header {
+  border-bottom: 1px solid #eee;
+}
+.profile .title {
+  display: inline-block;
+}
+.profile .content {
+  padding: 20px;
+}
+.profile .edit-buttons {
+  float: right;
+  padding: 22px 20px 0px;
+}
+.left-column .frame {
+  margin: 0px 0px 20px 10px;
+}
+.left-column .frame .title {
+  border-bottom: 1px solid #eee;
+}
+.right-column .frame {
+  margin: 0px 0px 10px 0px;
+}
+.right-column .frame .title {
+  border-bottom: 1px solid #eee;
+}
+.user-birthdays,
+.user-new-members {
+  list-style: none;
+  margin: 0;
+  padding: 5px 0px;
+}
+.user-birthdays li.user,
+.user-new-members li.user {
+  padding: 5px 10px;
+  position: relative;
+}
+.user-birthdays li.user .user-icon,
+.user-new-members li.user .user-icon {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+.user-birthdays li.user .info,
+.user-new-members li.user .info {
+  height: 40px;
+  padding: 5px 0px;
+  width: 100%;
+  margin-left: 50px;
+}
+.user-birthdays li.user .info .date,
+.user-new-members li.user .info .date {
+  color: #999;
+}
+.user-birthdays li.no-one,
+.user-new-members li.no-one {
+  padding: 5px;
+  color: #999;
+  text-align: center;
 }
 .likes-counter {
   color: #e7422c;

@@ -1,0 +1,17 @@
+{% import "macros/user.html" as user_macros %}
+<ul class="user-birthdays">
+    {% for user in users %}
+    <li class="user">
+        {{ user_macros.icon(user) }}
+        <div class="info">
+            <a href="/user/profile/{{ user.id }}">{{ user.full_name }}</a>
+            <div class="date">
+                {{ user.birth_date|datetime(time=False, check_year=False) }}
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+    {% if users|length == 0 %}
+    <li class="no-one">Никого нет...</li>
+    {% endif %}
+</ul>

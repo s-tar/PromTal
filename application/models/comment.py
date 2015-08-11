@@ -81,7 +81,7 @@ class Comment(db.Model, Mixin, HasVotes):
                 .order_by(Comment.datetime.desc()).all()
         else:
             query = Comment.query.filter(Comment.entity == entity, Comment.entity_id == entity_id) \
-                .outerjoin(Vote, and_(Vote.entity == Comment.__tablename__, Vote.entity_id == Comment.id, Vote.user == user)) \
+                .outerjoin(Vote, and_(Vote.entity == Comment.__tablename__, Vote.entity_id == Comment.id, Vote.user_id == user.id)) \
                 .outerjoin(File, File.entity == func.concat(Comment.__tablename__, '.', Comment.id)) \
                 .add_entity(Vote) \
                 .add_entity(File) \

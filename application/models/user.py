@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, date
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, extract
 from uuid import uuid1
 from application.models.comment import HasComments
 from application.models.mixin import Mixin
@@ -51,6 +51,7 @@ class User(db.Model, AuthUser, Mixin):
     skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+    reg_date = db.Column(db.DateTime, default=datetime.now)
 
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
@@ -77,6 +78,22 @@ class User(db.Model, AuthUser, Mixin):
     @classmethod
     def find_user(cls, dep_id, name):
         return cls.query.filter(or_(User.department_id == None, User.department_id != dep_id)).filter(User.full_name.ilike('%'+name+'%')).limit(5).all()
+
+    @classmethod
+    def get_new(cls):
+        today = date.today()
+        delta = today - timedelta(days=30)
+        return cls.query.filter(User.reg_date > delta).order_by(User.reg_date.desc(), User.full_name).all()
+
+    @classmethod
+    def get_birthday(cls):
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+        return cls.query.filter(
+            or_(
+                and_(extract('month', User.birth_date) == today.month, extract('day', User.birth_date) == today.day),
+                and_(extract('month', User.birth_date) == tomorrow.month, extract('day', User.birth_date) == tomorrow.day)
+            )).order_by(User.birth_date.desc(), User.full_name).all()
 
     @classmethod
     def add_user2dep(cls, dep_id, user_id):

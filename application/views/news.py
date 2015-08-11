@@ -54,6 +54,7 @@ def save():
     return jsonify({'status': 'fail',
                     'errors': v.errors})
 
+
 @module.delete("/<int:id>")
 def delete(id):
     user = auth.service.get_user()
