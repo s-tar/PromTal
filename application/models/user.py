@@ -1,14 +1,9 @@
 from datetime import datetime, timedelta, date
 from sqlalchemy import or_
 from uuid import uuid1
-from application.models.comment import HasComments
 from application.models.mixin import Mixin
 from application.models.file import File
-from sqlalchemy import func
-from application.utils.auth.user import User as AuthUser
 from application.utils import image
-
-from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
 from application.models.serializers.user import user_schema
@@ -48,17 +43,9 @@ class Role(db.Model):
 
     __tablename__ = 'roles'
 
-    (
-        ROLE_ADMIN,
-        ROLE_MODERATOR,
-        ROLE_USER,
-    ) = range(3)
-
-    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    permissions = db.relationship("Permission", secondary=role_permission_associate, backref="roles", lazy='dynamic')
+    permissions = db.relationship("Permission", secondary=role_permission_associate, backref="roles")
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -77,7 +64,6 @@ class User(db.Model, AuthUser, Mixin):
 
     STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
 
-
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
@@ -91,8 +77,8 @@ class User(db.Model, AuthUser, Mixin):
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
     is_admin = db.Column(db.Boolean, default=False)
 
-    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users", lazy='dynamic')
-    roles = db.relationship("Role", secondary=user_role_associate, backref="users", lazy='dynamic')
+    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users")
+    roles = db.relationship("Role", secondary=user_role_associate, backref="users")
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 
