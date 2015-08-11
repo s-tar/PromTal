@@ -41,22 +41,26 @@ def create_app(config_name):
     #     print(rule, rule.methods)
 
     @app.template_filter('datetime')
-    def format_datetime(value, time=True, check_year=True):
-        value = value.date() if isinstance(value, datetime) and not time else value
+    def format_datetime(value, time=True, old_time=True, check_year=True):
+        _date = value
+        if isinstance(value, datetime):
+            _date = value.date()
+
         time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
 
         today = date.today()
         if not check_year:
             value = value.replace(year=today.year)
-        if value == today:
+        if _date == today:
             date_str = "Сегодня"
-        elif value == today - timedelta(1):
+        elif _date == today - timedelta(1):
             date_str = "Вчера"
-        elif value == today + timedelta(1):
+        elif _date == today + timedelta(1):
             date_str = "Завтра"
         else:
             date_str = value.strftime('%d.%m.%y')
+            time = time if old_time else False
 
         date_str = ' '.join((date_str, time_str)) if time else date_str
         return date_str

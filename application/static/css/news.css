@@ -91,6 +91,10 @@
 .news-one article .footer .views {
   color: #999;
 }
+.news-create {
+  width: 100%;
+  text-align: center;
+}
 .news-list .text {
   cursor: pointer;
 }
