@@ -25,7 +25,7 @@ class Department(db.Model):
 
     @classmethod
     def get_parent_all(cls, uid):
-        return cls.query.filter(Department.id!=uid).all()
+        return cls.query.filter(Department.id!=uid).order_by(Department.name).all()
 
     @classmethod
     def get_all(cls):
@@ -34,7 +34,10 @@ class Department(db.Model):
     @classmethod
     def set_parent(cls, uid, pid):
         dep = cls.query.filter_by(id=uid).first()
-        dep.parent_id = pid
+        if pid == '0':
+            dep.parent_id = None
+        else:
+            dep.parent_id = pid
         db.session.add(dep)
         db.session.commit()
 

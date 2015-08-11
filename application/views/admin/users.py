@@ -36,9 +36,10 @@ def s_users_json():
     columns.append(ColumnDT('inner_phone', filter=_default_value))
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
-    a = rowTable.output_result()
-    for i in a['aaData']:
-        row_id = i['0']
+    json_result = rowTable.output_result()
+    for row in json_result['aaData']:
+        row_id = row['0']
+        row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
         last_columns = str(len(columns))
         manage_html = """
             <a href="{edit_user_profile}">
@@ -48,10 +49,10 @@ def s_users_json():
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
         """
-        i[last_columns] = manage_html.format(
+        row[last_columns] = manage_html.format(
             edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
-    return jsonify(**a)
+    return jsonify(**json_result)
 
 
 @admin.get('/users')

@@ -33,6 +33,9 @@
     {%- for dep in departments recursive %}
         <li>
             <p>{{ dep.name }}</p>
+            {% if dep.user %}
+                <a class="dep-manager" href="{{ url_for('user.profile') }}/{{ dep.user.id }}">{{ dep.user.full_name }}</a>
+            {% endif %}
         {%- if dep.dep_list -%}
             <ul><p>{{ loop(dep.dep_list) }}</p></ul>
         {%- endif %}</li>
@@ -62,4 +65,12 @@
 
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+        $('#menu').metisMenu({
+            toggle: false
+        });
+});
+</script>
 {% endblock %}

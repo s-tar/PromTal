@@ -9,6 +9,7 @@ React.render(
         <Input className="form-control" type="text" name="name_structure" defaultValue="{{department.name}}" placeholder="Название структуры"/>
 
         <select name="parent" className="form-control" onClick={clickUsers}>
+            <option value="0" selected> - </option>
           {% for p in dep_parents %}
               <option value="{{ p.id }}" {% if p.id == department.parent_id %}selected{% endif %}>{{ p.name }}</option>
           {% endfor %}

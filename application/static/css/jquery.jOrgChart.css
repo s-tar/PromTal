@@ -6,20 +6,20 @@
 }
 
 .jOrgChart .down {
-  background-color 		: black;	
+  background-color 		: rgb(63, 109, 167);	
   margin 				: 0px auto;
 }
 
 .jOrgChart .top {
-  border-top          : 3px solid black;
+  border-top          : 3px solid rgb(63, 109, 167);
 }
 
 .jOrgChart .left {
-  border-right          : 2px solid black;
+  border-right          : 2px solid rgb(63, 109, 167);
 }
 
 .jOrgChart .right {
-  border-left           : 2px solid black;
+  border-left           : 2px solid rgb(63, 109, 167);
 }
 
 /* node cell */
@@ -33,6 +33,6 @@
 .jOrgChart .node {
   background-color 		: #35363B;
   display               : inline-block;
-  width                 : 96px;
+  width                 : 196px;
   height                : 60px;
 }

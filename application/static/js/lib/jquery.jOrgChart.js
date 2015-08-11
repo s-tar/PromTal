@@ -58,7 +58,7 @@
     $nodeDiv = $("<div>").addClass("node").append($nodeContent);
 
 	// Expand and contract nodes
-    $nodeDiv.click(function() {
+    /*$nodeDiv.click(function() {
       var $this = $(this);
       var $tr = $this.closest("tr");
       $tr.nextAll("tr").fadeToggle("fast");
@@ -70,7 +70,7 @@
 		$this.css('cursor','s-resize');
 		$tr.addClass('contracted');
 	  }
-    });
+    });*/
 	
     $nodeCell.append($nodeDiv);
     $nodeRow.append($nodeCell);
@@ -78,7 +78,7 @@
 
     if($childNodes.length > 0) {
 	  // if it can be expanded then change the cursor
-	  $nodeDiv.css('cursor','n-resize').addClass('expanded');
+	  //$nodeDiv.css('cursor','n-resize').addClass('expanded');
 	
 	  // recurse until leaves found (-1) or to the level specified
       if(opts.depth == -1 || (level+1 < opts.depth)) { 

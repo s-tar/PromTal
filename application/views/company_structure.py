@@ -1,6 +1,7 @@
 from application import Module, ldap, db
 from flask import request, render_template, redirect, url_for, abort
 from application.models.department import Department
+from application.models.user import User
 from application.utils.datatables_sqlalchemy.datatables import row2dict
 
 
@@ -11,6 +12,10 @@ def get_departments(parent_id=None):
     departments = db.session.query(Department).filter_by(parent_id=parent_id).all()
     for dep in departments:
         dep_dict = row2dict(dep)
+        if dep_dict["user_id"] != 'None':
+            user = User.get_by_id(dep_dict["user_id"])
+            dep_dict["user"] = row2dict(user)
+        print(dep_dict)
         dep_dict['dep_list'] = get_departments(dep.id)
         dep_list.append(dep_dict)
     if len(departments):
