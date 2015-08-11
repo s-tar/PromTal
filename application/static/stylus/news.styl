@@ -1,18 +1,19 @@
-.edit-buttons
-  position: absolute
-  top: 0
-  right: 0
-  font-size: 1.5em
-  padding: 10px
-  display: none
-  a
-    &:first-child span
-      padding-top: 4px
-    vertical-align: top
-    display: inline-block
-    height: 20px
-    padding: 5px
+
 .news-list, .news-one
+  .edit-buttons
+    position: absolute
+    top: 0
+    right: 0
+    font-size: 1.5em
+    padding: 10px
+    display: none
+    a
+      &:first-child span
+        padding-top: 4px
+      vertical-align: top
+      display: inline-block
+      height: 20px
+      padding: 5px
   > .title
     text-align: center
     font-size: 1.7em
@@ -57,7 +58,8 @@
         color: #779dca
       .views
         color: #999999
-
+.news-list .text
+  cursor: pointer
 .news-form
   .title
     border-bottom: 1px solid #f6f6f6

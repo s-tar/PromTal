@@ -2,8 +2,6 @@
 {% import "macros/user.html" as user %}
 {% extends "layout.html" %}
 {% block content %}
-<div class="row">
-<div class="col-sm-8 col-sm-offset-2">
 <div class="news-one">
     <article class="frame">
         {% if current_user == news.author %}
@@ -30,8 +28,6 @@
             <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
             document.getElementById('comments'))
     </script>
-</div>
-</div>
 </div>
 
 {% endblock %}

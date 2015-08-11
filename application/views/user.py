@@ -2,6 +2,7 @@ from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
 from application.utils.image_processing.user_foto import save_user_fotos, NotImage
+from application.utils.widget import widget
 from flask import request, render_template, redirect, url_for, abort
 from flask.json import jsonify
 from werkzeug.utils import secure_filename
@@ -177,3 +178,9 @@ def edit_pass_post():
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
+
+
+@widget('user.birthdays')
+def birthdays():
+    users = User.get_birthday()
+    return render_template('user/birthdays.html',  **{'users': users})

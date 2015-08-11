@@ -81,15 +81,17 @@ $( window ).load(function() {
 });
 
 
-function niceDateFormat(date){
+function niceDateFormat(date, time){
+    time = time || true;
     if(!date) return ''
     var now = new Date()
     date = new Date(date)
     if(date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
-        if(date.getDate() == now.getDate()) return date.format("Сегодня в HH:MM");
-        if(date.getDate() == now.getDate()-1) return date.format("Вчера в HH:MM");
+        if(date.getDate() == now.getDate()) return date.format("Сегодня" + time ? " в HH:MM" : "");
+        if(date.getDate() == now.getDate()-1) return date.format("Вчера" + time ? " в HH:MM" : "");
+        if(date.getDate() == now.getDate()+1) return date.format("Завтра" + time ? " в HH:MM" : "");
     }
-    return date.format("dd.mm.yy в HH:MM");
+    return date.format("dd.mm.yy" + time ? " в HH:MM" : "");
 }
 
 $(window).resize(function(){

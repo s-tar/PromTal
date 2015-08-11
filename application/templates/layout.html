@@ -36,10 +36,23 @@
 <body>
     {% include 'header.html' %}
     <div id="popup"></div>
-    <div class="container">
+    <div class="container-flex">
         <div class="row">
-            <div classs="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="col-sm-3 left-column">
+                <div class="frame">
+                    <h3 class="title">Именинники</h3>
+                    <div class="user-list">
+                        {{ widget('user.birthdays')|safe }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
                 {% block content %}{% endblock %}
+            </div>
+            <div class="col-sm-2">
+                {% if current_user.is_authorized() %}
+                <a href="/news/new" class="button new">Новая новость</a>
+                {% endif %}
             </div>
         </div>
     </div>
