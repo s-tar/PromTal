@@ -96,7 +96,7 @@ window.onload = function () {
     setTimeout(funcfilestyle, 200);
 
     function on_change() {
-        $( ".on-change-email" ).blur(function() {
+        $( ".on-change-email" ).on('blur keyup',function() {
           $(".on-change-login").val(this.value.split('@')[0])
         });
     }
