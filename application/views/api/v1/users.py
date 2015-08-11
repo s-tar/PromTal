@@ -1,4 +1,6 @@
 from flask import request, current_app
+from sqlalchemy import func, desc
+from flask.ext.sqlalchemy import BaseQuery
 
 from . import api_v1
 
@@ -103,24 +105,29 @@ def get_user_news(id):
     }
 
 
-@api_v1.get('/users/<int:id>/comments/')
+@api_v1.get('/users/<int:id>/comments-in-news/')
 @json()
-def get_user_comments(id):
+def get_user_comments_in_news(id):
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', current_app.config['PROFILE_COMMENTS_PER_PAGE'],
                                     type=int), current_app.config['PROFILE_COMMENTS_PER_PAGE'])
     user = User.query.get_or_404(id)
-    user_comments = (
-        Comment.query
+    user_comments_in_news = (
+        db.session.query(News.title,
+                         News.id,
+                         func.count(Comment.id),
+                         func.max(Comment.modify_datetime).label('last_modified'))
+        .join(Comment, News.id == Comment.entity_id)
         .filter(Comment.author == user)
-        .order_by(Comment.datetime.desc())
+        .group_by(News.id)
+        .order_by(desc('last_modified'))
     )
-    p = user_comments.paginate(page, per_page)
+    p = BaseQuery.paginate(user_comments_in_news, page, per_page)
 
     return {
         'paginator': {
             'page': page,
             'pages': p.pages,
         },
-        'objects': [x.to_json().data for x in p.items],
+        'objects': [dict(zip(['newsTitle', 'newsId', 'commentsAmount', 'lastModified'], x)) for x in p.items],
     }
