@@ -91,7 +91,7 @@ function niceDateFormat(date, time){
         if(date.getDate() == now.getDate()-1) return date.format("Вчера" + time ? " в HH:MM" : "");
         if(date.getDate() == now.getDate()+1) return date.format("Завтра" + time ? " в HH:MM" : "");
     }
-    return date.format("dd.mm.yy" + time ? " в HH:MM" : "");
+    return date.format("dd.mm.yy" + (time ? " в HH:MM" : ""));
 }
 
 $(window).resize(function(){

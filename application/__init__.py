@@ -42,7 +42,7 @@ def create_app(config_name):
 
     @app.template_filter('datetime')
     def format_datetime(value, time=True, check_year=True):
-        value = value.date() if isinstance(value, datetime) else value
+        value = value.date() if isinstance(value, datetime) and not time else value
         time_str = "в %s" % value.strftime('%H:%M')
         date_str = ''
 
