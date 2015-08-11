@@ -19,6 +19,9 @@ header .logo img {
   height: 30px;
 }
 /* ------------------------ BOOTSTRAP FIX ------------------------------ */
+body > .container-flex > .row {
+  margin: 0;
+}
 .navbar.navbar-default {
   background: #fff;
   -webkit-border-radius: 0;
@@ -174,15 +177,15 @@ h3.title a:hover {
   padding: 22px 20px 0px;
 }
 .left-column .frame {
-  margin: 0px 0px 20px 20px;
+  margin: 0px 0px 20px 10px;
 }
 .left-column .frame .title {
   border-bottom: 1px solid #eee;
 }
 .user-birthdays {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 5px 0px;
 }
 .user-birthdays li.user {
   padding: 5px 10px;
@@ -190,12 +193,14 @@ h3.title a:hover {
 }
 .user-birthdays li.user .user-icon {
   position: absolute;
+  width: 40px;
+  height: 40px;
 }
 .user-birthdays li.user .info {
-  height: 50px;
-  padding: 10px 0px;
+  height: 40px;
+  padding: 5px 0px;
   width: 100%;
-  margin-left: 60px;
+  margin-left: 50px;
 }
 .user-birthdays li.user .info .birthday {
   color: #999;

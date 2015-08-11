@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, date
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, extract
 from uuid import uuid1
 from application.models.comment import HasComments
 from application.models.mixin import Mixin
@@ -82,7 +82,11 @@ class User(db.Model, AuthUser, Mixin):
     def get_birthday(cls):
         today = date.today()
         tomorrow = today + timedelta(days=1)
-        return cls.query.filter(User.birth_date.in_((today, tomorrow))).all()
+        return cls.query.filter(
+            or_(
+                and_(extract('month', User.birth_date) == today.month, extract('day', User.birth_date) == today.day),
+                and_(extract('month', User.birth_date) == tomorrow.month, extract('day', User.birth_date) == tomorrow.day)
+            )).order_by(User.birth_date.desc(), User.full_name).all()
 
     @classmethod
     def add_user2dep(cls, dep_id, user_id):

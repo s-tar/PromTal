@@ -6,7 +6,7 @@
         <div class="info">
             <a href="/user/profile/{{ user.id }}">{{ user.full_name }}</a>
             <div class="birthday">
-                {{ user.birth_date|datetime(time=False) }}
+                {{ user.birth_date|datetime(time=False, check_year=False) }}
             </div>
         </div>
     </li>
