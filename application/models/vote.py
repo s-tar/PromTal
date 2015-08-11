@@ -72,7 +72,7 @@ class HasVotes:
     @property
     def my_vote(self):
         user = auth.service.get_user()
-        return Vote.get_for(self.entity['name'], self.entity['id'], user)
+        return Vote.get_for(self.entity['name'], self.entity['id'], user) if user.is_authorized() else None
 
     @classmethod
     def init_votes(cls):
