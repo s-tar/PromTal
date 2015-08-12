@@ -1,18 +1,53 @@
 from datetime import datetime, timedelta, date
 from sqlalchemy import or_, and_, extract
 from uuid import uuid1
-from application.models.comment import HasComments
 from application.models.mixin import Mixin
 from application.models.file import File
-from sqlalchemy import func
-from application.utils.auth.user import User as AuthUser
 from application.utils import image
-
-from sqlalchemy.dialects.postgresql import ARRAY
 
 from application.db import db
 from application.models.serializers.user import user_schema
 from application.utils.auth.user import User as AuthUser
+
+
+role_permission_associate = db.Table('role_permission', db.Model.metadata,
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id')),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
+)
+user_permission_associate = db.Table('user_permission', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'))
+)
+user_role_associate = db.Table('user_role', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
+
+
+class Permission(db.Model):
+
+    __tablename__ = 'permissions'
+
+    PERMISSIONS = [
+        ('post_comment', 'Post comment'), ('edit_comments', 'Edit comments'),
+        ('write_articles', 'Write articles'), ('moderate_comments', 'Moderate comments'),
+        ('manage_users', 'Manage users'), ('set_permissions', 'Set permissions'),
+        ('change_company_structure', 'Change company structure'),
+        ('manage_user_groups', 'Manage user groups'),
+    ]
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    title = db.Column(db.String(64))
+
+
+class Role(db.Model):
+
+    __tablename__ = 'roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    permissions = db.relationship("Permission", secondary=role_permission_associate, backref="roles")
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -31,28 +66,22 @@ class User(db.Model, AuthUser, Mixin):
 
     STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
 
-    (
-        ROLE_ADMIN,
-        ROLE_MODERATOR,
-        ROLE_USER,
-    ) = range(3)
-
-    ROLES = [(ROLE_ADMIN, 'Admin'), (ROLE_MODERATOR, 'Moderator'), (ROLE_USER, 'User')]
-
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
     full_name = db.Column(db.String(64))
     login = db.Column(db.String(64), unique=True)
     status = db.Column(db.Integer, default=STATUS_ACTIVE)
-    roles = db.Column(ARRAY(db.Integer), default=[ROLE_USER])
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+    is_admin = db.Column(db.Boolean, default=False)
     reg_date = db.Column(db.DateTime, default=datetime.now)
 
+    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users")
+    roles = db.relationship("Role", secondary=user_role_associate, backref="users")
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 
@@ -134,6 +163,12 @@ class User(db.Model, AuthUser, Mixin):
                 image.resize(photo).save(p.get_path())
             db.session.commit()
         return u
+
+    def get_permissions(self):
+        return set(self.permissions.all() + [role.permissions for role in self.roles.all()])
+
+    def has_role(self, role):
+        return role in self.roles
 
     @property
     def age(self):

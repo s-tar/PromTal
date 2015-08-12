@@ -12,7 +12,7 @@
         {% endif %}
         <h3 class="title">{{ news.title or '' }}</h3>
         <div class="text">{{ news.text|safe or '' }}</div>
-        <div class="datetime">{{ news.datetime|datetime(time=False) or '' }}</div>
+        <div class="datetime">{{ news.datetime|datetime(old_time=False) or '' }}</div>
         <div class="footer">
             <div class="author">
                 {{ user.icon(news.author) }}
