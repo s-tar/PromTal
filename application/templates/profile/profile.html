@@ -74,11 +74,55 @@
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
         <h2>Новости ({{ user.news|length }})</h2>
         <ul id="news"></ul>
+        <button id="moreNews" style="display: none">Больше</button>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
         <h2>Коментарии ({{ user.comments|length }})</h2>
         <ul id="comments"></ul>
+        <button id="moreComments" style="display: none">Больше</button>
     </div>
 </div>
 </div>
+
+<script>
+function renderNews ( obj ) {
+    var href = "{{ url_for('news.news_one', id=-1) }}".replace('-1', obj.news_id);
+    console.log(obj.created_date);
+    var date = niceDateFormat(obj.created_date);
+    var a = '<a href="' + href + '">' + obj.news_title + '</a>';
+    var html = '<li>' + a + '(' + date + ')' + '</li>';
+    return html;
+}
+
+function renderComments ( obj ) {
+    var href = "{{ url_for('news.news_one', id=0) }}".replace('0', obj.news_id);
+    var html = '<li>' + obj.news_title + '(' + obj.comments_amount + ')' + '</li>';
+    return html;
+}
+
+$(document).ready( function () {
+    var newsPaginator = new LazyPaginator({
+        url: "{{ url_for('api_v1.get_user_news', id=user.id) }}",
+        targetElem: $( "#news" ),
+        buttonMore: $( "#moreNews" ),
+        render: renderNews
+    });
+
+    var commentsPaginator = new LazyPaginator({
+        url: "{{ url_for('api_v1.get_user_comments_in_news', id=user.id) }}",
+        targetElem: $( "#comments" ),
+        buttonMore: $( "#moreComments" ),
+        render: renderComments
+    });
+
+    newsPaginator.init();
+    commentsPaginator.init();
+
+    newsPaginator.get();
+    commentsPaginator.get();
+});
+
+</script>
+
 {% endblock %}
+

@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import request, current_app, url_for
 from sqlalchemy import func, desc
 from flask.ext.sqlalchemy import BaseQuery
 
@@ -90,18 +90,18 @@ def get_user_news(id):
                                     type=int), current_app.config['PROFILE_NEWS_PER_PAGE'])
     user = User.query.get_or_404(id)
     user_news = (
-        News.query
+        db.session.query(News.id, News.title, News.datetime)
         .filter(News.author == user)
         .order_by(News.datetime.desc())
     )
-    p = user_news.paginate(page, per_page)
+    p = BaseQuery.paginate(user_news, page, per_page)
 
     return {
         'paginator': {
             'page': page,
             'pages': p.pages,
         },
-        'objects': [x.to_json().data for x in p.items],
+        'objects': [dict(zip(['news_id', 'news_title', 'created_date'], x)) for x in p.items],
     }
 
 
@@ -113,8 +113,8 @@ def get_user_comments_in_news(id):
                                     type=int), current_app.config['PROFILE_COMMENTS_PER_PAGE'])
     user = User.query.get_or_404(id)
     user_comments_in_news = (
-        db.session.query(News.title,
-                         News.id,
+        db.session.query(News.id,
+                         News.title,
                          func.count(Comment.id),
                          func.max(Comment.modify_datetime).label('last_modified'))
         .join(Comment, News.id == Comment.entity_id)
@@ -129,5 +129,7 @@ def get_user_comments_in_news(id):
             'page': page,
             'pages': p.pages,
         },
-        'objects': [dict(zip(['newsTitle', 'newsId', 'commentsAmount', 'lastModified'], x)) for x in p.items],
+        'objects': [
+            dict(zip(['news_id', 'news_title', 'comments_amount', 'last_modified_date'], x)) for x in p.items
+        ],
     }

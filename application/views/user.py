@@ -16,17 +16,10 @@ user = Module('user', __name__, url_prefix='/user')
 
 
 @user.get("/profile")
-def profile():
-    current_user = auth.service.get_user()
-    user_news = current_user.news
-    user_comments = current_user.comments
-    return render_template('profile/profile.html', user=current_user)
-
-
-@user.get("/profile/<user_id>")
-def profile_id(user_id):
-    user = User.get_by_id(user_id)
-    if not user:
+@user.get("/profile/<int:user_id>")
+def profile(user_id=None):
+    user = auth.service.get_user() if user_id is None else User.get_by_id(user_id)
+    if user is None:
         abort(404)
     return render_template('profile/profile.html', user=user)
 
@@ -173,7 +166,7 @@ def edit_pass_post():
         try:
             modify_password(current_user.login, old_password, new_password)
         except PasswordError:
-            v.add_error('old_password', 'Неверный пароль')
+            v.add_error('password_old', 'Неверный пароль')
             return jsonify({"status": "fail", "errors": v.errors})
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
