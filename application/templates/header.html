@@ -41,6 +41,10 @@
         {% endif %}
       </ul>
         {% if current_user.is_authorized() %}
+
+
+
+
           <div class="user-profile-header">
             <div class="user-info">
                 <a class="user-name" href="{{ url_for('user.profile') }}">{{ current_user.full_name }}</a>
@@ -54,6 +58,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a href="{{ url_for('user.login') }}">Логин</a></li>
         </ul>
+
+
         {% endif %}
       </ul>
     </div><!-- /.navbar-collapse -->
