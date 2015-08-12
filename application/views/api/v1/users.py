@@ -1,4 +1,5 @@
 from flask import request, current_app, url_for
+from flask.json import jsonify
 from sqlalchemy import func, desc
 from flask.ext.sqlalchemy import BaseQuery
 
@@ -101,7 +102,7 @@ def get_user_news(id):
             'page': page,
             'pages': p.pages,
         },
-        'objects': [dict(zip(['news_id', 'news_title', 'created_date'], x)) for x in p.items],
+        'objects': [dict(zip(['news_id', 'news_title', 'created_date'], map(str, x))) for x in p.items],
     }
 
 
@@ -130,6 +131,7 @@ def get_user_comments_in_news(id):
             'pages': p.pages,
         },
         'objects': [
-            dict(zip(['news_id', 'news_title', 'comments_amount', 'last_modified_date'], x)) for x in p.items
+            dict(zip(['news_id', 'news_title', 'comments_amount', 'last_modified_date'], map(str, x)))
+            for x in p.items
         ],
     }

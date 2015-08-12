@@ -129,10 +129,12 @@ function LazyPaginator ( options ) {
     this.nextPage = 1;
     this.pagesAmount = 0;
 
+    for ( var elementName in options.innerElements ) {
+        this[elementName] = $( options.innerElements[elementName] );
+    }
+
     this.init = function () {
         if ( !this.targetElem || !this.buttonMore ) return;
-
-        this.append( this.posts );
 
         var that = this;
         this.buttonMore.on("click", function () {
