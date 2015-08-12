@@ -45,13 +45,14 @@
               <img src="{{ current_user.photo.get_url('thumbnail') if current_user.photo else '/static/img/no_photo.jpg' }}" class="foto-small" alt="Фото {{ current_user.full_name }}">
               <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
+              <li><a href="{{ url_for('user.profile') }}">Профиль</a></li>
+              <li><a href="{{ url_for('admin.s_users') }}">Админка</a></li>
               <li role="separator" class="divider"></li>
-              <li><a href="{{ url_for('user.log_out') }}">Log out</a></li>
+              <li><a href="{{ url_for('user.log_out') }}">Выйти</a></li>
             </ul>
           </li>
         {% else %}
-          <li><a href="{{ url_for('user.login') }}">Log in</a></li>
+          <li><a href="{{ url_for('user.login') }}">Войти</a></li>
         {% endif %}
 
       </ul>
