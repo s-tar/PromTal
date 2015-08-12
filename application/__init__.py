@@ -51,7 +51,7 @@ def create_app(config_name):
 
         today = date.today()
         if not check_year:
-            value = value.replace(year=today.year)
+            _date = _date.replace(year=today.year)
         if _date == today:
             date_str = "Сегодня"
         elif _date == today - timedelta(1):
