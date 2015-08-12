@@ -31,7 +31,9 @@ class Permission(db.Model):
     PERMISSIONS = [
         ('post_comment', 'Post comment'), ('edit_comments', 'Edit comments'),
         ('write_articles', 'Write articles'), ('moderate_comments', 'Moderate comments'),
-        ('add_user', 'Add user'), ('set_permissions', 'Set permissions'),
+        ('manage_users', 'Manage users'), ('set_permissions', 'Set permissions'),
+        ('change_company_structure', 'Change company structure'),
+        ('manage_user_groups', 'Manage user groups'),
     ]
 
     id = db.Column(db.Integer, primary_key=True)
