@@ -57,6 +57,19 @@
   padding: 5px 20px;
   position: relative;
 }
+.news-list article .footer .tags,
+.news-one article .footer .tags {
+  padding-left: 50px;
+}
+.news-list article .footer .tags .tag,
+.news-one article .footer .tags .tag {
+  padding: 0px 5px;
+  opacity: 0.6;
+}
+.news-list article .footer .tags .tag:hover,
+.news-one article .footer .tags .tag:hover {
+  opacity: 1;
+}
 .news-list article .footer .user-icon,
 .news-one article .footer .user-icon {
   position: absolute;

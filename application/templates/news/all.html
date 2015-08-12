@@ -21,6 +21,11 @@
                 <div class="likes-counter-component" title="Понравилось" data-count="{{ n.votes_count or 0}}" data-entity="{{ n.entity.name }}" data-entity-id="{{ n.entity.id }}" data-my-vote="{{ n.my_vote.value }}"></div>
                 <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ n.views_count or 0 }}</div>
             </div>
+            <div class="tags">
+                {% for tag in n.tags %}
+                <a href="#" class="tag"><span class="fa fa-tag"></span> {{ tag.name }}</a>
+                {% endfor %}
+            </div>
         </div>
     </article>
     {% endfor %}

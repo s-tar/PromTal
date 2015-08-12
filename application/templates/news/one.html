@@ -20,6 +20,11 @@
                 <div class="likes-counter-component" title="Понравилось" data-count="{{ news.votes_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}" data-my-vote="{{ news.my_vote.value }}"></div>
                 <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
+            <div class="tags">
+                {% for tag in news.tags %}
+                <a href="#" class="tag"><span class="fa fa-tag"></span> {{ tag.name }}</a>
+                {% endfor %}
+            </div>
         </div>
     </article>
     <div id="comments"></div>

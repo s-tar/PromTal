@@ -1,5 +1,6 @@
 from application import Module, db
 from application.models.news import News
+from application.models.news_tag import NewsTag
 from application.utils import auth
 from application.utils.validator import Validator
 from application.views.main import main
@@ -46,6 +47,14 @@ def save():
         news.title = data.title
         news.text = data.text
         news.author = user
+
+        tags = data.list('tag')
+        existing_tags = {tag.name: tag for tag in NewsTag.get_tags(tags)}
+        tags = {tag: NewsTag(name=tag) for tag in tags}
+        tags.update(existing_tags)
+
+        news.tags = list(tags.values())
+
         db.session.add(news)
         db.session.commit()
         return jsonify({'status': 'ok',
