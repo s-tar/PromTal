@@ -163,6 +163,39 @@ h3.title a:hover {
 .popup-wrapper td .popup-window > .buttons button.right {
   float: right;
 }
+.user-profile-header {
+  float: right;
+}
+.user-profile-header .user-icon {
+  margin: 5px;
+  float: right;
+  width: 40px;
+  height: 40px;
+}
+.user-profile-header .user-icon a {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+.user-profile-header .user-info {
+  float: left;
+  padding-top: 8px;
+}
+.user-profile-header .user-info a {
+  clear: both;
+  float: right;
+  padding: 0px 5px;
+}
+.user-profile-header .user-info a.user-name {
+  color: #777;
+  text-decoration: none;
+}
+.user-profile-header .user-info a.user-name:hover {
+  color: #333;
+}
+.user-profile-header .user-info a.user-logout {
+  color: #fd8a16;
+}
 .profile .header {
   border-bottom: 1px solid #eee;
 }
