@@ -8,7 +8,7 @@ class NewsTag(db.Model):
 
     @classmethod
     def get_tags(cls, tags=None):
-        if tags:
+        if tags is not None:
             return cls.query.filter(NewsTag.name.in_(tags)).all()
         else:
             return cls.query.all()
