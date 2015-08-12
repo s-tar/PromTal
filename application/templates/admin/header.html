@@ -8,11 +8,27 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{{ url_for('admin.users_index') }}">Users </a></li>
-            <li><a href="{{ url_for('admin.news_index') }}">News </a></li>
-            <li><a href="{{ url_for('admin.s_users') }}">*Users </a></li>
-            <li><a href="{{ url_for('admin.s_news') }}">*News </a></li>
-            <li><a href="{{ url_for('admin.company_structure') }}">Company structure </a></li>
+            <li>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('admin.users_index') }}">Users</a></li>
+                <li><a href="{{ url_for('admin.s_users') }}">*Users</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">News <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('admin.news_index') }}">News</a></li>
+                <li><a href="{{ url_for('admin.s_news') }}">*News</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Company structure <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('admin.company_structure') }}">Company structure</a></li>
+                <li><a href="{{ url_for('admin.company_structure_show') }}">Show Company structure</a></li>
+              </ul>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

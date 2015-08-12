@@ -177,3 +177,10 @@ def edit_pass_post():
 def birthdays():
     users = User.get_birthday()
     return render_template('user/birthdays.html',  **{'users': users})
+
+
+@widget('user.new.members')
+def birthdays():
+    users = User.get_new()
+    return render_template('user/new_members.html',  **{'users': users})
+

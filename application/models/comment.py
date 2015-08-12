@@ -88,11 +88,14 @@ class Comment(db.Model, Mixin, HasVotes):
                 .order_by(Comment.datetime.desc(), File.id)
             comments_votes_files = query.all()
             comments = []
+            added = {}
             for comment, vote, file in comments_votes_files:
                 if file:
                     comment.add_file(file)
                 comment.my_vote = vote
-                comments.append(comment)
+                if not added.get(comment.id):
+                    comments.append(comment)
+                    added[comment.id] = True
             return comments
 
     def get_entity(self):
