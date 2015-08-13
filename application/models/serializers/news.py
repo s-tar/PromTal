@@ -28,7 +28,7 @@ class NewsSchema(Schema):
     status = StatusField()
     datetime = fields.DateTime()
     comments_count = fields.Int()
-    likes_count = fields.Int()
+    votes_count = fields.Int()
     views_count = fields.Int()
 
     author = fields.Nested(UserSchema)

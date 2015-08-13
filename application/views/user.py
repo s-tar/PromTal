@@ -16,15 +16,10 @@ user = Module('user', __name__, url_prefix='/user')
 
 
 @user.get("/profile")
-def profile():
-    current_user = auth.service.get_user()
-    return render_template('profile/profile.html', user=current_user)
-
-
-@user.get("/profile/<user_id>")
-def profile_id(user_id):
-    user = User.get_by_id(user_id)
-    if not user:
+@user.get("/profile/<int:user_id>")
+def profile(user_id=None):
+    user = auth.service.get_user() if user_id is None else User.get_by_id(user_id)
+    if user is None:
         abort(404)
     return render_template('profile/profile.html', user=user)
 
@@ -52,6 +47,7 @@ def edit_profile_post():
     v.field('file').image()
     if v.is_valid():
         data = {
+            'id': current_user.id,
             'login': current_user.login,
             'full_name': v.valid_data.full_name,
             'mobile_phone': v.valid_data.mobile_phone,
@@ -59,7 +55,7 @@ def edit_profile_post():
             'department': v.valid_data.department,
             'email': v.valid_data.email,
             'skype': v.valid_data.skype,
-            'photo': v.valid_data.photo,
+            'photo': v.valid_data.file,
             'birth_date': v.valid_data.birth_date
         }
 
@@ -171,7 +167,7 @@ def edit_pass_post():
         try:
             modify_password(current_user.login, old_password, new_password)
         except PasswordError:
-            v.add_error('old_password', 'Неверный пароль')
+            v.add_error('password_old', 'Неверный пароль')
             return jsonify({"status": "fail", "errors": v.errors})
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
@@ -188,3 +184,4 @@ def birthdays():
 def birthdays():
     users = User.get_new()
     return render_template('user/new_members.html',  **{'users': users})
+

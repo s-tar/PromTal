@@ -87,7 +87,7 @@ def _add_user_to_local_db(login, name, surname, email, department, mobile_phone,
         return False
 
 
-def update_user(login, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def update_user(id, login, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
     ldap_user_attr = {
         'mobile': mobile_phone,
         'telephoneNumber': inner_phone,
@@ -95,7 +95,7 @@ def update_user(login, full_name, department, email, mobile_phone, inner_phone, 
         'mail': email
     }
 
-    if not _edit_user_at_local_db(login, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+    if not _edit_user_at_local_db(id, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
         raise DataProcessingError('Произошла ошибка при обновлении пользователя в локальной базе данных')
 
     if not _edit_user_at_ldap(login, ldap_user_attr):
@@ -104,18 +104,22 @@ def update_user(login, full_name, department, email, mobile_phone, inner_phone, 
     db.session.commit()
 
 
-def _edit_user_at_local_db(login, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def _edit_user_at_local_db(id, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
     try:
-        user = User.get_by_login(login)
-        user.full_name = full_name
-        user.department = Department.get_by_name(department)
-        user.email = email
-        user.mobile_phone = mobile_phone
-        user.inner_phone = inner_phone
-        user.skype = skype
-        user.birth_date = birth_date if birth_date else user.birth_date
-        user.photo = photo if photo else user.photo
-        db.session.add(user)
+        User.edit_user(
+            uid=id,
+            full_name=full_name,
+            email=email,
+            inner_phone=inner_phone,
+            mobile_phone=mobile_phone,
+            birth_date=birth_date,
+            skype=skype,
+            photo=photo
+        )
+        User.add_user2dep(
+            dep_id=Department.get_by_name(department).id,
+            user_id=id
+        )
         return True
     except:
         return False
