@@ -142,6 +142,7 @@ class User(db.Model, AuthUser, Mixin):
                             skype=skype,
                             photo=photo):
         u = cls.query.filter_by(id=uid).first()
+
         if u:
             u.full_name = full_name
             u.mobile_phone = mobile_phone

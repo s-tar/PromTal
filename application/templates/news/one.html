@@ -33,12 +33,7 @@
             </div>
         </div>
     </article>
-    <div id="comments"></div>
-    <script type="text/jsx">
-        React.render(
-            <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
-            document.getElementById('comments'))
-    </script>
+    <div class="comments-component" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
 </div>
 
 {% endblock %}

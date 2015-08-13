@@ -5,7 +5,7 @@
     <div id="news-form"></div>
 </div>
 <script type="text/jsx">
-function saveNewsSuccess(json){ console.log(json);window.location.href = '/news/'+json.news.id; }
+function saveNewsSuccess(json){ window.location.href = '/news/'+json.news.id; }
 React.render(
     <AJAXForm action="/news/save" method="post" className="custom-form" onSuccess={saveNewsSuccess}>
         <input type="hidden" name="id" value="{{ news.id or '' }}"/>
