@@ -8,7 +8,7 @@ class Mixin:
 
     @classmethod
     def all(cls):
-        return cls.query.order_by(cls.datetime.desc()).all()
+        return cls.query.all()
 
     def as_dict(self):
         d = {}

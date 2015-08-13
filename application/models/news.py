@@ -43,6 +43,10 @@ class News(db.Model, Mixin, HasComments, HasVotes):
     category = db.relationship("NewsCategory", backref="news", lazy="joined")
     tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news", lazy="joined")
 
+    @classmethod
+    def all(cls):
+        return cls.query.order_by(cls.datetime.desc()).all()
+
     @property
     def announcement(self):
         parts = self.text.split('<!-- page break -->')
