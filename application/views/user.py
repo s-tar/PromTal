@@ -47,6 +47,7 @@ def edit_profile_post():
     v.field('file').image()
     if v.is_valid():
         data = {
+            'id': current_user.id,
             'login': current_user.login,
             'full_name': v.valid_data.full_name,
             'mobile_phone': v.valid_data.mobile_phone,
@@ -54,7 +55,7 @@ def edit_profile_post():
             'department': v.valid_data.department,
             'email': v.valid_data.email,
             'skype': v.valid_data.skype,
-            'photo': v.valid_data.photo,
+            'photo': v.valid_data.file,
             'birth_date': v.valid_data.birth_date
         }
 

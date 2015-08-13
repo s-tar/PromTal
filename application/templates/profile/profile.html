@@ -70,14 +70,14 @@
   </div>
 </div>
 
-<div class="row content">
+<div class="row content activity">
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <h2>Новости ({{ user.news|length }})</h2>
+        <h2>Новости ({{ user.news|length }}):</h2>
         <div id="news" class="list-group"></div>
         <button id="moreNews" style="display: none" type="button" class="btn btn-default">Больше</button>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <h2>Коментарии ({{ user.comments|length }})</h2>
+        <h2>Коментарии ({{ user.comments|length }}):</h2>
         <div id="comments" class="list-group"></div>
         <button id="moreComments" style="display: none" type="button" class="btn btn-default">Больше</button>
     </div>
@@ -86,8 +86,8 @@
 
 <script>
 function renderNews ( obj ) {
-    var newA = this.a.clone();
-    var newSpan = this.span.clone();
+    var newA = $( '<a class="list-group-item"></a>' );
+    var newSpan = $( '<span class="badge"></span>' );
 
     newSpan.append( niceDateFormat(obj.created_date) );
 
@@ -99,13 +99,16 @@ function renderNews ( obj ) {
 }
 
 function renderComments ( obj ) {
-    var newA = this.a.clone();
-    var newSpan = this.span.clone();
+    var newA = $( '<a class="list-group-item"></a>' );
+    var newSpan = $( '<span class="badge"></span>' );
+    var newStrong = $( '<strong></strong>' );
 
     newSpan.append( niceDateFormat(obj.last_modified_date) );
+    newStrong.append( ' (' + obj.comments_amount + ') ' );
 
     newA.attr( 'href', "{{ url_for('news.news_one', id=-1) }}".replace( '-1', obj.news_id ) );
-    newA.append( obj.news_title + ' (' + obj.comments_amount + ')' );
+    newA.append( newStrong );
+    newA.append( obj.news_title );
     newA.append( newSpan );
 
     return newA;
@@ -116,10 +119,6 @@ $(document).ready( function () {
         url: "{{ url_for('api_v1.get_user_news', id=user.id) }}",
         targetElem: $( "#news" ),
         buttonMore: $( "#moreNews" ),
-        innerElements: {
-            a:  '<a href="#" class="list-group-item"></a>',
-            span: '<span class="badge"></span>'
-        },
         render: renderNews
     });
 
@@ -127,10 +126,6 @@ $(document).ready( function () {
         url: "{{ url_for('api_v1.get_user_comments_in_news', id=user.id) }}",
         targetElem: $( "#comments" ),
         buttonMore: $( "#moreComments" ),
-        innerElements: {
-            a:  '<a href="#" class="list-group-item"></a>',
-            span: '<span class="badge"></span>'
-        },
         render: renderComments
     });
 
@@ -140,7 +135,6 @@ $(document).ready( function () {
     newsPaginator.get();
     commentsPaginator.get();
 });
-
 </script>
 
 {% endblock %}
