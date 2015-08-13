@@ -35,7 +35,8 @@ textarea.editor {
 }
 .custom-form input[type=text],
 .custom-form input[type=password],
-.custom-form textarea {
+.custom-form textarea,
+.custom-form select {
   background: #fff;
   border: 1px solid #eee;
   border-bottom-color: #ccc;
@@ -52,7 +53,8 @@ textarea.editor {
 }
 .custom-form input[type=text]:focus,
 .custom-form input[type=password]:focus,
-.custom-form textarea:focus {
+.custom-form textarea:focus,
+.custom-form select:focus {
   border-color: #fd8a16;
 }
 .custom-form .button,

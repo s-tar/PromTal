@@ -1,3 +1,12 @@
+{% macro listCategories(_categories, level=1) %}
+    {% if _categories and _categories|length %}
+        {% for cat in _categories %}
+        <option value="{{ cat.id }}" selected={ {{'true' if cat.id == news.category.id else 'false' }} }>{{ cat.name }}</option>
+        {{ listCategories(categories.get(cat.id), level+1) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
 {% extends "layout.html" %}
 {% block content %}
 <div class="frame news-form">
@@ -5,14 +14,22 @@
     <div id="news-form"></div>
 </div>
 <script type="text/jsx">
-function saveNewsSuccess(json){ window.location.href = '/news/'+json.news.id; }
 React.render(
-    <AJAXForm action="/news/save" method="post" className="custom-form" onSuccess={saveNewsSuccess}>
+    <AJAXForm action="/news/save" method="post" className="custom-form" onSuccess={function(json){ window.location.href = '/news/'+json.news.id;}}>
         <input type="hidden" name="id" value="{{ news.id or '' }}"/>
         <div className="field-label">Заголовок:</div>
         <Input type="text" name="title" defaultValue="{{ news.title or '' }}"/>
+
+        <div className="field-label">Категория:</div>
+        <select name="category_id" defaultValue="{{ news.category.id }}">
+        {% for cat in (categories.get(None) or []) recursive%}
+            <option value="{{ cat.id }}">{{ ('&nbsp;'*4*loop.depth0)|safe }}{{ cat.name }}</option>
+            {{ loop(categories.get(cat.id) or []) }}
+        {% endfor %}
+        </select>
         <div className="field-label">Теги:</div>
         <TagField name="tag" tags={ {{ news.tags|map(attribute='name')|list|tojson|safe}} }/>
+
         <div className="field-label">Текст:</div>
         <div className="edit-wrapper"><TextArea name="text" className="editor" defaultValue="{{ news.text or '' }}" placeholder="Текст новости"></TextArea></div>
         <a className="button" href="javascript: window.history.back()">Отмена</a>

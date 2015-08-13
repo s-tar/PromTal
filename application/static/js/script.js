@@ -17,13 +17,14 @@ $( window ).load(function() {
         tinymce.init({
             selector:'textarea.editor',
             language : "ru",
-            height : 200,
+            height : 300,
             plugins : [
                 "pagebreak",
                 "advlist autolink lists link image charmap print preview anchor",
                 "searchreplace visualblocks code fullscreen",
                 "insertdatetime media table contextmenu paste"
             ],
+            statusbar: false,
             pagebreak_separator: "<!-- page break -->",
             file_picker_callback: function(callback, value, meta) {
                 // Provide file and text for the link dialog
