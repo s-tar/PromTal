@@ -33,7 +33,7 @@
             <li><a href="/">Дни рождения</a></li>
           </ul>
         </li>
-        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Структура компании </a></li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="{{ url_for('company_structure.show_structure') }}">Структура компании </a></li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Группы </a></li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Техническая поддержка </a></li>
         {% if current_user.is_authorized() %}
@@ -41,10 +41,6 @@
         {% endif %}
       </ul>
         {% if current_user.is_authorized() %}
-
-
-
-
           <div class="user-profile-header">
             <div class="user-info">
                 <a class="user-name" href="{{ url_for('user.profile') }}">{{ current_user.full_name }}</a>
@@ -58,8 +54,6 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a href="{{ url_for('login.login') }}">Логин</a></li>
         </ul>
-
-
         {% endif %}
       </ul>
     </div><!-- /.navbar-collapse -->
