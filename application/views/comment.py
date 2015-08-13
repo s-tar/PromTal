@@ -175,6 +175,7 @@ def save_files(data, comment):
                 img = uploads.pop(0)
                 _img = Image.open(img)
                 width, height = _img.size
+
                 if width/700 < height/400:
                     image.resize(img, max_width=700).save(file.get_path())
                 else:

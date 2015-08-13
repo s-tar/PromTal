@@ -23,12 +23,12 @@
             {% if news.category %}
             <div class="category">
                 Категория:
-                <a href="#">{{ news.category.name}}</a>
+                <a href="{{ url_for('news.list_all_by_category', id=news.category_id) }}">{{ news.category.name}}</a>
             </div>
             {% endif %}
             <div class="tags">
                 {% for tag in news.tags %}
-                <a href="#" class="tag"><span class="fa fa-tag"></span> {{ tag.name }}</a>
+                <a href="{{ url_for('news.list_all_by_tag', id=tag.id) }}" class="tag"><span class="fa fa-tag"></span> {{ tag.name }}</a>
                 {% endfor %}
             </div>
         </div>

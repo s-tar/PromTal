@@ -45,7 +45,19 @@ class News(db.Model, Mixin, HasComments, HasVotes):
 
     @classmethod
     def all(cls):
-        return cls.query.order_by(cls.datetime.desc()).all()
+        return cls.query.filter().order_by(cls.datetime.desc()).all()
+
+    @classmethod
+    def all_by_category(cls, id):
+        return cls.query.filter(News.category_id==id)\
+            .order_by(cls.datetime.desc()).all()
+
+    @classmethod
+    def all_by_tag(cls, tag):
+        return cls.query.join((NewsTag, cls.tags))\
+            .filter(NewsTag.name.ilike(tag.name))\
+            .order_by(cls.datetime.desc()).all()
+
 
     @property
     def announcement(self):

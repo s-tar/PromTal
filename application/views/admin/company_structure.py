@@ -61,7 +61,7 @@ def dep_users_json(dep_id):
         last_columns = str(len(columns))
         dep_html = ''
         for dep in departments:
-            print(dep.id, dep.name)
+
             sel = 'selected' if dep.id == dep_id else ''
             dep_html += "<option value='"+str(dep.id)+"/"+row_id+"' "+sel+">"+dep.name+"</option>"
         manage_html = """

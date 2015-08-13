@@ -17,6 +17,16 @@ def list_all():
     news = News.all()
     return render_template('news/all.html', **{'news': news})
 
+@module.get('/category/<int:id>')
+def list_all_by_category(id):
+    news = News.all_by_category(id)
+    return render_template('news/all.html', **{'news': news})
+
+@module.get('/tag/<int:id>')
+def list_all_by_tag(id):
+    tag = NewsTag.get(id)
+    news = News.all_by_tag(tag) if tag else []
+    return render_template('news/all.html', **{'news': news})
 
 @module.get('/<int:id>')
 def news_one(id):
