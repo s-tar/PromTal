@@ -159,139 +159,6 @@ var AJAXForm = React.createClass({
     }
 });
 
-var DropDownPass = React.createClass({
-
-    getInitialState: function(){
-        return { display_inputs: 'none', drop_row: 'down' };
-    },
-
-    clicked: function(){
-        if(this.state.display_inputs == 'none') {
-            this.setState({display_inputs: 'block', drop_row: 'up'});
-        } else {
-            this.setState({display_inputs: 'none', drop_row: 'down'});
-        }
-        
-    },
-
-    render: function() {
-        var self = this;
-
-        var divInputs = {display: this.state.display_inputs,};
-        var classRow = "glyphicon glyphicon-menu-" + this.state.drop_row;
-        return (
-            <div>
-                <div className="drop-down-pass" onClick={self.clicked.bind(self)}>Сменить <span className={classRow}></span></div>
-                <div style={divInputs}>
-                    <p><input name="password_old" className="form-control" type="text" placeholder="Старый пароль"/></p>
-                    <NewPass />
-                </div>
-            </div>
-        );
-
-    }
-});
-
-var NewPass = React.createClass({
-
-    getInitialState: function(){
-        return { password_1: '', password_2: '',
-                 eye_1_password: 'password', eye_2_password: 'password',
-                 eye_1_status: 'close', eye_2_status: 'close',
-                 border_1_Color: '', border_2_Color: '',
-                 colors: ["#f00", "#c06", "#f60", "#3c0", "#3f0"]};
-    },
-
-    password1Change: function(e){
-        this.setState({password_1:e.target.value, border_1_Color:'red'});
-        var password = e.target.value;
-        var self = this;
-        set_color = function(num_color) {
-            self.setState({border_1_Color:self.state.colors[num_color]});
-        }
-        if (password.match(/[a-z]/)) {
-            set_color(0);
-        }
-        if (password.match(/[A-Z]/)) {
-            set_color(1);
-        }
-        if (password.match(/\d+/)) {
-            set_color(2);
-        }
-        if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
-            set_color(2);
-        }
-        if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~]/)) {
-            set_color(3);
-        }
-        if (password.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/)) {
-            set_color(3);
-        }
-        if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
-            set_color(3);
-        }
-        if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) {
-            set_color(3);
-        }
-        if (password.match(/([a-zA-Z0-9].*[!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~].*[a-zA-Z0-9])/)) {
-            set_color(4);
-        }
-    },
-
-    password2Change: function(e){
-        this.setState({password_2:e.target.value});
-        var password = e.target.value;
-        var self = this;
-        set_color = function(num_color) {
-            self.setState({border_2_Color:self.state.colors[num_color]});
-        }
-        if (password === self.state.password_1) {
-            set_color(3);
-        } else {
-            set_color(0);
-        }
-
-    },
-
-    clickedEye1: function(){
-        if(this.state.eye_1_status == 'close') {
-            this.setState({eye_1_status: 'open', eye_1_password: 'text'});
-        } else {
-            this.setState({eye_1_status: 'close', eye_1_password: 'password'});
-        }
-    },
-
-    clickedEye2: function(){
-        if(this.state.eye_2_status == 'close') {
-            this.setState({eye_2_status: 'open', eye_2_password: 'text'});
-        } else {
-            this.setState({eye_2_status: 'close', eye_2_password: 'password'});
-        }
-    },
-
-    render: function() {
-        var self = this;
-        var classEye = "eye-pass glyphicon glyphicon-eye-";
-        var classEye1 = classEye + this.state.eye_1_status;
-        var classEye2 = classEye + this.state.eye_2_status;
-        var styleInput1 = {borderColor: this.state.border_1_Color,};
-        var styleInput2 = {borderColor: this.state.border_2_Color,};
-        return (
-            <div>
-                <div className="form-pass">
-                    <input name="password_1" className="form-control edit-password-1" style={styleInput1} type={this.state.eye_1_password} value={this.state.password_1} onChange={this.password1Change} placeholder="Новый пароль"/>
-                    <span className={classEye1} onClick={self.clickedEye1}></span>
-                </div>
-                <div className="form-pass form-pass2">
-                    <input name="password_2" className="form-control edit-password-2" style={styleInput2} type={this.state.eye_2_password} value={this.state.password_2} onChange={this.password2Change} placeholder="Повторить новый пароль"/>
-                    <span className={classEye2} onClick={self.clickedEye2}></span>
-                </div>
-            </div>
-        );
-
-    }
-});
-
 var ManageUsers = React.createClass({
 
     getInitialState: function(){
@@ -340,15 +207,12 @@ var ManageUsers = React.createClass({
 });
 
 var UserInSearch = React.createClass({
-
     clickedUser: function(){
         var self = this;
-        console.log("123", self.props.userIn['u_id']);
         $.ajax({
           url: "/admin/company-structure/set-user-dep/"+self.props.dep_id+"/"+self.props.userIn['u_id']+"/",
           success: function(json) {
                 if(json.status == 'ok'){
-                    console.log("OK");
                     location.reload();
                 }
           }
@@ -358,8 +222,6 @@ var UserInSearch = React.createClass({
     render: function() {
         var self = this;
         var user = self.props.userIn;
-        console.log(user);
-        console.log(self.props.dep_id);
         return (
               <li className="media btn btn-default user-in-search" onClick={self.clickedUser}>
                 <div className="media-left">
@@ -373,3 +235,70 @@ var UserInSearch = React.createClass({
         );
     }
 });
+
+
+var TagField = React.createClass({
+    getInitialState: function(){
+        return {value: '', tags: this.props.tags || []}
+    },
+    onKeyPress: function(e) {
+        if(e.key == 'Enter') e.preventDefault()
+        if(e.key == 'Enter' && !!this.state.value.trim()) {
+            e.preventDefault()
+            this.state.tags.push(this.state.value)
+            this.setState({value: '', tags: this.state.tags})
+        }
+    },
+    //onKeyDown: function(e) {
+    //    if(e.key == 'Backspace' && !this.state.value.trim() ) {
+    //        this.state.tags.pop()
+    //        this.setState({value: '', tags: this.state.tags})
+    //    }
+    //},
+    onChange: function(e){
+        this.setState({value: e.target.value})
+    },
+    focusInput: function(){
+        this.refs.input.getDOMNode().focus()
+    },
+    render: function(){
+        var self = this
+        return (
+            <div className="tag-field" onClick={this.focusInput}>
+                {this.state.tags.map(function(tag, i) {
+                    return <Tag value={tag} key={"tag_"+i} name={self.props.name || 'tag'}/>
+                })}
+                <div className="value-wrapper">
+                    <span>{this.state.value}</span>
+                    <input ref="input" type="text" value={this.state.value} onKeyPress={this.onKeyPress} onKeyDown={this.onKeyDown} onChange={this.onChange}/>
+                </div>
+            </div>
+        )
+    }
+});
+
+var Tag = React.createClass({
+    getInitialState: function(){
+        return {deleted: false}
+    },
+    onClick: function(e) {
+        e.stopPropagation()
+    },
+    onDelete: function(e){
+        e.stopPropagation()
+        this.setState({deleted: true})
+    },
+    render: function(){
+        if(this.state.deleted || !this.props.value.trim())
+            return null
+        else
+            return (
+                <div className="tag" onClick={this.onClick}>
+                    <input type="hidden" name={this.props.name} value={this.props.value.trim()}/>
+                    <span className="fa fa-tag"></span>
+                    {this.props.value}
+                    <span className="fa fa-times delete" onClick={this.onDelete}></span>
+                </div>
+            )
+    }
+})
