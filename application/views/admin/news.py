@@ -52,8 +52,8 @@ def s_news_json():
     a = rowTable.output_result()
     for i in a['aaData']:
         row_id = i['0']
-        i['1'] = "<a href='"+url_for('news.news_one', id=row_id)+"'>"+i['1']+"</a>"
-        i['2'] = "<a href='"+url_for('user.profile_id', user_id=i['4'])+"'>"+i['2']+"</a>"
+        i['1'] = "<a href='"+url_for('news.news_one', id=int(row_id))+"'>"+i['1']+"</a>"
+        i['2'] = "<a href='"+url_for('user.profile', user_id=int(i['4']))+"'>"+i['2']+"</a>"
         i['3'] = "<a href='"+i['5']+"'>"+i['3']+"</a>"
         last_columns = str(4)
         manage_html = """Edit Delete"""
