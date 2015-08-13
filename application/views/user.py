@@ -75,7 +75,7 @@ def edit_profile_post():
 
 @module.route("/password/change")
 def edit_pass():
-    return render_template('login/../templates/password/edit_pass.html')
+    return render_template('profile/edit_pass.html')
 
 
 @module.post('/password/change')

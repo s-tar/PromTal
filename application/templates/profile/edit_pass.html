@@ -15,12 +15,12 @@ React.render(
     document.getElementById('edit_pass_form'))
 
 function wellDone(){
-    window.location.href = "/message/Вы сменили пароль";
+    window.location.href = "{{ url_for('user.profile') }}";
 }
 </script>
 <div class="row">
     <div class="col-sm-6 col-md-6 col-sm-offset-3">
-        <h1 class="text-center login-title">Edit Password</h1>
+        <h1 class="text-center login-title">Смена пароля</h1>
         <div class="account-wall">
             <div id="edit_pass_form"></div>
         </div>
