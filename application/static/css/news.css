@@ -41,12 +41,6 @@
 .news-one article .text {
   padding: 0px 20px;
 }
-.news-list article .text img,
-.news-one article .text img {
-  max-width: 100%;
-  width: auto;
-  height: auto;
-}
 .news-list article .datetime,
 .news-one article .datetime {
   clear: both;
