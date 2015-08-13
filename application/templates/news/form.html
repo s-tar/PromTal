@@ -22,7 +22,7 @@ React.render(
 
         <div className="field-label">Категория:</div>
         <select name="category_id" defaultValue="{{ news.category.id }}">
-        {% for cat in categories.get(None) recursive%}
+        {% for cat in (categories.get(None) or []) recursive%}
             <option value="{{ cat.id }}">{{ ('&nbsp;'*4*loop.depth0)|safe }}{{ cat.name }}</option>
             {{ loop(categories.get(cat.id) or []) }}
         {% endfor %}
