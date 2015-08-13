@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
-from application.views.admin.main import admin
+from application.views.admin.main import module
 from application.models.user import User
 from application.models.department import Department
 from application import db, ldap
@@ -14,18 +14,18 @@ def _default_value(chain):
     return chain or '-'
 
 
-@admin.get('/users_list')
+@module.get('/users_list')
 def users_list():
     users = User.query.order_by(User.full_name.asc()).all()
     return render_template('admin/users/users.html', users=users)
 
 
-@admin.get('/s_users')
+@module.get('/s_users')
 def s_users():
     return render_template('admin/users/s_users.html')
 
 
-@admin.get('/s_users_json')
+@module.get('/s_users_json')
 def s_users_json():
     columns = []
     columns.append(ColumnDT('id', filter=_default_value))
@@ -55,7 +55,7 @@ def s_users_json():
     return jsonify(**json_result)
 
 
-@admin.get('/users')
+@module.get('/users')
 def users_index():
     users = User.query.order_by(User.full_name.asc())
     page = request.args.get('page', 1, type=int)
@@ -72,7 +72,7 @@ def users_index():
     )
 
 
-@admin.get('/users/edit/<int:id>')
+@module.get('/users/edit/<int:id>')
 def edit_user(id):
     user = User.get_by_id(id)
     departments = Department.query.all()
@@ -81,7 +81,7 @@ def edit_user(id):
                            departments={department.name for department in departments})
 
 
-@admin.post('/users/edit/<int:id>')
+@module.post('/users/edit/<int:id>')
 def edit_user_post(id):
     user = User.get_by_id(id)
     data = dict(request.form)
@@ -118,7 +118,7 @@ def edit_user_post(id):
     return jsonify({"status": "fail",
                     "errors": v.errors})
 
-@admin.get('/users/delete/<int:id>')
+@module.get('/users/delete/<int:id>')
 def delete_user(id):
     # user = User.get_by_id(id)
     # db.session.delete(user)
@@ -126,7 +126,7 @@ def delete_user(id):
     return redirect(url_for('admin.users_index'))
 
 
-@admin.get('/users/add')
+@module.get('/users/add')
 def add_user():
     groups = ldap.get_all_groups()
     departments = Department.query.all()
@@ -135,7 +135,7 @@ def add_user():
                            departments={department.name for department in departments})
 
 
-@admin.post('/users/add')
+@module.post('/users/add')
 def add_user_post():
     v = Validator(request.form)
     v.field('name').required()

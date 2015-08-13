@@ -2,7 +2,7 @@
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('user.new_pass') }}" method="post" className="form-signin" onSuccess={wellDone}>
+    <AJAXForm action="{{ url_for('password.new_pass') }}" method="post" className="form-signin" onSuccess={wellDone}>
     	<Input className="ninja" type="hidden" name="token" value="{{token}}" />
         <Input className="form-control new-password-1" type="password" name="password_1" placeholder="Пароль" />
         <Input className="form-control new-password-2" type="password" name="password_2" placeholder="Повторить пароль" />
@@ -11,13 +11,13 @@ React.render(
     document.getElementById('new_pass_form'))
 
 function wellDone(){
-    window.location.href = "/message/Вы сменили пароль";
+    window.location.href = "{{ url_for('login.login') }}";
 }
 </script>
 
 <div class="row">
     <div class="col-sm-4 col-md-4 col-sm-offset-4">
-        <h1 class="text-center login-title">New Password</h1>
+        <h1 class="text-center login-title">Новий пароль</h1>
         <div class="account-wall">
             <div id="new_pass_form"></div>
         </div>

@@ -258,3 +258,20 @@ li.media {
 .dep-manager {
     font-size: 10px;
 }
+
+.profile .activity .list-group-item{
+    padding-right: 130px;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile .activity .list-group-item span{
+    background-color: transparent;
+    color: #333;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+

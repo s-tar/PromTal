@@ -39,9 +39,24 @@ class News(db.Model, Mixin, HasComments, HasVotes):
     votes_count = db.Column(db.Integer, default=0)
     views_count = db.Column(db.Integer, default=0)
 
-    author = db.relationship("User", uselist=False, backref="news")
-    category = db.relationship("NewsCategory", backref="news")
-    tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news")
+    author = db.relationship("User", backref="news", lazy="joined")
+    category = db.relationship("NewsCategory", backref="news", lazy="joined")
+    tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news", lazy="joined")
+
+    @classmethod
+    def all(cls):
+        return cls.query.filter().order_by(cls.datetime.desc()).all()
+
+    @classmethod
+    def all_by_category(cls, id):
+        return cls.query.filter(News.category_id==id)\
+            .order_by(cls.datetime.desc()).all()
+
+    @classmethod
+    def all_by_tag(cls, tag):
+        return cls.query.join((NewsTag, cls.tags))\
+            .filter(NewsTag.name.ilike(tag.name))\
+            .order_by(cls.datetime.desc()).all()
 
     @property
     def announcement(self):

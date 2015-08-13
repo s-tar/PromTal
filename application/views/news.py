@@ -1,12 +1,22 @@
+from collections import defaultdict
 from application import Module, db
 from application.models.news import News
+from application.models.news_category import NewsCategory
+from application.models.news_tag import NewsTag
 from application.utils import auth
 from application.utils.validator import Validator
 from application.views.main import main
-from flask import render_template, request, abort
+from flask import render_template, request, abort, redirect, url_for
 from flask.json import jsonify
 
 module = Module('news', __name__, url_prefix='/news')
+
+@module.before_request
+def before_request():
+    user = auth.service.get_user()
+    if not user.is_authorized():
+        return redirect(url_for('login.login'))
+
 
 @main.get("/")
 @module.get('/')
@@ -14,6 +24,16 @@ def list_all():
     news = News.all()
     return render_template('news/all.html', **{'news': news})
 
+@module.get('/category/<int:id>')
+def list_all_by_category(id):
+    news = News.all_by_category(id)
+    return render_template('news/all.html', **{'news': news})
+
+@module.get('/tag/<int:id>')
+def list_all_by_tag(id):
+    tag = NewsTag.get(id)
+    news = News.all_by_tag(tag) if tag else []
+    return render_template('news/all.html', **{'news': news})
 
 @module.get('/<int:id>')
 def news_one(id):
@@ -25,9 +45,13 @@ def news_one(id):
 @module.get('/edit/<int:id>')
 def news_form(id=None):
     news = News.get(id) or News()
+    categories = defaultdict(list)
+    for c in NewsCategory.all():
+        categories[c.parent_id].append(c)
+
     if id and news.author != auth.service.get_user():
         abort(403)
-    return render_template('news/form.html', **{'news': news})
+    return render_template('news/form.html', **{'news': news, 'categories': categories})
 
 @module.route("/save", methods=['POST'])
 def save():
@@ -35,6 +59,7 @@ def save():
     v.fields('id').integer(nullable=True)
     v.field('title').required()
     v.field('text').required()
+    v.field('category_id').integer(nullable=True)
     user = auth.service.get_user()
     if not user.is_authorized():
         abort(403)
@@ -46,6 +71,17 @@ def save():
         news.title = data.title
         news.text = data.text
         news.author = user
+
+        category = NewsCategory.get(data.category_id)
+        news.category = category
+
+        tags = data.list('tag')
+        existing_tags = {tag.name: tag for tag in NewsTag.get_tags(tags)}
+        tags = {tag: NewsTag(name=tag) for tag in tags}
+        tags.update(existing_tags)
+
+        news.tags = list(tags.values())
+
         db.session.add(news)
         db.session.commit()
         return jsonify({'status': 'ok',

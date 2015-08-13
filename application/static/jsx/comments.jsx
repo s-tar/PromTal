@@ -406,4 +406,10 @@ $(document).ready(function(){
         var count = parseInt($(this).attr('data-count')) || 0;
         React.render( <CommentsCounter entity={entity} entity_id={entity_id} count={count}/>, $(this)[0]);
     });
+
+    $('.comments-component').each(function(){
+        var entity = $(this).attr('data-entity');
+        var entity_id = $(this).attr('data-entity-id');
+        React.render( <Comments entity={entity} entity_id={entity_id}/>, $(this)[0]);
+    })
 });

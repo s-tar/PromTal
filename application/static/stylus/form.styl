@@ -26,7 +26,7 @@ textarea.editor
   width: 100%
   textarea
     min-height: 100px
-  input[type=text],input[type=password], textarea
+  input[type=text],input[type=password], textarea, select
     background: #FFFFFF
     border: 1px solid #EEEEEE
     border-bottom-color: #cccccc
@@ -104,3 +104,53 @@ select[multiple] + .error-wrapper
   -border-radius 0 3px 0 3px
 
 }
+.custom-form .tag-field
+  width: 100%
+  float: left
+  background: #FFFFFF
+  border: 1px solid #EEEEEE
+  border-bottom-color: #cccccc
+  -border-radius(3px)
+  margin: 0
+  margin-bottom: 4px
+  outline: none
+  color: #333
+  padding: 5px
+  resize:vertical
+  cursor: text
+  .tag
+    padding: 2px 5px
+    -border-radius 3px
+    margin: 2px 5px
+    float: left
+    border: 1px dotted #ccc
+    span
+      padding-right: 5px
+    .delete
+      cursor: pointer
+      color: #e7422c
+      padding: 0
+      &:hover
+        color: #FF6961
+  &:focus
+    border-color: #fd8a16
+  .value-wrapper
+    float: left
+    position: relative
+    span
+      display: inline-block
+      padding: 2px 1px
+      white-space: pre-wrap
+      margin: 0px 5px
+      padding-left: 10px
+      height: 27px
+      vertical-align: top
+    input
+      padding: 0
+      padding-left: 10px
+      margin-top: 4px
+      position: absolute
+      top: 0px
+      left: 0px
+      border: 0 none
+      box-sizing: content-box

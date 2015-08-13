@@ -20,14 +20,20 @@
                 <div class="likes-counter-component" title="Понравилось" data-count="{{ news.votes_count or 0}}" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}" data-my-vote="{{ news.my_vote.value }}"></div>
                 <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ news.views_count or 0 }}</div>
             </div>
+            {% if news.category %}
+            <div class="category">
+                Категория:
+                <a href="{{ url_for('news.list_all_by_category', id=news.category_id) }}">{{ news.category.name}}</a>
+            </div>
+            {% endif %}
+            <div class="tags">
+                {% for tag in news.tags %}
+                <a href="{{ url_for('news.list_all_by_tag', id=tag.id) }}" class="tag"><span class="fa fa-tag"></span> {{ tag.name }}</a>
+                {% endfor %}
+            </div>
         </div>
     </article>
-    <div id="comments"></div>
-    <script type="text/jsx">
-        React.render(
-            <Comments entity="{{ news.entity.name }}" entity_id="{{ news.entity.id }}" />,
-            document.getElementById('comments'))
-    </script>
+    <div class="comments-component" data-entity="{{ news.entity.name }}" data-entity-id="{{ news.entity.id }}"></div>
 </div>
 
 {% endblock %}

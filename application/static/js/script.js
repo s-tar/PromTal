@@ -17,13 +17,14 @@ $( window ).load(function() {
         tinymce.init({
             selector:'textarea.editor',
             language : "ru",
-            height : 200,
+            height : 300,
             plugins : [
                 "pagebreak",
                 "advlist autolink lists link image charmap print preview anchor",
                 "searchreplace visualblocks code fullscreen",
                 "insertdatetime media table contextmenu paste"
             ],
+            statusbar: false,
             pagebreak_separator: "<!-- page break -->",
             file_picker_callback: function(callback, value, meta) {
                 // Provide file and text for the link dialog
@@ -93,7 +94,6 @@ function niceDateFormat(date, time){
     if(!date) return ''
     time = time || true;
     date = new Date(date)
-
     if(dateDiffInDays(now, date) == 0) return date.format("Сегодня" + (time ? " в HH:MM" : ""));
     if(dateDiffInDays(now, date) == -1) return date.format("Вчера" + (time ? " в HH:MM" : ""));
     if(dateDiffInDays(now, date) == 1) return date.format("Завтра" + (time ? " в HH:MM" : ""));
@@ -118,4 +118,54 @@ function mediaFill(img) {
     var iw = image[0].naturalWidth;
     if(ih >= h && iw >= w) cls = 'cover'
     media.removeClass('contain').removeClass('cover').addClass(cls);
+}
+
+function LazyPaginator ( options ) {
+    this.url = options.url || null;
+    this.targetElem = $( options.targetElem ) || null;
+    this.buttonMore = $( options.buttonMore ) || null;
+    this.render = options.render || function () {};
+    this.posts = [];
+    this.nextPage = 1;
+    this.pagesAmount = 0;
+
+    this.init = function () {
+        if ( !this.targetElem || !this.buttonMore ) return;
+
+        var that = this;
+        this.buttonMore.on("click", function () {
+            that.get();
+        });
+    };
+
+    this.get = function () {
+
+        var that = this;
+
+        $.ajax({
+            url: that.url,
+            method: "GET",
+            data: "page=" + that.nextPage,
+            dataType: "json"
+        }).done( function ( data ) {
+            that.nextPage = data.paginator.page + 1;
+            that.pagesAmount = data.paginator.pages;
+            that.append( data.objects );
+
+            if ( that.nextPage > that.pagesAmount ) {
+                that.buttonMore.hide();
+            } else {
+                that.buttonMore.show();
+            }
+        });
+    };
+
+    this.append = function ( posts ) {
+        posts = (posts instanceof Array) ? posts : [];
+        this.posts = this.posts.concat(posts);
+
+        for (var i=0, len = posts.length; i < len; i++) {
+            this.targetElem.append( this.render( posts[i] ) );
+        }
+    };
 }

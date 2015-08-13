@@ -69,6 +69,73 @@
     </table>
   </div>
 </div>
+
+<div class="row content activity">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <h2>Новости ({{ user.news|length }}):</h2>
+        <div id="news" class="list-group"></div>
+        <button id="moreNews" style="display: none" type="button" class="btn btn-default">Больше</button>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <h2>Коментарии ({{ user.comments|length }}):</h2>
+        <div id="comments" class="list-group"></div>
+        <button id="moreComments" style="display: none" type="button" class="btn btn-default">Больше</button>
+    </div>
+</div>
 </div>
 
+<script>
+function renderNews ( obj ) {
+    var newA = $( '<a class="list-group-item"></a>' );
+    var newSpan = $( '<span class="badge"></span>' );
+
+    newSpan.append( niceDateFormat(obj.created_date) );
+
+    newA.attr( 'href', "{{ url_for('news.news_one', id=-1) }}".replace( '-1', obj.news_id ) );
+    newA.append( obj.news_title );
+    newA.append( newSpan );
+
+    return newA;
+}
+
+function renderComments ( obj ) {
+    var newA = $( '<a class="list-group-item"></a>' );
+    var newSpan = $( '<span class="badge"></span>' );
+    var newStrong = $( '<strong></strong>' );
+
+    newSpan.append( niceDateFormat(obj.last_modified_date) );
+    newStrong.append( ' (' + obj.comments_amount + ') ' );
+
+    newA.attr( 'href', "{{ url_for('news.news_one', id=-1) }}".replace( '-1', obj.news_id ) );
+    newA.append( newStrong );
+    newA.append( obj.news_title );
+    newA.append( newSpan );
+
+    return newA;
+}
+
+$(document).ready( function () {
+    var newsPaginator = new LazyPaginator({
+        url: "{{ url_for('api_v1.get_user_news', id=user.id) }}",
+        targetElem: $( "#news" ),
+        buttonMore: $( "#moreNews" ),
+        render: renderNews
+    });
+
+    var commentsPaginator = new LazyPaginator({
+        url: "{{ url_for('api_v1.get_user_comments_in_news', id=user.id) }}",
+        targetElem: $( "#comments" ),
+        buttonMore: $( "#moreComments" ),
+        render: renderComments
+    });
+
+    newsPaginator.init();
+    commentsPaginator.init();
+
+    newsPaginator.get();
+    commentsPaginator.get();
+});
+</script>
+
 {% endblock %}
+

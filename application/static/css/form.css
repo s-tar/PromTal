@@ -35,7 +35,8 @@ textarea.editor {
 }
 .custom-form input[type=text],
 .custom-form input[type=password],
-.custom-form textarea {
+.custom-form textarea,
+.custom-form select {
   background: #fff;
   border: 1px solid #eee;
   border-bottom-color: #ccc;
@@ -52,7 +53,8 @@ textarea.editor {
 }
 .custom-form input[type=text]:focus,
 .custom-form input[type=password]:focus,
-.custom-form textarea:focus {
+.custom-form textarea:focus,
+.custom-form select:focus {
   border-color: #fd8a16;
 }
 .custom-form .button,
@@ -150,4 +152,67 @@ select[multiple] + .error-wrapper .error {
   -webkit-border-radius: 0 3px 0 3px;
   -moz-border-radius: 0 3px 0 3px;
   border-radius: 0 3px 0 3px;
+}
+.custom-form .tag-field {
+  width: 100%;
+  float: left;
+  background: #fff;
+  border: 1px solid #eee;
+  border-bottom-color: #ccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin: 0;
+  margin-bottom: 4px;
+  outline: none;
+  color: #333;
+  padding: 5px;
+  resize: vertical;
+  cursor: text;
+}
+.custom-form .tag-field .tag {
+  padding: 2px 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin: 2px 5px;
+  float: left;
+  border: 1px dotted #ccc;
+}
+.custom-form .tag-field .tag span {
+  padding-right: 5px;
+}
+.custom-form .tag-field .tag .delete {
+  cursor: pointer;
+  color: #e7422c;
+  padding: 0;
+}
+.custom-form .tag-field .tag .delete:hover {
+  color: #ff6961;
+}
+.custom-form .tag-field:focus {
+  border-color: #fd8a16;
+}
+.custom-form .tag-field .value-wrapper {
+  float: left;
+  position: relative;
+}
+.custom-form .tag-field .value-wrapper span {
+  display: inline-block;
+  padding: 2px 1px;
+  white-space: pre-wrap;
+  margin: 0px 5px;
+  padding-left: 10px;
+  height: 27px;
+  vertical-align: top;
+}
+.custom-form .tag-field .value-wrapper input {
+  padding: 0;
+  padding-left: 10px;
+  margin-top: 4px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border: 0 none;
+  box-sizing: content-box;
 }

@@ -2,11 +2,11 @@
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('user.login') }}" method="post" className="form-signin" onSuccess={wellDone}>
+    <AJAXForm action="{{ url_for('login.login') }}" method="post" className="form-signin" onSuccess={wellDone}>
         <Input className="form-control" type="text" name="login" placeholder="Логин"/>
         <Input className="form-control" type="password" name="password" placeholder="Пароль" />
         <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Вход"/>
-        <a href="{{ url_for('user.restore') }}" className="pull-right need-help">Забыли пароль? </a><span className="clearfix"></span>
+        <a href="{{ url_for('password.restore') }}" className="pull-right need-help">Забыли пароль? </a><span className="clearfix"></span>
     </AJAXForm>,
     document.getElementById('log_in_form'))
 
@@ -16,7 +16,7 @@ function wellDone(){
 </script>
 <div class="row">
     <div class="col-sm-4 col-md-4 col-sm-offset-4">
-        <h1 class="text-center login-title">Log in</h1>
+        <h1 class="text-center login-title">Вход</h1>
         <div class="account-wall">
             <div id="log_in_form"></div>
         </div>

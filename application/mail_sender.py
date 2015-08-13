@@ -2,7 +2,7 @@ from envelopes import Envelope, GMailSMTP
 
 
 def send_mail_restore_pass(to_mail, token):
-    text = u"I'm a helicopter! Click http://reimu.uaprom/user/password/restore/{token}".format(token=token)
+    text = u"I'm a helicopter! Click http://reimu.uaprom/password/restore/{token}".format(token=token)
     send_mail(to_mail, text)
 
 
