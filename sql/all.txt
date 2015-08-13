@@ -1,0 +1,14 @@
+drop table view_news;
+drop view view_news;
+create view view_news as
+select
+	news.id news_id,
+	news.title news_title,
+	users.id users_id,
+	users.full_name user_full_name,
+	news_category.id news_category_id,
+	news_category.name news_category_name
+from news
+left join users on users.id = news.author_id
+left join news_category on news_category.id = news.category_id
+;

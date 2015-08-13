@@ -58,7 +58,6 @@ class News(db.Model, Mixin, HasComments, HasVotes):
             .filter(NewsTag.name.ilike(tag.name))\
             .order_by(cls.datetime.desc()).all()
 
-
     @property
     def announcement(self):
         parts = self.text.split('<!-- page break -->')
