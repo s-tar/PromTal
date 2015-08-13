@@ -4,10 +4,17 @@ from application.models.news_tag import NewsTag
 from application.utils import auth
 from application.utils.validator import Validator
 from application.views.main import main
-from flask import render_template, request, abort
+from flask import render_template, request, abort, redirect, url_for
 from flask.json import jsonify
 
 module = Module('news', __name__, url_prefix='/news')
+
+@module.before_request
+def before_request():
+    user = auth.service.get_user()
+    if not user.is_authorized():
+        return redirect(url_for('login.login'))
+
 
 @main.get("/")
 @module.get('/')

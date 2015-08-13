@@ -1,22 +1,26 @@
 from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
-from application.utils.image_processing.user_foto import save_user_fotos, NotImage
 from application.utils.widget import widget
-from flask import request, render_template, redirect, url_for, abort
+from flask import request, render_template, abort, redirect, url_for
 from flask.json import jsonify
-from werkzeug.utils import secure_filename
-from application.mail_sender import send_mail_restore_pass
-from application.models.user import User, PasswordRestore
+from application.models.user import User
 from application.models.department import Department
-from datetime import datetime
-from application.bl.users import restore_password, modify_password, PasswordError, DataProcessingError, update_user
+from application.bl.users import modify_password, PasswordError, DataProcessingError, update_user
 
-user = Module('user', __name__, url_prefix='/user')
+module = Module('user', __name__, url_prefix='/user')
 
 
-@user.get("/profile")
-@user.get("/profile/<int:user_id>")
+@module.before_request
+def before_requets():
+    user = auth.service.get_user()
+    if not user.is_authorized():
+        return redirect(url_for('login.login'))
+
+
+
+@module.get("/profile")
+@module.get("/profile/<int:user_id>")
 def profile(user_id=None):
     user = auth.service.get_user() if user_id is None else User.get_by_id(user_id)
     if user is None:
@@ -24,14 +28,14 @@ def profile(user_id=None):
     return render_template('profile/profile.html', user=user)
 
 
-@user.get("/profile/edit")
+@module.get("/profile/edit")
 def edit_profile():
     departments = Department.query.all()
     return render_template('profile/edit_profile.html',
                            departments={department.name for department in departments})
 
 
-@user.post('/profile/edit')
+@module.post('/profile/edit')
 def edit_profile_post():
     current_user = auth.service.get_user()
     data = dict(request.form)
@@ -41,7 +45,6 @@ def edit_profile_post():
     v.field('full_name').required()
     v.field('email').required().email()
     v.field('mobile_phone').required().phone_number()
-    v.field('inner_phone').required()
     v.field('department').required()
     v.field('birth_date').datetime(format="%d.%m.%Y")
     v.field('file').image()
@@ -70,90 +73,12 @@ def edit_profile_post():
                     "errors": v.errors})
 
 
-@user.get("/login")
-def login():
-    return render_template('login/login.html')
-
-
-@user.post('/login')
-def login_post():
-    v = Validator(request.form)
-    v.field("login").required()
-    v.field("password").required()
-    if v.is_valid():
-        login = v.valid_data.login
-        password = v.valid_data.password
-        if auth.service.login(login, password):
-            return jsonify({"status": "ok"})
-        else:
-            v.add_error('login', 'Логин или пароль не верен', 'wrong_login_or_password')
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.route("/logout")
-def log_out():
-    auth.service.logout()
-    return redirect(url_for('user.login'))
-
-
-@user.route("/password/restore")
-def restore():
-    return render_template('login/restore.html')
-
-
-@user.post('/password/restore')
-def restore_post():
-    v = Validator(request.form)
-    v.field('email').required().email()
-    if v.is_valid():
-        email = request.form.get("email")
-        user = User.get_by_email(email)
-        if user:
-            token = PasswordRestore.add_token(user)
-            send_mail_restore_pass(email, token)
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.route("/password/restore/<token>")
-def restore_pass(token):
-    pass_restore = PasswordRestore.is_valid_token(token)
-    if not pass_restore:
-        abort(404)
-    return render_template('login/new_pass.html', token=pass_restore.token)
-
-
-@user.route("/password/new")
-def new_pass():
-    return render_template('login/new_pass.html')
-
-
-@user.post('/password/new')
-def new_pass_post():
-    v = Validator(request.form)
-    v.field('password_1').required()
-    v.field('password_2').required()
-    v.field('password_2').equal(v.field('password_1'), message="Повторый пароль неверный")
-    if v.is_valid():
-        restore_pass = PasswordRestore.is_valid_token(request.form.get("token"))
-        if not restore_pass:
-            abort(404)
-        new_password = request.form.get("password_1")
-        restore_password(restore_pass.author.login, new_password)
-        PasswordRestore.deactivation_token(restore_pass)
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
-@user.route("/password/change")
+@module.route("/password/change")
 def edit_pass():
-    return render_template('login/edit_pass.html')
+    return render_template('login/../templates/password/edit_pass.html')
 
 
-@user.post('/password/change')
+@module.post('/password/change')
 def edit_pass_post():
     current_user = auth.service.get_user()
     v = Validator(request.form)
@@ -184,4 +109,3 @@ def birthdays():
 def birthdays():
     users = User.get_new()
     return render_template('user/new_members.html',  **{'users': users})
-

@@ -2,9 +2,9 @@
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('user.restore') }}" method="post" className="form-signin" onSuccess={wellDone}>
+    <AJAXForm action="{{ url_for('password.restore') }}" method="post" className="form-signin" onSuccess={wellDone}>
         <Input className="form-control email-restore" type="text" name="email" placeholder="Email" onChange={someChange}/>
-        <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Restore"/>
+        <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Восстановить"/>
     </AJAXForm>,
     document.getElementById('restore_form'))
 
@@ -12,12 +12,12 @@ function someChange(){
     console.log('CHANGE')
 }
 function wellDone(){
-    window.location.href = "/message/Вам отправлен email";
+    window.location.href = "{{ url_for('login.login') }}";
 }
 </script>
 <div class="row">
     <div class="col-sm-4 col-md-4 col-sm-offset-4">
-        <h1 class="text-center login-title">Restore Password</h1>
+        <h1 class="text-center login-title">Восстановление пароля</h1>
         <div class="account-wall">
             <div id="restore_form"></div>
         </div>
