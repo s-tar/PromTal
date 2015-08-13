@@ -1,5 +1,5 @@
 from application.models.news import News
-from application.views.admin.main import admin
+from application.views.admin.main import module
 from flask import render_template, request, current_app, jsonify
 from application.db import db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
@@ -13,7 +13,7 @@ def _default_value(chain):
     return chain or '-'
 
 
-@admin.get('/news')
+@module.get('/news')
 def news_index():
     news = News.query.order_by(News.datetime.asc())
     page = request.args.get('page', 1, type=int)
@@ -30,12 +30,12 @@ def news_index():
     )
 
 
-@admin.get('/s_news')
+@module.get('/s_news')
 def s_news():
     return render_template('admin/news/s_news.html')
 
 
-@admin.get('/s_news_json')
+@module.get('/s_news_json')
 def s_news_json():
     columns = []
     columns.append(ColumnDT('id', filter=_default_value))

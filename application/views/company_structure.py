@@ -1,11 +1,21 @@
 from application import Module, ldap, db
 from flask import request, render_template, redirect, url_for, abort
+
+from application.utils import auth
 from application.models.department import Department
 from application.models.user import User
 from application.utils.datatables_sqlalchemy.datatables import row2dict
 
 
-structure = Module('company_structure', __name__, url_prefix='/structure')
+module = Module('company_structure', __name__, url_prefix='/structure')
+
+
+@module.before_request
+def before_requets():
+    user = auth.service.get_user()
+    if not user.is_authorized():
+        return redirect(url_for('login.login'))
+
 
 def get_departments(parent_id=None):
     dep_list = []
@@ -23,7 +33,7 @@ def get_departments(parent_id=None):
     else:
         return None
 
-@structure.get("/show")
+@module.get("/show")
 def show_structure():
     departments = get_departments()
     return render_template('company_structure/show.html', departments=departments)

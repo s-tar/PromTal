@@ -49,3 +49,4 @@ def logout():
 def touch(sid, session):
     session['touch_datetime'] = datetime.datetime.now().isoformat()
     redis.set(sid, pickle.dumps(session))
+
