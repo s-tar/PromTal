@@ -271,3 +271,158 @@ h3.title a:hover {
 .likes-counter.active .icon:before {
   content: '\f004';
 }
+.company-structure {
+  text-align: center;
+}
+.company-structure .structure {
+  padding: 20px 0px;
+}
+.company-structure .structure ul {
+  white-space: nowrap;
+}
+.company-structure .structure ul li {
+  white-space: normal;
+}
+.company-structure .structure .lines {
+  height: 20px;
+  position: relative;
+}
+.company-structure .structure .lines:before,
+.company-structure .structure .lines:after {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  height: 100%;
+  content: '';
+  border-top: 1px solid #ccc;
+}
+.company-structure .level-0 {
+  padding: 20px;
+  margin: 0;
+}
+.company-structure .level-0 > li > .department {
+  margin-bottom: 15px;
+}
+.company-structure .level-0 > li {
+  text-align: center;
+  position: relative;
+}
+.company-structure .level-0 > li > .lines {
+  position: absolute;
+  height: 10px;
+  bottom: 0px;
+  border-right: 1px solid #ccc;
+}
+.company-structure .level-1 {
+  position: relative;
+}
+.company-structure .level-1:before {
+  content: '';
+  height: 20px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  border-right: 1px solid #ccc;
+}
+.company-structure .level-1 > li {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  text-align: left;
+}
+.company-structure .level-1 > li .department {
+  margin-top: 0;
+}
+.company-structure .level-1 > li .lines:before {
+  border-top: 1px solid #ccc;
+  width: 90px;
+  border-right: 1px solid #ccc;
+}
+.company-structure .level-1 > li .lines:after {
+  width: 100%;
+  border-top: 1px solid #ccc;
+  margin-left: 90px;
+}
+.company-structure .level-1 > li:first-child .lines:after {
+  width: 100%;
+  border-left: 1px solid #ccc;
+}
+.company-structure .level-1 > li:first-child .lines:before {
+  border: none;
+}
+.company-structure .level-1 > li:last-child .lines:after {
+  border: none;
+}
+.company-structure .level-1 > li:last-child .lines:before {
+  border-right: 1px solid #ccc;
+}
+.company-structure .level-1 ul {
+  padding: 0px;
+  padding-left: 20px;
+  margin: 0px;
+}
+.company-structure .level-2 li {
+  margin: 0px;
+  padding-left: 20px;
+  border-left: 1px solid #ccc;
+  position: relative;
+}
+.company-structure .level-2 li:last-child {
+  border-color: transparent;
+}
+.company-structure .level-2 li:last-child .line:before {
+  border-left: 1px solid #ccc !important;
+}
+.company-structure .level-2 li .lines {
+  position: absolute;
+  top: -5px;
+  left: -1px;
+}
+.company-structure .level-2 li .lines:before,
+.company-structure .level-2 li .lines:after {
+  float: left;
+  border: none;
+  width: 20px;
+  height: 28px;
+  border: none !important;
+}
+.company-structure .level-2 li .lines:before {
+  border-bottom: 1px solid #ccc !important;
+  border-left: 1px solid #ccc !important;
+}
+.company-structure ul {
+  list-style: none;
+}
+.company-structure .department {
+  margin-top: 5px;
+  width: 180px;
+  display: inline-block;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.9em;
+  padding-bottom: 0px;
+}
+.company-structure .department .user-icon {
+  clear: both;
+  float: left;
+  width: 30px;
+  height: 30px;
+}
+.company-structure .department .title {
+  float: none;
+  text-align: center;
+  padding-bottom: 10px;
+}
+.company-structure .department .info {
+  border-top: 1px solid #eee;
+  padding: 5px 10px 10px;
+  margin: 0px -10px;
+}
+.company-structure .department .info a {
+  padding: 0px 5px;
+}
+.company-structure .department .info .position {
+  padding: 0px 5px;
+  width: 100%;
+  color: #999;
+}

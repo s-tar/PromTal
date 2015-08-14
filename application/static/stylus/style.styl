@@ -206,3 +206,135 @@ h3.title a
     content: '\f08a'
   &.active .icon:before
     content: '\f004'
+
+
+.company-structure
+  frame_width = 180px
+  lines_border = 1px solid #ccc
+  text-align: center
+
+  .structure
+    padding: 20px 0px
+    ul
+      white-space: nowrap
+      li
+        white-space: normal
+    .lines
+      height: 20px
+      position: relative
+      &:before, &:after
+        position: absolute
+        top: 0px
+        left: 0
+        height: 100%
+        content: ''
+        border-top: lines_border
+  .level-0
+    padding: 20px
+    margin: 0
+    > li > .department
+      margin-bottom: 15px
+  .level-0 > li
+    text-align: center
+    position: relative
+    > .lines
+      position: absolute
+      height: 10px
+      bottom: 0px
+      border-right: lines_border
+  .level-1
+    position: relative
+    &:before
+      content: ''
+      height: 20px
+      position: absolute
+      bottom: 100%
+      left: 50%
+      border-right: lines_border
+  .level-1 > li
+    display: inline-block
+    vertical-align: top
+    padding: 0
+    text-align:left
+    .department
+      margin-top: 0
+    .lines
+      &:before
+        border-top: lines_border
+        width: (frame_width/2)
+        border-right: lines_border
+      &:after
+        width: 100%
+        border-top: lines_border
+        margin-left:(frame_width/2)
+    &:first-child
+      .lines:after
+        width: 100%
+        border-left: lines_border
+      .lines:before
+        border: none
+    &:last-child
+      .lines:after
+        border: none
+      .lines:before
+        border-right: lines_border
+  .level-1 ul
+    padding: 0px
+    padding-left: 20px
+    margin: 0px
+  .level-2 li
+    margin: 0px
+    padding-left: 20px
+    border-left: lines_border
+    position: relative
+    &:last-child
+      border-color: transparent
+      .line:before
+        border-left: lines_border !important
+    .lines
+      position: absolute
+      top: -5px
+      left: -1px
+      &:before, &:after
+        float: left
+        border: none
+        width: 20px
+        height: 28px
+        border: none !important
+      &:before
+        border-bottom: lines_border !important
+        border-left: lines_border !important
+
+  ul
+    list-style: none
+
+
+  .department
+    margin-top: 5px
+    width: frame_width
+    display: inline-block
+    padding: 10px
+    text-align: left
+    font-size: 0.9em
+    padding-bottom: 0px
+    .user-icon
+      clear: both
+      float: left
+      width: 30px
+      height: 30px
+    .title
+      float: none
+      text-align: center
+      padding-bottom: 10px
+
+    .info
+      border-top: 1px solid #EEEEEE
+      padding: 5px 10px 10px
+      margin: 0px -10px
+      a
+        padding: 0px 5px
+      .position
+        padding: 0px 5px
+        width: 100%
+        color: #999
+

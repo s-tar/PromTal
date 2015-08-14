@@ -1,3 +1,4 @@
+from collections import defaultdict
 from application import Module, ldap, db
 from flask import request, render_template, redirect, url_for, abort
 
@@ -35,5 +36,8 @@ def get_departments(parent_id=None):
 
 @module.get("/show")
 def show_structure():
-    departments = get_departments()
+    departments = defaultdict(list)
+    for department in Department.all():
+        departments[department.parent_id].append(department)
+
     return render_template('company_structure/show.html', departments=departments)

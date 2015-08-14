@@ -1,76 +1,30 @@
-{% extends "layout.html" %}
+{% extends "layout_clean.html" %}
+{% import "macros/user.html" as user %}
+
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <h1>Структура компании</h1>
-
-
-    <script>
-    jQuery(document).ready(function() {
-        $("#org").jOrgChart({
-			chartElement : '#chart'
-		});
-		
-		/* Extra Code */
-		$("#show-list").click(function(e){
-			e.preventDefault();
-			
-			$('#list-html').toggle('fast', function(){
-				if($(this).is(':visible')){
-					$('#show-list').text('Hide underlying list.');
-					$(".topbar").fadeTo('fast',0.9);
-				}else{
-					$('#show-list').text('Show underlying list.');
-					$(".topbar").fadeTo('fast',1);					
-				}
-			});
-		});
-    });
-    </script>
-
-
-    <ul id="org" style="display:none">
-    {%- for dep in departments recursive %}
-        <li>
-            <p>{{ dep.name }}</p>
-            {% if dep.user %}
-                <a class="dep-manager" href="{{ url_for('user.profile') }}/{{ dep.user.id }}">{{ dep.user.full_name }}</a>
-            {% endif %}
-        {%- if dep.dep_list -%}
-            <ul><p>{{ loop(dep.dep_list) }}</p></ul>
-        {%- endif %}</li>
-    {%- endfor %}
-    </ul>
-	
-	<div id="chart" class="orgChart"></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="company-structure">
+    <div class="frame">
+        <h3 class="title">Структура компании</h3>
+    </div>
+    <div class="structure drag-scroll">
+        <ul class="level-0">
+        {% for dep in departments.get(None, []) recursive %}
+            <li>
+                <div class="lines"></div>
+                <div class="department frame">
+                    <div class="title">{{ dep.name or '' }}</div>
+                    {% if dep.user %}
+                    <div class="info">
+                    {{ user.icon(dep.user) }}
+                    <a href="{{ url_for("user.profile", user_id=dep.user.id) }}">{{ dep.user.full_name }}</a>
+                    <span class="position">Должность</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <ul class="level-{{ loop.depth }}">{{ loop(departments.get(dep.id, [])) }}</ul>
+            </li>
+        {% endfor %}
+        </ul>
     </div>
 </div>
-
-<script>
-$(document).ready(function() {
-        $('#menu').metisMenu({
-            toggle: false
-        });
-});
-</script>
 {% endblock %}

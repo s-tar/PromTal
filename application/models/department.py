@@ -1,8 +1,9 @@
 from application.db import db
+from application.models.mixin import Mixin
 from application.models.user import User
 
 
-class Department(db.Model):
+class Department(db.Model, Mixin):
     __tablename__ = 'department'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
@@ -10,7 +11,7 @@ class Department(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     parent = db.relationship('Department', remote_side=[id],  backref="subdepartment")
-    user = db.relationship("User", backref="managed_department", foreign_keys=[user_id])
+    user = db.relationship("User", backref="managed_department", foreign_keys=[user_id], lazy='joined')
 
     def __repr__(self):
         return "<Department {name}>".format(name=self.name)
