@@ -18,6 +18,7 @@ $( window ).load(function() {
             selector:'textarea.editor',
             language : "ru",
             height : 300,
+            convert_urls: false,
             plugins : [
                 "pagebreak",
                 "advlist autolink lists link image charmap print preview anchor",
