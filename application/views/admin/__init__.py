@@ -1,1 +1,1 @@
-from . import main, news, users, company_structure
+from . import main, news, users, company_structure, news_category
