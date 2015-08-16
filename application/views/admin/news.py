@@ -1,14 +1,11 @@
-from application.models.news import News
-from application.views.admin.main import module
 from flask import render_template, request, current_app, jsonify, url_for
+from werkzeug.utils import redirect
+
 from application.db import db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
-from application.models.user import User
 from application.models.news import News
-from application.models.news_category import NewsCategory
-from application.models.news_tag import NewsTag
 from application.models.view_news import ViewNews
-from application.utils.datatables_sqlalchemy.datatables import row2dict
+from application.views.admin.main import module
 
 
 def _default_value(chain):
@@ -39,7 +36,7 @@ def s_news():
 
 @module.get('/s_news_json')
 def s_news_json():
-    columns = []
+    columns = list()
     columns.append(ColumnDT('news_id', filter=_default_value))
     columns.append(ColumnDT('news_title', filter=_default_value))# 1
     columns.append(ColumnDT('user_full_name', filter=_default_value))# 2
@@ -56,6 +53,31 @@ def s_news_json():
         i['2'] = "<a href='"+url_for('user.profile', user_id=int(i['4']))+"'>"+i['2']+"</a>"
         i['3'] = "<a href='"+i['5']+"'>"+i['3']+"</a>"
         last_columns = str(4)
+        last_columns = str(len(columns))
         manage_html = """Edit Delete"""
         i[last_columns] = manage_html.format()
     return jsonify(**a)
+
+
+@module.get('/news/delete/<int:id>')
+def delete_news(id):
+    news = News.query.get_or_404(id)
+    news.status = News.STATUS_DELETED
+    db.session.commit()
+    return redirect(url_for('admin.news_index'))
+
+
+@module.get('/news/activate/<int:id>')
+def activate_news(id):
+    news = News.query.get_or_404(id)
+    news.status = News.STATUS_ACTIVE
+    db.session.commit()
+    return redirect(url_for('admin.news_index'))
+
+
+@module.get('/news/block/<int:id>')
+def block_news(id):
+    news = News.query.get_or_404(id)
+    news.status = News.STATUS_BLOCKED
+    db.session.commit()
+    return redirect(url_for('admin.news_index'))

@@ -20,6 +20,23 @@ def users_list():
     return render_template('admin/users/users.html', users=users)
 
 
+@module.get('/users')
+def users_index():
+    users = User.query.order_by(User.full_name.asc())
+    page = request.args.get('page', 1, type=int)
+    pagination = users.paginate(
+        page,
+        per_page=current_app.config['ADMIN_USERS_PER_PAGE'],
+        error_out=False
+    )
+    users = pagination.items
+    return render_template(
+        'admin/users/index.html',
+        users=users,
+        pagination=pagination
+    )
+
+
 @module.get('/s_users')
 def s_users():
     return render_template('admin/users/s_users.html')
@@ -27,7 +44,7 @@ def s_users():
 
 @module.get('/s_users_json')
 def s_users_json():
-    columns = []
+    columns = list()
     columns.append(ColumnDT('id', filter=_default_value))
     columns.append(ColumnDT('full_name', filter=_default_value))
     columns.append(ColumnDT('email', filter=_default_value))
@@ -53,23 +70,6 @@ def s_users_json():
             edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
     return jsonify(**json_result)
-
-
-@module.get('/users')
-def users_index():
-    users = User.query.order_by(User.full_name.asc())
-    page = request.args.get('page', 1, type=int)
-    pagination = users.paginate(
-        page,
-        per_page=current_app.config['ADMIN_USERS_PER_PAGE'],
-        error_out=False
-    )
-    users = pagination.items
-    return render_template(
-        'admin/users/index.html',
-        users=users,
-        pagination=pagination
-    )
 
 
 @module.get('/users/edit/<int:id>')
@@ -118,11 +118,28 @@ def edit_user_post(id):
     return jsonify({"status": "fail",
                     "errors": v.errors})
 
+
 @module.get('/users/delete/<int:id>')
 def delete_user(id):
-    # user = User.get_by_id(id)
-    # db.session.delete(user)
-    # db.session.commit()
+    user = User.query.get_or_404(id)
+    user.status = User.STATUS_DELETED
+    db.session.commit()
+    return redirect(url_for('admin.users_index'))
+
+
+@module.get('/users/activate/<int:id>')
+def activate_user(id):
+    user = User.query.get_or_404(id)
+    user.status = User.STATUS_ACTIVE
+    db.session.commit()
+    return redirect(url_for('admin.users_index'))
+
+
+@module.get('/users/block/<int:id>')
+def block_user(id):
+    user = User.query.get_or_404(id)
+    user.status = User.STATUS_BLOCKED
+    db.session.commit()
     return redirect(url_for('admin.users_index'))
 
 
