@@ -297,11 +297,26 @@ h3.title a:hover {
 .company-structure .level-0 > li > .department .title {
   background-color: #ffb27f;
 }
-.company-structure .level-1 > li:nth-child(even) .department .title {
+.company-structure .level-1 > li:nth-child(1) .department .title {
+  background-color: #cfe2f3;
+}
+.company-structure .level-1 > li:nth-child(2) .department .title {
   background-color: #e6b8af;
 }
-.company-structure .level-1 > li:nth-child(odd) .department .title {
-  background-color: #cfe2f3;
+.company-structure .level-1 > li:nth-child(3) .department .title {
+  background-color: #c5d9a6;
+}
+.company-structure .level-1 > li:nth-child(4) .department .title {
+  background-color: #ccb2d5;
+}
+.company-structure .level-1 > li:nth-child(5) .department .title {
+  background-color: #eee1ad;
+}
+.company-structure .level-1 > li:nth-child(6) .department .title {
+  background-color: #fee893;
+}
+.company-structure .level-1 > li:nth-child(7) .department .title {
+  background-color: #e3e3e3;
 }
 .company-structure .structure {
   padding: 20px 0px;
