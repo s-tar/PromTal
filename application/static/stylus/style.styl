@@ -12,7 +12,11 @@ header
   -box-shadow 0px 0px 2px 0px rgba(0,0,0,0.2)
   .logo img
     height: 30px
-
+.unselectable
+  -user-select none
+.dragging
+  -user-select none
+  cursor: move
 /* ------------------------ BOOTSTRAP FIX ------------------------------ */
 body > .container-flex > .row
   margin: 0
@@ -212,6 +216,9 @@ h3.title a
   frame_width = 180px
   lines_border = 1px solid #ccc
   text-align: center
+
+  .level-0
+    float: left
   .level-0 > li > .department .title
     background-color: #FFB27F
   .level-1 > li:nth-child(even) .department .title
@@ -220,6 +227,11 @@ h3.title a
     background-color: #CFE2F3
   .structure
     padding: 20px 0px
+    overflow: hidden
+    margin: 0px -15px;
+    cursor: move
+    &.loading
+      opacity: 0
     ul
       white-space: nowrap
       li
@@ -367,8 +379,9 @@ h3.title a
         border-bottom: 1px solid #EEEEEE
       a.show-link
         display: none
+
     .workers:not(.show)
       a.hide-link
         display: none
-      .user
+      .workers-list
         display: none

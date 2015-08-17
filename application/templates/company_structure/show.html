@@ -6,7 +6,7 @@
     <div class="frame">
         <h3 class="title">Структура компании</h3>
     </div>
-    <div class="structure drag-scroll">
+    <div class="structure loading">
         <ul class="level-0">
         {% for dep in departments.get(None, []) recursive %}
             <li>
@@ -26,6 +26,7 @@
                             <a href="#" class="show-link">Сотрудники ({{ dep.users|length }})</a>
                             <a href="#" class="hide-link">Скрыть сотрудников</a>
                         </div>
+                        <div class="workers-list">
                         {% for u in dep.users %}
                         <div class="user">
                             {{ user.icon(u) }}
@@ -33,6 +34,7 @@
                             <span class="position">Должность</span>
                         </div>
                         {% endfor %}
+                        </div>
                     </div>
                     {% endif %}
                 </div>
