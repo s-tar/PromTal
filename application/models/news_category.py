@@ -13,3 +13,25 @@ class NewsCategory(db.Model, Mixin):
     @classmethod
     def get_root(cls):
         return cls.query.filter(cls.parent_id == None).all()
+
+    @classmethod
+    def add(cls, name):
+        cat = NewsCategory(name=name)
+        db.session.add(cat)
+        db.session.commit()
+
+    @classmethod
+    def get_by_id(cls, uid):
+        return cls.query.filter_by(id=uid).first()
+
+    @classmethod
+    def rename(cls, uid, new_name):
+        cat = cls.query.filter_by(id=uid).first()
+        cat.name = new_name
+        db.session.add(cat)
+        db.session.commit()
+
+    @classmethod
+    def delete(cls, uid):
+        cls.query.filter_by(id=uid).delete()
+        db.session.commit()
