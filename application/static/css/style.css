@@ -412,6 +412,9 @@ h3.title a:hover {
   font-size: 0.9em;
   padding-bottom: 5px;
 }
+.company-structure .department .title:last-child {
+  margin-bottom: -5px;
+}
 .company-structure .department .user-icon {
   clear: both;
   float: left;
