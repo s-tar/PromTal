@@ -206,3 +206,169 @@ h3.title a
     content: '\f08a'
   &.active .icon:before
     content: '\f004'
+
+
+.company-structure
+  frame_width = 180px
+  lines_border = 1px solid #ccc
+  text-align: center
+  .level-0 > li > .department .title
+    background-color: #FFB27F
+  .level-1 > li:nth-child(even) .department .title
+    background-color: #E6B8AF
+  .level-1 > li:nth-child(odd) .department .title
+    background-color: #CFE2F3
+  .structure
+    padding: 20px 0px
+    ul
+      white-space: nowrap
+      li
+        white-space: normal
+    .lines
+      height: 20px
+      position: relative
+      &:before, &:after
+        position: absolute
+        top: 0px
+        left: 0
+        height: 100%
+        content: ''
+        border-top: lines_border
+  .level-0
+    padding: 20px
+    margin: 0
+    > li > .department
+      margin-bottom: 15px
+  .level-0 > li
+    text-align: center
+    position: relative
+    > .lines
+      position: absolute
+      height: 10px
+      bottom: 0px
+      border-right: lines_border
+  .level-1
+    position: relative
+    &:before
+      content: ''
+      height: 20px
+      position: absolute
+      bottom: 100%
+      left: 50%
+      border-right: lines_border
+  .level-1 > li
+    display: inline-block
+    vertical-align: top
+    padding: 0
+    text-align:left
+    .department
+      margin-top: 0
+    .lines
+      &:before
+        border-top: lines_border
+        width: (frame_width/2)
+        border-right: lines_border
+      &:after
+        width: 100%
+        border-top: lines_border
+        margin-left:(frame_width/2)
+    &:first-child
+      .lines:after
+        width: 100%
+        border-left: lines_border
+      .lines:before
+        border: none
+    &:last-child
+      .lines:after
+        border: none
+      .lines:before
+        border-right: lines_border
+  .level-1 ul
+    padding: 0px
+    padding-left: 20px
+    margin: 0px
+  .level-2 li
+    margin: 0px
+    padding-left: 20px
+    border-left: lines_border
+    position: relative
+    &:last-child
+      border-color: transparent
+      .line:before
+        border-left: lines_border !important
+    .lines
+      position: absolute
+      top: -5px
+      left: -1px
+      &:before, &:after
+        float: left
+        border: none
+        width: 20px
+        height: 23px
+        border: none !important
+      &:before
+        border-bottom: lines_border !important
+        border-left: lines_border !important
+
+  ul
+    list-style: none
+
+
+  .department
+    margin-top: 5px
+    margin-right: 5px
+    width: frame_width
+    display: inline-block
+    padding: 10px
+    text-align: left
+    font-size: 0.9em
+    padding-bottom: 5px
+    .title:last-child
+      margin-bottom: -5px
+    .user-icon
+      clear: both
+      float: left
+      width: 30px
+      height: 30px
+      position: absolute
+      left: 10px
+    .title
+      float: none
+      text-align: center
+      margin: -10px
+      margin-bottom: 0px
+      padding: 10px 5px
+    .user
+      padding: 2px 10px 2px 40px
+      margin: 4px -10px
+      line-height: 1.2em
+      height: 30px
+      position: relative
+      a
+        padding: 0px 5px
+        overflow: hidden
+        text-overflow: ellipsis
+        display: inline-block
+        width: 100%
+        white-space: nowrap
+      .position
+        padding: 0px 5px
+        width: 100%
+        color: #999
+    > .user + .workers .workers-toggle
+      margin-top: 5px
+      border-top: 1px solid #EEEEEE
+    .workers .workers-toggle
+      text-align: center
+      margin: 0px -10px 0px
+      padding: 5px 5px 3px
+    .workers.show
+      .workers-toggle
+        border-bottom: 1px solid #EEEEEE
+      a.show-link
+        display: none
+    .workers:not(.show)
+      a.hide-link
+        display: none
+      .user
+        display: none
