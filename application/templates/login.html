@@ -1,5 +1,27 @@
-{% extends "layout_clean.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>PromTal</title>
+    <link rel="shortcut icon" href="/static/img/favicon.png" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/main.css" >
+    <link rel="stylesheet" href="/static/css/style.css" >
+    <link rel="stylesheet" href="/static/css/form.css" >
+    <link rel="stylesheet" href="/static/css/jquery-ui.css" >
+
+    <script src="/static/js/lib/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/markup.js"></script>
+
+    <script src="/static/jsx/form.jsx" type="text/jsx"></script>
+</head>
+
 <script type="text/jsx">
 React.render(
     <AJAXForm action="{{ url_for('login.login') }}" method="post" className="form-signin" onSuccess={wellDone}>
@@ -22,4 +44,8 @@ function wellDone(){
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script src="/static/js/lib/bootstrap.js"></script>
+<script src="/static/js/lib/bootstrap-filestyle.min.js"></script>
+<script src="/static/js/lib/react-with-addons.js"></script>
+<script src="/static/js/lib/JSXTransformer.js"></script>

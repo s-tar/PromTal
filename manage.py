@@ -20,7 +20,6 @@ def sync_permissions():
             p = Permission()
             p.name = name
             p.title = title
-            db.session.add(p)
             db.session.commit()
 
 
@@ -28,7 +27,7 @@ def sync_permissions():
 def insert_roles():
     roles = {
         'user': ['post_comment'],
-        'moderator': ['edit_comments', 'write_articles', 'moderate_comments', 'add_user', 'set_permissions']
+        'moderator': ['edit_comments', 'write_articles', 'moderate_comments', 'manage_users', 'set_permissions']
     }
     permissions_map = {p.name: p for p in Permission.query}
 
