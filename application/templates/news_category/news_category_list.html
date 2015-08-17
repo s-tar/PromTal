@@ -1,5 +1,5 @@
 {% for category in category_list %}
-    <li><a href="/">{{ category.name }}</a></li>
+    <li><a href="{{ url_for('news.list_all_by_category', id=category.id) }}">{{ category.name }}</a></li>
 {% endfor %}
 {% if category_list|length == 0 %}
     <li><a href="#">Нет разделов</a></li>
