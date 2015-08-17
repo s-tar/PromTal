@@ -1,9 +1,9 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}Structure{% endblock %}
+{% block title %}Структура компании{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h2>Company structure</h2>
+    <h2>Структура компании</h2>
     <ul class="metisFolder">
     {%- for dep in departments recursive %}
         <li>
