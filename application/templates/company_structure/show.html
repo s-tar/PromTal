@@ -14,10 +14,25 @@
                 <div class="department frame">
                     <div class="title">{{ dep.name or '' }}</div>
                     {% if dep.user %}
-                    <div class="info">
-                    {{ user.icon(dep.user) }}
-                    <a href="{{ url_for("user.profile", user_id=dep.user.id) }}">{{ dep.user.full_name }}</a>
-                    <span class="position">Должность</span>
+                    <div class="user">
+                        {{ user.icon(dep.user) }}
+                        <a href="{{ url_for("user.profile", user_id=dep.user.id) }}" title="{{ dep.user.full_name }}">{{ dep.user.full_name }}</a>
+                        <span class="position">Должность</span>
+                    </div>
+                    {% endif %}
+                    {% if  dep.users|length %}
+                    <div class="workers">
+                        <div class="workers-toggle">
+                            <a href="#" class="show-link">Сотрудники ({{ dep.users|length }})</a>
+                            <a href="#" class="hide-link">Скрыть сотрудников</a>
+                        </div>
+                        {% for u in dep.users %}
+                        <div class="user">
+                            {{ user.icon(u) }}
+                            <a href="{{ url_for("user.profile", user_id=u.id) }}" title="{{ u.full_name }}">{{ u.full_name }}</a>
+                            <span class="position">Должность</span>
+                        </div>
+                        {% endfor %}
                     </div>
                     {% endif %}
                 </div>

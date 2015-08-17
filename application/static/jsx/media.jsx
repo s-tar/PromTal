@@ -132,6 +132,7 @@ var Media = React.createClass({
         })
     },
     render: function(){
+        console.log(this.props.type)
         var src = this.state.url || this.state.src
         var image = !src ? '' : <div className="image"><img ref="mediaImage" src={src} alt="" onLoad={this.onImageLoad}/></div>
         var url_input = <input type="hidden" name="url" value={this.state.url}/>
@@ -259,16 +260,15 @@ var FileUploader = React.createClass({
     },
 
     render: function() {
-        var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} onLoad={this.onImageLoad} alt=''/></div>
+        var preview = !this.state.preview ? '' : <div className="wrapper"><img src={this.state.preview} onLoad={this.onImageLoad} alt=''/></div>;
+        var uploadButton = this.props.type == 'image' ? <button type="button" onClick={this.onUploadClick} className="button download"><span className="fa fa-download"></span></button> : null;
         return (
             <div className="file-uploader">
                 <h3 className="title">{this.getTitle()}</h3>
                 <div className="preview">{preview}</div>
                 <div className="url-wrapper">
                     <input type="text" ref="urlField" name="url" placeholder="Введите адрес" onChange={this.onUrlChange}/>
-                    <button type="button" onClick={this.onUploadClick} className="button download">
-                        <span className="fa fa-download"></span>
-                    </button>
+                    {uploadButton}
                 </div>
                 <div className="buttons">
                     <button type="button" disabled={this.state.disabled} className="button" onClick={this.onApprove}>Добавить</button>
