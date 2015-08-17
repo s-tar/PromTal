@@ -13,7 +13,6 @@ String.prototype.format = String.prototype.f = function(){
 
 $( window ).load(function() {
     setTimeout(function(){
-        $('textarea.autosize').textareaAutoSize();
         tinymce.init({
             selector:'textarea.editor',
             language : "ru",
@@ -175,4 +174,43 @@ function LazyPaginator ( options ) {
 $(document).on('click', '.company-structure .workers-toggle a', function(e){
     e.preventDefault();
     $(this).closest('.workers').toggleClass('show');
+})
+
+$(document).on('selectstart', '.company-structure .structure', function(e) {
+    e.preventDefault();
+});
+$(document).ready(function(){
+    var structure = $('.company-structure .structure');
+    $('.company-structure .structure').removeClass('loading');
+    structure.scrollLeft((structure.find('.level-0').outerWidth()-structure.parent().width()) /2);
+})
+$(document).on('mousedown', '.company-structure .structure', function(e){
+    if(event.which == 1) {
+        var $this = $(this);
+        var start_x = e.clientX - $(this).offset().left;
+        var start_y = e.clientY - $(this).offset().top;
+        var start_scroll_top = $(document).scrollTop();
+        var start_scroll_left = $(this).scrollLeft();
+        var timeout = setTimeout(function () {
+            $('body').addClass('dragging');
+            $this.on('mousemove', function (e) {
+                var x = e.clientX - $(this).offset().left;
+                var y = e.clientY - $(this).offset().top;
+                var delta_x = x - start_x;
+                var delta_y = start_y - y;
+                $(document).scrollTop(start_scroll_top + delta_y +2);
+                $(this).scrollLeft(start_scroll_left - delta_x);
+
+            })
+
+        }, 10);
+
+        $(this).on('mouseup', clear);
+        $(window).on('mouseup', clear);
+        function clear(e) {
+            $('body').removeClass('dragging');
+            clearTimeout(timeout);
+            $this.off('mouseup mousemove');
+        }
+    }
 })
