@@ -12,26 +12,42 @@
             <thead>
                 <tr>
                     <th>ID </th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Login</th>
-                    <th>Cell phone</th>
-                    <th>Inner phone</th>
-                    <th>Manage</th>
+                    <th>Имя </th>
+                    <th>Email </th>
+                    <th>Логин </th>
+                    <th>Статус </th>
+                    <th>Роли </th>
+                    <th>Мобильный номер </th>
+                    <th>Внутренний номер </th>
+                    <th>Отдел </th>
+                    <th>Действия </th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
                     <tr>
                         <td>{{ user.id }}</td>
-                        <td>{{ user.full_name }}</td>
+                        <td><a style="text-decoration:none" href="{{ url_for('user.profile', id=user.id) }}">{{ user.full_name }}</a></td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.login }}</td>
+                        <td>
+                            {% if user.status == 0 %}
+                            Активен
+                            {% elif user.status == 1 %}
+                            Удалён
+                            {% elif user.status == 2 %}
+                            Заблокирован
+                            {% endif %}
+                        </td>
+                        <td>{{ user.role }}</td>
                         <td>{{ user.mobile_phone }}</td>
                         <td>{{ user.inner_phone }}</td>
+                        <td>{{ user.department }}</td>
                         <td>
-                            <a href="{{ url_for('admin.edit_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i>Edit</span></a><br/>
-                            <a href="{{ url_for('admin.delete_user_profile', id=user.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span>Delete</a>
+                            <a style="text-decoration:none" href="{{ url_for('admin.activate_user', id=user.id) }}"><span><i class="fa fa-lg fa-thumbs-o-up"></i></span> Активировать </a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.edit_user', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i> Редактировать </span></a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.block_user', id=user.id) }}"><span><i class="fa fa-lg fa-thumbs-o-down"></i></span> Заблокировать </a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.delete_user', id=user.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span> Удалить </a><br/>
                         </td>
                     </tr>
                 {% endfor %}
@@ -46,4 +62,8 @@
     {% endif %}
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "admin/layout.html" %}
 {% import "admin/_macros.html" as macros %}
 
-{% block title %}Users{% endblock %}
+{% block title %}Новости{% endblock %}
 {% block content %}
 {{ super() }}
 <div class="container-fluid">
@@ -11,23 +11,37 @@
         <table class="table table-bordered table-hover table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Category</th>
-                    <th>Tags</th>
-                    <th>Manage</th>
+                    <th>ID </th>
+                    <th>Название </th>
+                    <th>Автор </th>
+                    <th>Статус </th>
+                    <th>Дата создания </th>
+                    <th>Категории </th>
+                    <th>Управление </th>
                 </tr>
             </thead>
             <tbody>
                 {% for article in news %}
                     <tr>
                         <td>{{ article.id }}</td>
-                        <td>{{ article.title }}</td>
-                        <td>{{ article.author.full_name }}</td>
+                        <td><a style="text-decoration:none" href="{{ url_for('news.news_one', id=article.id) }}">{{ article.title }}</a></td>
+                        <td><a style="text-decoration:none" href="{{ url_for('user.profile', id=article.author.id) }}">{{ article.author.full_name }}</a></td>
+                        <td>
+                            {% if article.status == 0 %}
+                            Активен
+                            {% elif article.status == 1 %}
+                            Удалён
+                            {% elif article.status == 2 %}
+                            Заблокирован
+                            {% endif %}
+                        </td>
+                        <td>{{ article.datetime.strftime('%d-%m-%Y %H:%M:%S') }}</td>
                         <td>{{ article.category }}</td>
-                        <td>{{ article.tags }}</td>
-                        <td>Edit Del</td>
+                        <td>
+                            <a style="text-decoration:none" href="{{ url_for('admin.activate_news', id=article.id) }}"><span><i class="fa fa-lg fa-thumbs-o-up"></i></span> Активировать </a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.block_news', id=article.id) }}"><span><i class="fa fa-lg fa-thumbs-o-down"></i></span> Заблокировать </a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.delete_news', id=article.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span> Удалить </a><br/>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

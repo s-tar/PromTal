@@ -14,7 +14,6 @@
             <li><a href="{{ url_for('admin.news_categories') }}">Разделы новостей </a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/">Сайт</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" id="settings" role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 Account settings
@@ -22,9 +21,7 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="settings">
                 <li><a href="{{ url_for('user.edit_profile') }}">My profile</a></li>
-                <li><a href="{{ url_for('password.restore') }}">Restore password</a></li>
                 <li class="divider"></li>
-                <li><a href="{{ url_for('login.logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
               </ul>
             </li>
           </ul>
