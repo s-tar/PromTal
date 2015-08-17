@@ -2,6 +2,7 @@ from flask import render_template, request, url_for, redirect, jsonify
 from application.views.admin.main import module
 from application.models.view_news_category import ViewNewsCategory
 from application.models.news_category import NewsCategory
+from application.utils.widget import widget
 from application import db
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 from application.utils.validator import Validator
@@ -88,3 +89,8 @@ def delete_category(cat_id):
     NewsCategory.delete(cat_id)
     return redirect(url_for('admin.news_categories'))
 
+
+@widget('news_category.news_category_list')
+def news_category_list():
+    category_list = NewsCategory.get_all()
+    return render_template('news_category/news_category_list.html',  **{'category_list': category_list})

@@ -35,3 +35,7 @@ class NewsCategory(db.Model, Mixin):
     def delete(cls, uid):
         cls.query.filter_by(id=uid).delete()
         db.session.commit()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.order_by(NewsCategory.name).all()

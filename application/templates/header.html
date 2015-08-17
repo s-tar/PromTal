@@ -17,11 +17,7 @@
         <li class="{% if request.path in ['/profile', ] %}active{% endif %} dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Новости <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/">Внутренняя информация</a></li>
-            <li><a href="/">Новый функционал</a></li>
-            <li><a href="/">Кадровые изменения</a></li>
-            <li><a href="/">Обучение/Семинары/Вебинары</a></li>
-            <li><a href="/">Мы в прессе</a></li>
+            {{ widget('news_category.news_category_list')|safe }}
           </ul>
         </li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %} dropdown">
