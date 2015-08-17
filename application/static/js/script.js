@@ -170,3 +170,9 @@ function LazyPaginator ( options ) {
         }
     };
 }
+
+
+$(document).on('click', '.company-structure .workers-toggle a', function(e){
+    e.preventDefault();
+    $(this).closest('.workers').toggleClass('show');
+})

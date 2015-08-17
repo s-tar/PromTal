@@ -212,7 +212,12 @@ h3.title a
   frame_width = 180px
   lines_border = 1px solid #ccc
   text-align: center
-
+  .level-0 > li > .department .title
+    background-color: #FFB27F
+  .level-1 > li:nth-child(even) .department .title
+    background-color: #E6B8AF
+  .level-1 > li:nth-child(odd) .department .title
+    background-color: #CFE2F3
   .structure
     padding: 20px 0px
     ul
@@ -299,7 +304,7 @@ h3.title a
         float: left
         border: none
         width: 20px
-        height: 28px
+        height: 23px
         border: none !important
       &:before
         border-bottom: lines_border !important
@@ -317,25 +322,53 @@ h3.title a
     padding: 10px
     text-align: left
     font-size: 0.9em
-    padding-bottom: 0px
+    padding-bottom: 5px
+    .title:last-child
+      margin-bottom: -5px
     .user-icon
       clear: both
       float: left
       width: 30px
       height: 30px
+      position: absolute
+      left: 10px
     .title
       float: none
       text-align: center
-      padding-bottom: 10px
-
-    .info
-      border-top: 1px solid #EEEEEE
-      padding: 5px 10px 10px
-      margin: 0px -10px
+      margin: -10px
+      margin-bottom: 0px
+      padding: 10px 5px
+    .user
+      padding: 2px 10px 2px 40px
+      margin: 4px -10px
+      line-height: 1.2em
+      height: 30px
+      position: relative
       a
         padding: 0px 5px
+        overflow: hidden
+        text-overflow: ellipsis
+        display: inline-block
+        width: 100%
+        white-space: nowrap
       .position
         padding: 0px 5px
         width: 100%
         color: #999
-
+    > .user + .workers .workers-toggle
+      margin-top: 5px
+      border-top: 1px solid #EEEEEE
+    .workers .workers-toggle
+      text-align: center
+      margin: 0px -10px 0px
+      padding: 5px 5px 3px
+    .workers.show
+      .workers-toggle
+        border-bottom: 1px solid #EEEEEE
+      a.show-link
+        display: none
+    .workers:not(.show)
+      a.hide-link
+        display: none
+      .user
+        display: none
