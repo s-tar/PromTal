@@ -7,6 +7,9 @@ body {
   background-color: #eee;
   padding-bottom: 100px;
 }
+table {
+  font-size: inherit;
+}
 header {
   background: #fff;
   padding: 10px 0px;
@@ -297,14 +300,29 @@ h3.title a:hover {
 .company-structure .level-0 > li > .department .title {
   background-color: #ffb27f;
 }
-.company-structure .level-1 > li:nth-child(even) .department .title {
-  background-color: #e6b8af;
-}
-.company-structure .level-1 > li:nth-child(odd) .department .title {
+.company-structure .level-1 > li:nth-child(1) .department .title {
   background-color: #cfe2f3;
 }
+.company-structure .level-1 > li:nth-child(2) .department .title {
+  background-color: #e6b8af;
+}
+.company-structure .level-1 > li:nth-child(3) .department .title {
+  background-color: #c5d9a6;
+}
+.company-structure .level-1 > li:nth-child(4) .department .title {
+  background-color: #ccb2d5;
+}
+.company-structure .level-1 > li:nth-child(5) .department .title {
+  background-color: #eee1ad;
+}
+.company-structure .level-1 > li:nth-child(6) .department .title {
+  background-color: #fee893;
+}
+.company-structure .level-1 > li:nth-child(7) .department .title {
+  background-color: #e3e3e3;
+}
 .company-structure .structure {
-  padding: 20px 0px;
+  padding: 0px 20px;
   overflow: hidden;
   margin: 0px -15px;
   cursor: move;
@@ -336,7 +354,7 @@ h3.title a:hover {
   margin: 0;
 }
 .company-structure .level-0 > li > .department {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 .company-structure .level-0 > li {
   text-align: center;
@@ -437,6 +455,7 @@ h3.title a:hover {
   text-align: left;
   font-size: 0.9em;
   padding-bottom: 5px;
+  margin-bottom: 5px;
 }
 .company-structure .department .title:last-child {
   margin-bottom: -5px;

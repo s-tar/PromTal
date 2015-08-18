@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            {% if current_user.is_authorized() %}
+            <a href="/news/new" class="button new news-create">Новая новость</a>
+            {% endif %}
+        </div>
+        <div class="col-sm-7">
+            {% block index_content %}{% endblock %}
+        </div>
+        <div class="col-sm-3 right-column">
+            <div class="frame">
+                <h3 class="title">Именинники</h3>
+                <div class="user-list">
+                    {{ widget('user.birthdays')|safe }}
+                </div>
+            </div>
+            <div class="frame">
+                <h3 class="title">Новые сотрудники</h3>
+                <div class="user-list">
+                    {{ widget('user.new.members')|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

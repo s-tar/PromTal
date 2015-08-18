@@ -6,6 +6,8 @@ body
   font-size: 12px
   background-color:#eee
   padding-bottom: 100px
+table
+  font-size: inherit
 header
   background: #FFFFFF
   padding: 10px 0px
@@ -221,12 +223,25 @@ h3.title a
     float: left
   .level-0 > li > .department .title
     background-color: #FFB27F
-  .level-1 > li:nth-child(even) .department .title
-    background-color: #E6B8AF
-  .level-1 > li:nth-child(odd) .department .title
+  .level-1 > li:nth-child(1) .department .title
     background-color: #CFE2F3
+  .level-1 > li:nth-child(2) .department .title
+    background-color: #E6B8AF
+
+  .level-1 > li:nth-child(3) .department .title
+    background-color: #C5D9A6
+  .level-1 > li:nth-child(4) .department .title
+    background-color: #CCB2D5
+
+  .level-1 > li:nth-child(5) .department .title
+    background-color: #EEE1AD
+  .level-1 > li:nth-child(6) .department .title
+    background-color: #FEE893
+
+  .level-1 > li:nth-child(7) .department .title
+    background-color: #e3e3e3
   .structure
-    padding: 20px 0px
+    padding: 0px 20px
     overflow: hidden
     margin: 0px -15px;
     cursor: move
@@ -250,7 +265,7 @@ h3.title a
     padding: 20px
     margin: 0
     > li > .department
-      margin-bottom: 15px
+      margin-bottom: 20px
   .level-0 > li
     text-align: center
     position: relative
@@ -335,6 +350,7 @@ h3.title a
     text-align: left
     font-size: 0.9em
     padding-bottom: 5px
+    margin-bottom: 5px
     .title:last-child
       margin-bottom: -5px
     .user-icon

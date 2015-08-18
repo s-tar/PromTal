@@ -61,7 +61,6 @@ def dep_users_json(dep_id):
         last_columns = str(len(columns))
         dep_html = ''
         for dep in departments:
-
             sel = 'selected' if dep.id == dep_id else ''
             dep_html += "<option value='"+str(dep.id)+"/"+row_id+"' "+sel+">"+dep.name+"</option>"
         manage_html = """
@@ -81,6 +80,12 @@ def dep_users_json(dep_id):
         else:
             src_foto = '/static/img/no_photo.jpg'
         row['1'] = """<img src="{src}" class="foto-small-struct">""".format(src = src_foto) + "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
+        head_dep = str(len(columns)+1)
+        if Department.is_user_head(dep_id, int(row_id)):
+            checked = "checked"
+        else:
+            checked = ''
+        row[head_dep] = "<input onclick='change_head_dep(this, "+str(dep_id)+", "+row_id+")' type='checkbox' id='head_check' "+checked+">"
     return jsonify(**json_result)
 
 
@@ -163,4 +168,10 @@ def get_list_users(dep_id, user_name):
 @module.get('/company-structure/set-user-dep/<int:dep_id>/<int:user_id>/')
 def set_user_to_dep(dep_id, user_id):
     User.add_user2dep(dep_id, user_id)
+    return jsonify({'status': 'ok'})
+
+
+@module.get('/company-structure/set-head-dep/<int:option>/<int:dep_id>/<int:user_id>/')
+def set_user_head_dep(option, dep_id, user_id):
+    Department.add_head4dep(option, dep_id, user_id)
     return jsonify({'status': 'ok'})

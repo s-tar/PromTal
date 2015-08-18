@@ -36,12 +36,10 @@
 
 </head>
 <body>
-    {% include 'header.html' %}
     <div id="popup"></div>
     <div class="container-flex">
-        {% block layout_content %}{% endblock %}
+        {% block content %}{% endblock %}
     </div>
-    {% include 'footer.html' %}
     <script>
         var current_user = {
             id: {{ current_user.id or 0 }},
