@@ -3,6 +3,31 @@
   border-bottom: 1px solid #eee;
   margin-bottom: 10px;
 }
+.community-form .title .switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.community-form .title .switch input {
+  display: none;
+}
+.community-form .title .switch input:checked+label {
+  background: #fd8a16;
+  color: #fff;
+  border-color: transparent;
+}
+.community-form .title .switch label {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+  border: 1px dashed #eee;
+}
 .community-form .name-wrapper {
   padding-top: 2px;
   padding-left: 80px;
