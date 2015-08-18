@@ -11,74 +11,75 @@ String.prototype.format = String.prototype.f = function(){
     });
 };
 
-$( window ).load(function() {
-    setTimeout(function(){
-        tinymce.init({
-            selector:'textarea.editor',
-            language : "ru",
-            height : 300,
-            convert_urls: false,
-            plugins : [
-                "pagebreak",
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table contextmenu paste"
-            ],
-            statusbar: false,
-            pagebreak_separator: "<!-- page break -->",
-            file_picker_callback: function(callback, value, meta) {
-                // Provide file and text for the link dialog
-                //if (meta.filetype == 'file') {
-                //    callback('mypage.html', {text: 'My text'});
-                //}
+function tinymceInit() {
+    tinymce.init({
+        selector:'textarea.editor',
+        language : "ru",
+        height : 300,
+        convert_urls: false,
+        plugins : [
+            "pagebreak",
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen",
+            "insertdatetime media table contextmenu paste"
+        ],
+        statusbar: false,
+        pagebreak_separator: "<!-- page break -->",
+        file_picker_callback: function(callback, value, meta) {
+            // Provide file and text for the link dialog
+            //if (meta.filetype == 'file') {
+            //    callback('mypage.html', {text: 'My text'});
+            //}
 
-                // Provide image and alt text for the image dialog
-                if (meta.filetype == 'image') {
-                    var form = $('<form id="file_upload_form" action="/file/upload/image" style="display: none" method="post" enctype="multipart/form-data"></form>');
-                    var input = $('<input type="file" name="file" />');
-                    form.append(input);
-                    $('body').append(form);
-                    input.on('change', function(){form.submit()});
-                    form.submit(function (event) {
-                        event.preventDefault();
-                        var formData = new FormData($('#file_upload_form')[0]);
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            type: $(this).attr('method'),
-                            data: formData,
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            success: function (res) {
-                                form.remove();
-                                callback(res.file.url);
-                            },
-                            error: function(){
-                                alert("error in ajax form submission");
-                            }
-                        });
-
-                        return false;
+            // Provide image and alt text for the image dialog
+            if (meta.filetype == 'image') {
+                var form = $('<form id="file_upload_form" action="/file/upload/image" style="display: none" method="post" enctype="multipart/form-data"></form>');
+                var input = $('<input type="file" name="file" />');
+                form.append(input);
+                $('body').append(form);
+                input.on('change', function(){form.submit()});
+                form.submit(function (event) {
+                    event.preventDefault();
+                    var formData = new FormData($('#file_upload_form')[0]);
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: $(this).attr('method'),
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            form.remove();
+                            callback(res.file.url);
+                        },
+                        error: function(){
+                            alert("error in ajax form submission");
+                        }
                     });
-                    input.trigger('click');
-                }
 
-                // Provide alternative source and posted for the media dialog
-                //if (meta.filetype == 'media') {
-                //    callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
-                //}
-            },
-            setup : function(editor) {
-                editor.on('init', function() {
-                    this.getDoc().body.style.fontSize = '12px';
+                    return false;
                 });
-                editor.on('change', function () {
-                    tinymce.triggerSave();
-                });
+                input.trigger('click');
             }
 
-        });
-    }, 400);
+            // Provide alternative source and posted for the media dialog
+            //if (meta.filetype == 'media') {
+            //    callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+            //}
+        },
+        setup : function(editor) {
+            editor.on('init', function() {
+                this.getDoc().body.style.fontSize = '12px';
+            });
+            editor.on('change', function () {
+                tinymce.triggerSave();
+            });
+        }
+
+    });
+}
+$( window ).load(function() {
+    tinymceInit()
 });
 
 

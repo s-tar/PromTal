@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-md-6 col-md-offset-3 frame community-form">
+    <div id="community-form"></div>
+    <script type="text/jsx">
+    React.render(
+        <AJAXForm action="/community/save" method="post" className="custom-form" onSuccess={function(json){ window.location.href = '/community/'+json.community.id;}}>
+            <h3 className='title'>
+                {{ 'Редактировать группу' if community.id else 'Новая группа' }}
+                <div className="switch">
+                    <input id="privaty" name="private" type="checkbox" defaultValue={ {{ 'true' if community.type == community.TYPE.PRIVATE else 'false'}} } />
+                    <label htmlFor="privaty">Закрытая</label>
+                </div>
+            </h3>
+            <input type="hidden" name="id" value="{{ community.id or '' }}"/>
+            <ImageLoader name="image" value="{{ community.image.get_url() if community.image or '' }}"/>
+            <div className="name-wrapper">
+                <div className="field-label">Название:</div>
+                <Input type="text" name="name" defaultValue="{{ community.name or '' }}"/>
+            </div>
+            <div className="field-label">Описание:</div>
+            <div className="edit-wrapper"><TextArea name="description" defaultValue="{{ community.description or '' }}"></TextArea></div>
+            <a className="button" href="javascript: window.history.back()">Отмена</a>
+            <input type="submit" value="{{ 'Сохранить' if community.id else 'Создать' }}" />
+        </AJAXForm>,
+        document.getElementById('community-form'))
+    </script>
+</div>
+{% endblock %}

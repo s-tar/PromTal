@@ -1,0 +1,62 @@
+@import 'mixins'
+.community-form
+  .title
+    margin: 0 -35px
+    border-bottom: 1px solid #EEEEEE
+    margin-bottom: 10px
+  .name-wrapper
+    padding-top: 2px
+    padding-left: 80px
+    height: 70px
+  .image-loader
+    position: absolute
+    width: 70px
+    height: 70px
+.communities
+  .title
+    text-align: left
+    padding-right: 150px
+  a.community-create
+    position: absolute
+    text-align: center
+    top: 9px
+    right: 10px
+  .communities-list
+    padding: 0px
+    margin: -5px
+.community
+  padding: 10px
+  position: relative
+  white-space: nowrap
+  cursor: pointer
+  margin: 10px -10px
+
+  .image, .info
+    display: inline-block
+    vertical-align: top
+    white-space: normal
+
+  .name
+    font-size: 1.3em
+    width: 100%
+  .info
+    padding: 0px 10px
+    margin-right: 65px
+  .description, .members
+    line-height: 1.3em
+  .description
+    height: 47px
+    overflow: hidden
+    text-overflow: ellipsis
+    margin-right: 20px
+  .members
+    color: #999999
+  .image
+    background-size: cover
+    background-position: center center
+    width: 90px
+    height: 90px
+    -border-radius 5px
+    overflow: hidden
+    background-image: url('/static/img/community.png')
+    background-color: #f6f6f6
