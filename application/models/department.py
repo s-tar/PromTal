@@ -56,6 +56,23 @@ class Department(db.Model, Mixin):
         db.session.commit()
 
     @classmethod
+    def add_head4dep(cls, option, dep_id, user_id):
+        dep = cls.query.filter_by(id=dep_id).first()
+        if option == 1:
+            dep.user_id = user_id
+        elif option == 2:
+            dep.user_id = None
+        db.session.add(dep)
+        db.session.commit()
+
+    @classmethod
+    def is_user_head(cls, dep_id, user_id):
+        dep = cls.query.filter_by(id=dep_id).first()
+        if dep.user_id == user_id:
+            return True
+        return False
+
+    @classmethod
     def delete(cls, uid):
         parent_dep = cls.query.filter_by(parent_id=uid)
         if (parent_dep.count() == 0) and (User.count_users_in_department(uid) == 0):

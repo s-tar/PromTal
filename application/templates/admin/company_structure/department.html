@@ -53,12 +53,13 @@ function wellDone(){
         <thead>
             <tr>
                 <th>ID </th>
-                <th>Name</th>
+                <th>Имя</th>
                 <th>Email</th>
-                <th>Login</th>
-                <th>Cell phone</th>
-                <th>Inner phone</th>
-                <th>Manage</th>
+                <th>Логин</th>
+                <th>Мобильный</th>
+                <th>Внутренний телефон</th>
+                <th>Управление</th>
+                <th>Глава</th>
             </tr>
         </thead>
         <tbody>
@@ -93,6 +94,28 @@ window.onload = function() {
     }
     //change_user_dep('0', '818');
 
+    window.change_head_dep = function(self, dep_id, user_id){
+      var option = 1;
+      if($(self).prop("checked")){
+        console.log("1", user_id, dep_id);
+        option = 1;
+        $('input:checkbox').prop('checked', false);
+        $(self).prop('checked', true);
+      } else {
+        console.log("2", user_id, dep_id);
+        option = 2;
+      }
+
+      $.ajax({
+        url: "/admin/company-structure/set-head-dep/"+option+"/"+dep_id+"/"+user_id,
+        success: function(json) {
+              if(json.status == 'ok'){
+                  console.log("OK");
+              }
+        }
+      });
+
+    }
 }
 </script>
 </div>
