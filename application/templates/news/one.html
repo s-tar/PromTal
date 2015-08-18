@@ -1,7 +1,7 @@
 {% import "macros/comments.html" as comments %}
 {% import "macros/user.html" as user %}
-{% extends "layout.html" %}
-{% block content %}
+{% extends "index.html" %}
+{% block index_content %}
 <div class="news-one">
     <article class="frame">
         {% if current_user == news.author %}

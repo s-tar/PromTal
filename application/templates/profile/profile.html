@@ -1,87 +1,87 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="frame profile">
-<div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="header">
-        <h3 class="title">{{ user.full_name or '' }}</h3>
-        {% if user.id == current_user.id %}
-        <div class="edit-buttons">
-        <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Редактировать </a> &nbsp;
-        <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Изменить пароль</a>
+<div class="col-md-8 col-md-offset-2 frame profile">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="header">
+            <h3 class="title">{{ user.full_name or '' }}</h3>
+            {% if user.id == current_user.id %}
+            <div class="edit-buttons">
+            <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Редактировать </a> &nbsp;
+            <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Изменить пароль</a>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="row content">
-  <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
-    <p>
-      <img src="{{ user.photo.get_url() if user and user.photo else '/static/img/no_photo.jpg' }}" class="img-thumbnail" alt="Фото {{ user.full_name }}">
-    </p>
+    <div class="row content">
+      <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+        <p>
+          <img src="{{ user.photo.get_url() if user and user.photo else '/static/img/no_photo.jpg' }}" class="img-thumbnail" alt="Фото {{ user.full_name }}">
+        </p>
 
-  </div>
-  <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
-    <table class="table table-striped">
-        <tbody>
-            <tr>
-                <td># Manager</td>
-                <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
-            </tr>
-            {% if user.department %}
+      </div>
+      <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <table class="table table-striped">
+            <tbody>
                 <tr>
-                    <td>Подразделение</td>
-                    <td><span class="glyphicon glyphicon-tower"></span> {{ user.department.name }}</td>
+                    <td># Manager</td>
+                    <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
                 </tr>
-            {% endif %}
-            {% if user.inner_phone %}
-                <tr>
-                    <td>Внутренний номер</td>
-                    <td><span class="glyphicon glyphicon-home"></span> {{ user.inner_phone }}</td>
-                </tr>
-            {% endif %}
-            {% if user.birth_date %}
-                <tr>
-                    <td>Дата рождения</td>
-                    <td><span class="glyphicon glyphicon-glass"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
-                </tr>
-            {% endif %}
-            {% if user.mobile_phone %}
-                <tr>
-                    <td>Номер мобильного телефона</td>
-                    <td><span class="glyphicon glyphicon-headphones"></span> {{ user.mobile_phone }}</td>
-                </tr>
-            {% endif %}
-            {% if user.email %}
-                <tr>
-                    <td>Email</td>
-                    <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
-                </tr>
-            {% endif %}
-            {% if user.skype %}
-                <tr>
-                    <td>Skype</td>
-                    <td><span class="glyphicon glyphicon-link"></span> {{ user.skype }}</td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="row content activity">
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <h2>Новости ({{ user.news|length }}):</h2>
-        <div id="news" class="list-group"></div>
-        <button id="moreNews" style="display: none" type="button" class="btn btn-default">Больше</button>
+                {% if user.department %}
+                    <tr>
+                        <td>Подразделение</td>
+                        <td><span class="glyphicon glyphicon-tower"></span> {{ user.department.name }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.inner_phone %}
+                    <tr>
+                        <td>Внутренний номер</td>
+                        <td><span class="glyphicon glyphicon-home"></span> {{ user.inner_phone }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.birth_date %}
+                    <tr>
+                        <td>Дата рождения</td>
+                        <td><span class="glyphicon glyphicon-glass"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
+                    </tr>
+                {% endif %}
+                {% if user.mobile_phone %}
+                    <tr>
+                        <td>Номер мобильного телефона</td>
+                        <td><span class="glyphicon glyphicon-headphones"></span> {{ user.mobile_phone }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.email %}
+                    <tr>
+                        <td>Email</td>
+                        <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.skype %}
+                    <tr>
+                        <td>Skype</td>
+                        <td><span class="glyphicon glyphicon-link"></span> {{ user.skype }}</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+      </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <h2>Коментарии ({{ user.comments|length }}):</h2>
-        <div id="comments" class="list-group"></div>
-        <button id="moreComments" style="display: none" type="button" class="btn btn-default">Больше</button>
+
+    <div class="row content activity">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <h2>Новости ({{ user.news|length }}):</h2>
+            <div id="news" class="list-group"></div>
+            <button id="moreNews" style="display: none" type="button" class="btn btn-default">Больше</button>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <h2>Коментарии ({{ user.comments|length }}):</h2>
+            <div id="comments" class="list-group"></div>
+            <button id="moreComments" style="display: none" type="button" class="btn btn-default">Больше</button>
+        </div>
     </div>
-</div>
 </div>
 
 <script>

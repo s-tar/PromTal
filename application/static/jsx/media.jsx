@@ -53,7 +53,6 @@ var SelectMediaButtons = React.createClass({
         return (
             <div className="buttons">
                 <button type="button" onClick={this.onClick('image')}><span className="fa fa-picture-o"></span> Картинку</button>
-                <button type="button" onClick={this.onClick('video')}><span className="fa fa-film"></span> Видео</button>
             </div>
         )
     }

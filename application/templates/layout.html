@@ -1,27 +1,5 @@
 {% extends "layout_root.html" %}
-{% block layout_content %}
-<div class="row">
-    <div class="col-sm-2">
-        {% if current_user.is_authorized() %}
-        <a href="/news/new" class="button new news-create">Новая новость</a>
-        {% endif %}
-    </div>
-    <div class="col-sm-7">
-        {% block content %}{% endblock %}
-    </div>
-    <div class="col-sm-3 right-column">
-        <div class="frame">
-            <h3 class="title">Именинники</h3>
-            <div class="user-list">
-                {{ widget('user.birthdays')|safe }}
-            </div>
-        </div>
-        <div class="frame">
-            <h3 class="title">Новые сотрудники</h3>
-            <div class="user-list">
-                {{ widget('user.new.members')|safe }}
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% include 'header.html' %}
+{% block content %}{% endblock %}
+{% include 'footer.html' %}
+
