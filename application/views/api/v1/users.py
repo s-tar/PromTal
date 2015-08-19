@@ -47,7 +47,7 @@ def get_user(id):
 @json()
 def delete_user(id):
     user = User.query.get_or_404(id)
-    db.session.delete(user)
+    user.status = User.STATUS_DELETED
     db.session.commit()
     return {}, 204
 
