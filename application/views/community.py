@@ -48,34 +48,38 @@ def save():
     v.field('description').required()
     v.field('image').image()
     user = auth.service.get_user()
+
     if not user.is_authorized():
         abort(403)
-    if v.is_valid():
-        data = v.valid_data
-        community = Community()
-        if data.id:
-            community = Community.get(data.id)
-        if not community or (community.owner and community.owner != user):
-            abort(403)
-        community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
-        community.name = data.name
-        community.description = data.description
-        community.owner = user
+    if not v.is_valid():
+        return jsonify({
+            'status': 'fail',
+            'errors': v.errors
+        })
 
-        db.session.add(community)
-        db.session.flush()
-        image = data.image
-        if image:
-            img = community.image = community.image or File.create(name='image.png', module='community', entity=community)
-            img.makedir()
-            img.update_hash()
-            utils.image.thumbnail(image, width=200, height=200, fill=utils.image.COVER).save(img.get_path())
-        db.session.commit()
-        return jsonify({'status': 'ok',
-                        'community': community.as_dict()})
+    data = v.valid_data
+    community = Community()
+    if data.id:
+        community = Community.get(data.id)
+    if not community or (community.owner and community.owner != user):
+        abort(403)
 
-    return jsonify({'status': 'fail',
-                    'errors': v.errors})
+    community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
+    community.name = data.name
+    community.description = data.description
+    community.owner = user
+
+    db.session.add(community)
+    db.session.flush()
+    image = data.image
+    if image:
+        img = community.image = community.image or File.create(name='image.png', module='community', entity=community)
+        img.makedir()
+        img.update_hash()
+        utils.image.thumbnail(image, width=200, height=200, fill=utils.image.COVER).save(img.get_path())
+    db.session.commit()
+    return jsonify({'status': 'ok',
+                    'community': community.as_dict()})
 
 
 @module.delete("/<int:id>")
@@ -96,6 +100,7 @@ def post_page(community_id, id):
     post = Post.get(id)
     return render_template('community/post_one.html', **{'post': post})
 
+
 @module.get('/<int:community_id>/post/new')
 @module.get('/<int:community_id>/post/edit/<int:id>')
 def post_form(community_id, id=None):
@@ -110,6 +115,7 @@ def post_form(community_id, id=None):
         abort(403)
 
     return render_template('community/post_form.html', **{'community_id': community_id, 'post': post})
+
 
 @module.route("/post/save", methods=['POST'])
 def post_save():
@@ -146,6 +152,7 @@ def post_save():
 
     db.session.add(post)
     db.session.commit()
+
     return jsonify({
         'status': 'ok',
         'post': post.as_dict()

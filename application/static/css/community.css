@@ -58,6 +58,7 @@
   float: left;
   padding: 0px;
   margin: 5px -5px;
+  width: 100%;
 }
 .community {
   padding: 10px;
@@ -116,6 +117,9 @@
   cursor: default;
   margin: 0px;
   margin-bottom: 10px;
+}
+.community-page .community .closed {
+  font-size: 1.5em;
 }
 .community-page .community .name {
   color: #fd8a16;
