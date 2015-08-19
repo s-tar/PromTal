@@ -67,6 +67,13 @@
   cursor: pointer;
   margin: 5px -10px;
 }
+.community div.closed {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: #999;
+  font-size: 2em;
+}
 .community .image,
 .community .info {
   display: inline-block;
@@ -104,4 +111,29 @@
   border-radius: 5px;
   overflow: hidden;
   background-image: url("/static/img/community.png");
+}
+.community-header .community {
+  padding: 5px;
+  cursor: default;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+.community-header .community a.post-create {
+  position: absolute;
+  text-align: center;
+  top: 9px;
+  right: 10px;
+}
+.community-header .community .closed {
+  font-size: 1em;
+}
+.community-header .community .name {
+  color: #fd8a16;
+}
+.community-header .community .image {
+  width: 47px;
+  height: 47px;
+}
+.community-header .community .description {
+  height: auto;
 }

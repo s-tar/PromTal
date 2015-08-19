@@ -36,6 +36,9 @@ class Community(db.Model, Mixin):
 
     members = db.relationship("User", secondary="community_member", backref="communities")
 
+    def has_member(self, user):
+        return user is self.owner or user in self.members
+
 
 class CommunityMember(db.Model):
     __tablename__ = 'community_member'

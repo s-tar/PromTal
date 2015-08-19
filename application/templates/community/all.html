@@ -7,12 +7,15 @@
     <div class="col-xs-8">
         <div class="col-md-12 frame">
             <h3 class="title">Группы</h3>
-            <a href="/community/new" class="button new community-create">Новая группа</a>
+            <a href="{{ url_for('community.community_form') }}" class="button new community-create">Новая группа</a>
         </div>
         <div class="communities-list">
         {% for community in communities %}
-        <div class="col-md-6">
+        <div class="col-md-12">
         <div class="community frame" onclick="window.location.href='{{ url_for("community.community_page", id=community.id) }}'">
+            {% if community.type == community.TYPE.PRIVATE %}
+                <div class="closed fa fa-lock" title="Закрытая группа"></div>
+            {% endif %}
             <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
             <div class="info">
                 <a href="{{ url_for("community.community_page", id=community.id) }}" class="name">{{ community.name or '' }}</a>

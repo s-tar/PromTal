@@ -22,6 +22,9 @@ header {
 header .logo img {
   height: 30px;
 }
+footer {
+  height: 50px;
+}
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -40,7 +43,11 @@ header .logo img {
   cursor: move;
 }
 /* ------------------------ BOOTSTRAP FIX ------------------------------ */
-body > .container-flex > .row {
+body > .container-flex {
+  display: inline-block;
+  width: 100%;
+}
+body > .container-flex .row {
   margin: 0;
 }
 .navbar.navbar-default {
@@ -516,10 +523,4 @@ h3.title a:hover {
 }
 .company-structure .department .workers:not(.show) .workers-list {
   display: none;
-}
-#roll-btn {
-  color: #337ab7;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 5px;
 }
