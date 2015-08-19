@@ -1,11 +1,10 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-
 <script type="text/jsx">
 React.render(
     <AJAXForm action="{{ url_for('api_v1.edit_user', id=user.id) }}" method="put" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
-          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <div className="col-md-8">
             <table className="table table-striped">
                 <tbody>
                     <tr>
@@ -61,8 +60,6 @@ React.render(
                 </tbody>
             </table>
           </div>
-          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-          </div>
         </div>
     </AJAXForm>,
     document.getElementById('edit_user_form'))
@@ -95,6 +92,10 @@ window.onload = function () {
 };
 </script>
 
-<div id="edit_user_form"></div>
+<div class="container">
+    <div class="centered col-md-offset-3">
+        <div id="edit_user_form"></div>
+    </div>
+</div>
 {% endblock %}
 

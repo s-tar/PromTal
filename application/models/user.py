@@ -61,10 +61,9 @@ class User(db.Model, AuthUser, Mixin):
     (
         STATUS_ACTIVE,
         STATUS_DELETED,
-        STATUS_BLOCKED,
-    ) = range(3)
+    ) = range(2)
 
-    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted')]
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future

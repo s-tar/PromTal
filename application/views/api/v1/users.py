@@ -55,8 +55,7 @@ def delete_user(id):
 @json()
 def edit_user(id):
     user = User.query.get_or_404(id)
-
-    result = user_schema.load(request.get_json())
+    result = user_schema.load(request.form)
 
     if result.errors:
         return result.errors, 400

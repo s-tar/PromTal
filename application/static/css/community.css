@@ -1,0 +1,107 @@
+.community-form .title {
+  margin: 0 -35px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
+}
+.community-form .title .switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.community-form .title .switch input {
+  display: none;
+}
+.community-form .title .switch input:checked+label {
+  background: #e7422c;
+  color: #fff;
+  border-color: transparent;
+}
+.community-form .title .switch input:checked+label:before {
+  content: 'Закрытая';
+}
+.community-form .title .switch label {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+  border: 1px dashed #ccc;
+}
+.community-form .title .switch label:before {
+  content: 'Открытая';
+}
+.community-form .name-wrapper {
+  padding-top: 2px;
+  padding-left: 80px;
+  height: 70px;
+}
+.community-form .image-loader {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+}
+.communities .title {
+  text-align: left;
+  padding-right: 150px;
+}
+.communities a.community-create {
+  position: absolute;
+  text-align: center;
+  top: 9px;
+  right: 10px;
+}
+.communities .communities-list {
+  float: left;
+  padding: 0px;
+  margin: 5px -5px;
+}
+.community {
+  padding: 10px;
+  position: relative;
+  white-space: nowrap;
+  cursor: pointer;
+  margin: 5px -10px;
+}
+.community .image,
+.community .info {
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+}
+.community .name {
+  font-size: 1.3em;
+  width: 100%;
+}
+.community .info {
+  padding: 0px 10px;
+  margin-right: 65px;
+}
+.community .description,
+.community .members {
+  line-height: 1.3em;
+}
+.community .description {
+  height: 47px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 20px;
+}
+.community .members {
+  color: #999;
+}
+.community .image {
+  background-size: cover;
+  background-position: center center;
+  width: 90px;
+  height: 90px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+  background-image: url("/static/img/community.png");
+  background-color: #f6f6f6;
+}

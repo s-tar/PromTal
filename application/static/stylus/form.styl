@@ -154,3 +154,30 @@ select[multiple] + .error-wrapper
       left: 0px
       border: 0 none
       box-sizing: content-box
+.image-loader
+  width: 100px
+  height: 100px
+  padding: 4px
+  -border-radius 3px
+  border: 1px solid #EEEEEE
+  position: relative
+  overflow: hidden
+  cursor: pointer
+  input
+    border: 1px solid red
+    font-size: 0px
+    width: 9999px
+    height: 9999px
+    position: absolute
+    left: -4000px
+    top: -4000px
+    opacity: 1
+    cursor: pointer
+  .image-preview
+    background-image: url('/static/img/picture_icon.png')
+    -border-radius 3px
+    overflow: hidden
+    width: 100%
+    height: 100%
+    background-size: cover
+    background-position: center center
