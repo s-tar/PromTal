@@ -1,6 +1,7 @@
 from datetime import datetime
 from application import db
 from application.models.mixin import Mixin
+from application.models.post import Post
 from application.models.user import User
 __author__ = 's.taran'
 
@@ -35,6 +36,7 @@ class Community(db.Model, Mixin):
     image = db.relationship("File", backref="community", lazy="joined")
 
     members = db.relationship("User", secondary="community_member", backref="communities")
+    posts = db.relationship("Post", backref="community", order_by=(Post.datetime.desc()))
 
     def has_member(self, user):
         return user is self.owner or user in self.members

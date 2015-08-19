@@ -32,7 +32,6 @@ class Post(db.Model, Mixin, HasComments, HasVotes):
     views_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="posts", lazy="joined")
-    community = db.relationship("Community", backref="posts")
 
     @classmethod
     def all(cls):
