@@ -40,6 +40,17 @@ class Permission(db.Model):
     name = db.Column(db.String(64), unique=True)
     title = db.Column(db.String(64))
 
+    def __repr__(self):
+        return "<Permission {name}>".format(name=self.name)
+
+    @classmethod
+    def get_by_id(cls, uid):
+        return cls.query.filter_by(id=uid).first()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.order_by(cls.title).all()
+
 
 class Role(db.Model):
 
@@ -48,6 +59,17 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     permissions = db.relationship("Permission", secondary=role_permission_associate, backref="roles")
+
+    def __repr__(self):
+        return "<Role {name}>".format(name=self.name)
+
+    @classmethod
+    def get_by_id(cls, uid):
+        return cls.query.filter_by(id=uid).first()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -61,10 +83,9 @@ class User(db.Model, AuthUser, Mixin):
     (
         STATUS_ACTIVE,
         STATUS_DELETED,
-        STATUS_BLOCKED,
-    ) = range(3)
+    ) = range(2)
 
-    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted'), (STATUS_BLOCKED, 'Blocked')]
+    STATUSES = [(STATUS_ACTIVE, 'Active'), (STATUS_DELETED, 'Deleted')]
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)  # TODO Add constraint on length; can't be nullable in future
@@ -123,6 +144,55 @@ class User(db.Model, AuthUser, Mixin):
                 and_(extract('month', User.birth_date) == today.month, extract('day', User.birth_date) == today.day),
                 and_(extract('month', User.birth_date) == tomorrow.month, extract('day', User.birth_date) == tomorrow.day)
             )).order_by(User.birth_date.desc(), User.full_name).all()
+
+    @classmethod
+    def set_user_is_admin(cls, user_id):
+        u = cls.query.filter_by(id=user_id).first()
+        u.is_admin = True
+        u.roles = []
+        db.session.add(u)
+        db.session.commit()
+
+    @classmethod
+    def set_user_role(cls, user_id, role_id):
+        u = cls.query.filter_by(id=user_id).first()
+        r = Role.get_by_id(role_id)
+        u.roles = []
+        u.roles.append(r)
+        u.is_admin = False
+        db.session.add(u)
+        db.session.commit()
+
+    @classmethod
+    def get_user_role_id(cls, user_id):
+        u = cls.query.filter_by(id=user_id).first()
+        if u.is_admin:
+            return 0
+        elif u.roles:
+            return u.roles[0].id
+        return ''
+
+    @classmethod
+    def set_user_per(cls, user_id, per_string):
+        if per_string == "None":
+            per_list = []
+        else:
+            per_list = per_string.split(',')
+        u = cls.query.filter_by(id=user_id).first()
+        u.permissions = []
+        for per_id in per_list:
+            p = Permission.get_by_id(per_id)
+            u.permissions.append(p)
+        db.session.add(u)
+        db.session.commit()
+
+    @classmethod
+    def get_user_permissions_id(cls, user_id):
+        u = cls.query.filter_by(id=user_id).first()
+        permissions_list = []
+        for per in u.permissions:
+            permissions_list.append(per.id)
+        return permissions_list
 
     @classmethod
     def add_user2dep(cls, dep_id, user_id):

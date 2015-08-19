@@ -125,6 +125,8 @@
   padding-top: 12px;
   resize: none;
   overflow: hidden;
+  padding-bottom: 15px;
+  background-color: transparent;
 }
 .comment.form > .message .right-buttons {
   top: 0;

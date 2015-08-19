@@ -13,6 +13,10 @@ class Department(db.Model, Mixin):
     parent = db.relationship('Department', remote_side=[id],  backref="subdepartment")
     user = db.relationship("User", backref="managed_department", foreign_keys=[user_id], lazy='joined')
 
+    @property
+    def workers(self):
+        return [user for user in self.users if user != self.user]
+
     def __repr__(self):
         return "<Department {name}>".format(name=self.name)
 

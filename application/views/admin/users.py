@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
 
 from application.views.admin.main import module
-from application.models.user import User
+from application.models.user import User, Role, Permission
 from application.models.department import Department
 from application import db, ldap
 from application.utils.validator import Validator
@@ -57,15 +57,59 @@ def s_users_json():
     for row in json_result['aaData']:
         row_id = row['0']
         row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
-        last_columns = str(len(columns))
+        last_col = len(columns)-1
+
+        # Permission
+        last_col += 1
+        per_columns = str(last_col)
+        per_options = ""
+        permissions = Permission.get_all()
+        set_per = User.get_user_permissions_id(row_id)
+        for per in permissions:
+            sel = ''
+            sel = 'selected' if per.id in set_per else ''
+            per_options += "<option value='"+str(per.id)+"' "+sel+">"+per.title+"</option>"
+        per_html = """
+          <select name="named[]" onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-width="170px">
+            """+per_options+"""
+          </select>
+          <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
+          """
+        row[per_columns] = per_html
+        
+
+        # Roles
+        last_col += 1
+        roles_columns = str(last_col)
+        roles = Role.get_all()
+        role_options = ''
+        sel_role = User.get_user_role_id(row_id)
+        for role in roles:
+            sel = ''
+            sel = 'selected' if role.id == sel_role else ''
+            role_options += "<option value='"+str(role.id)+"/"+row_id+"' "+sel+">"+role.name+"</option>"
+        sel = ''
+        sel = 'selected' if 0 == sel_role else ''
+        role_options += "<option value='0/"+row_id+"' "+sel+">admin</option>"
+        role_html = """
+          <select onchange="change_user_role(this.value)" class="selectpicker" data-width="110px">
+            """+role_options+"""
+          </select>
+          <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
+          """
+        row[roles_columns] = role_html
+
+        # Manage
+        last_col += 1
+        last_columns = str(last_col)
         manage_html = """
             <a href="{edit_user_profile}">
                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
-            <a href="{delete_user_profile}">
+            <a href="javascript: user.delete(%s)">
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
-        """
+        """ % row_id
         row[last_columns] = manage_html.format(
             edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
@@ -135,14 +179,6 @@ def activate_user(id):
     return redirect(url_for('admin.users_index'))
 
 
-@module.get('/users/block/<int:id>')
-def block_user(id):
-    user = User.query.get_or_404(id)
-    user.status = User.STATUS_BLOCKED
-    db.session.commit()
-    return redirect(url_for('admin.users_index'))
-
-
 @module.get('/users/add')
 def add_user():
     groups = ldap.get_all_groups()
@@ -151,46 +187,62 @@ def add_user():
                            groups={group['cn'][0] for group in groups},
                            departments={department.name for department in departments})
 
+#
+# @module.post('/users/add')
+# def add_user_post():
+#     v = Validator(request.form)
+#     v.field('name').required()
+#     v.field('surname').required()
+#     v.field('email').required().email()
+#     v.field('login').required()
+#     v.field('department').required()
+#     v.field('groups').required()
+#     v.field('mobile_phone').required().phone_number()
+#     if v.is_valid():
+#         data = {
+#             'name': v.valid_data.name,
+#             'surname': v.valid_data.surname,
+#             'email': v.valid_data.email,
+#             'login': v.valid_data.login,
+#             'department': v.valid_data.department,
+#             'groups': v.valid_data.list('groups'),
+#             'mobile_phone': v.valid_data.mobile_phone
+#         }
+#
+#         already_used_login = User.get_by_login(data['login'])
+#         already_used_email = User.get_by_email(data['email'])
+#
+#         if already_used_login:
+#             v.add_error('login', 'Такой логин уже занят')
+#         if already_used_email:
+#             v.add_error('email', 'Такой email уже занят')
+#
+#         if already_used_login or already_used_email:
+#             return jsonify({"status": "fail",
+#                             "errors": v.errors})
+#
+#         try:
+#             create_user(**data)
+#             return jsonify({"status": "ok"})
+#         except DataProcessingError as e:
+#             return jsonify({'status': 'failOnProcess',
+#                             'error': e.value})
+#
+#     return jsonify({"status": "fail",
+#                     "errors": v.errors})
 
-@module.post('/users/add')
-def add_user_post():
-    v = Validator(request.form)
-    v.field('name').required()
-    v.field('surname').required()
-    v.field('email').required().email()
-    v.field('login').required()
-    v.field('department').required()
-    v.field('groups').required()
-    v.field('mobile_phone').required().phone_number()
-    if v.is_valid():
-        data = {
-            'name': v.valid_data.name,
-            'surname': v.valid_data.surname,
-            'email': v.valid_data.email,
-            'login': v.valid_data.login,
-            'department': v.valid_data.department,
-            'groups': v.valid_data.list('groups'),
-            'mobile_phone': v.valid_data.mobile_phone
-        }
 
-        already_used_login = User.get_by_login(data['login'])
-        already_used_email = User.get_by_email(data['email'])
+@module.get('/users/set-user-role/<int:role_id>/<int:user_id>/')
+def set_user_role(role_id, user_id):
+    if role_id:
+        User.set_user_role(user_id, role_id)
+    else:
+        User.set_user_is_admin(user_id)
+    return jsonify({'status': 'ok'})
 
-        if already_used_login:
-            v.add_error('login', 'Такой логин уже занят')
-        if already_used_email:
-            v.add_error('email', 'Такой email уже занят')
 
-        if already_used_login or already_used_email:
-            return jsonify({"status": "fail",
-                            "errors": v.errors})
+@module.get('/users/set-user-per/<int:user_id>/<per_string>/')
+def set_user_per(user_id, per_string):
+    User.set_user_per(user_id, per_string)
+    return jsonify({'status': 'ok'})
 
-        try:
-            create_user(**data)
-            return jsonify({"status": "ok"})
-        except DataProcessingError as e:
-            return jsonify({'status': 'failOnProcess',
-                            'error': e.value})
-
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
