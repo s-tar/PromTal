@@ -11,6 +11,7 @@ from application.utils.validator import Validator
 def _default_value(chain):
     return chain or '-'
 
+
 def _default_int(chain):
     return '0' if chain == "None" else chain
 
