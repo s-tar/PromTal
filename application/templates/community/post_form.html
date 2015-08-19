@@ -1,21 +1,25 @@
+{% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
-<div class="col-md-8 col-md-offset-2 frame news-form">
-    <h3 class='title'>{{ 'Редактировать новость' if post.id else 'Новая новость' }}</h3>
-    <div id="post-form"></div>
-    <script type="text/jsx">
-    React.render(
-        <AJAXForm action="{{ url_for('community.post_save') }}" method="post" className="custom-form" onSuccess={function(json){ window.location.href = '/community/'+json.post.community_id+'/post/'+json.post.id;}}>
-            <input type="hidden" name="community_id" value="{{ post.community.id or community_id }}"/>
-            <input type="hidden" name="id" value="{{ post.id or '' }}"/>
-            <div className="field-label">Заголовок:</div>
-            <Input type="text" name="title" defaultValue="{{ post.title or '' }}"/>
-            <div className="field-label">Текст:</div>
-            <div className="edit-wrapper"><TextArea name="text" className="editor" defaultValue="{{ post.text or '' }}" placeholder="Текст новости"></TextArea></div>
-            <a className="button" href="javascript: window.history.back()">Отмена</a>
-            <input type="submit" value="{{ 'Сохранить' if post.id else 'Создать' }}" />
-        </AJAXForm>,
-        document.getElementById('post-form'))
-    </script>
+{{ macros.header(community)}}
+<div class="col-md-8 col-md-offset-2">
+    <div class="frame news-form">
+        <h3 class='title'>{{ 'Редактировать новость' if post.id else 'Новая новость' }}</h3>
+        <div id="post-form"></div>
+        <script type="text/jsx">
+        React.render(
+            <AJAXForm action="{{ url_for('community.post_save') }}" method="post" className="custom-form" onSuccess={function(json){ window.location.href = '/community/'+json.post.community_id+'/post/'+json.post.id;}}>
+                <input type="hidden" name="community_id" value="{{ post.community.id or community.id }}"/>
+                <input type="hidden" name="id" value="{{ post.id or '' }}"/>
+                <div className="field-label">Заголовок:</div>
+                <Input type="text" name="title" defaultValue="{{ post.title or '' }}"/>
+                <div className="field-label">Текст:</div>
+                <div className="edit-wrapper"><TextArea name="text" className="editor" defaultValue="{{ post.text or '' }}" placeholder="Текст новости"></TextArea></div>
+                <a className="button" href="javascript: window.history.back()">Отмена</a>
+                <input type="submit" value="{{ 'Сохранить' if post.id else 'Создать' }}" />
+            </AJAXForm>,
+            document.getElementById('post-form'))
+        </script>
+    </div>
 </div>
 {% endblock %}

@@ -214,4 +214,35 @@ $(document).on('mousedown', '.company-structure .structure', function(e){
             $this.off('mouseup mousemove');
         }
     }
-})
+});
+
+
+function deleteCommunityPost(id) {
+    Popup.show({
+        title: 'Удалить новость',
+        content: 'Вы уверены,что хотите удалить новость?',
+        closeButton: false,
+        buttons: [
+            {
+                name: 'Да',
+                className: 'left',
+                action: function(popup){
+                    $.ajax({
+                        url: '/community/post/'+id,
+                        type: 'DELETE',
+                        success: function(json) {
+                            window.location.href = '/community/'+json.community.id;
+                        }
+                    });
+                }
+            },
+            {
+                name: 'Нет',
+                className: 'right',
+                action: function(popup){
+                    popup.onClose()
+                }
+            },
+        ]
+    })
+}

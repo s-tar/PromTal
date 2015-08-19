@@ -98,6 +98,7 @@ def delete(id):
 @module.get('/<int:community_id>/post/<int:id>')
 def post_page(community_id, id):
     post = Post.get(id)
+    post.increment_views()
     return render_template('community/post_one.html', **{'post': post})
 
 
@@ -111,10 +112,10 @@ def post_form(community_id, id=None):
     if not community or not post:
         abort(404)
 
-    if not community.is_member(user) or (id and post.author != user):
+    if not community.has_member(user) or (id and post.author != user):
         abort(403)
 
-    return render_template('community/post_form.html', **{'community_id': community_id, 'post': post})
+    return render_template('community/post_form.html', **{'community': community, 'post': post})
 
 
 @module.route("/post/save", methods=['POST'])
@@ -157,3 +158,15 @@ def post_save():
         'status': 'ok',
         'post': post.as_dict()
     })
+
+@module.delete("/post/<int:id>")
+def post_delete(id):
+    user = auth.service.get_user()
+    if user.is_authorized():
+        post = Post.get(id)
+        if post and post.community.has_member(user):
+            db.session.delete(post)
+            db.session.commit()
+            return jsonify({'status': 'ok', 'community': post.community.as_dict()})
+
+    return jsonify({'status': 'fail'})

@@ -1,21 +1,9 @@
 {% import "macros/user.html" as user %}
+{% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
 <div class="community-page">
-    <div class="row">
-    <div class="col-md-8 col-md-offset-2 header">
-        <div class="community frame">
-            {% if community.type == community.TYPE.PRIVATE %}
-                <div class="closed fa fa-lock" title="Закрытая группа"></div>
-            {% endif %}
-            <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
-            <div class="info">
-                <div class="name">{{ community.name or '' }}</div>
-                <div class="description">{{ community.description or '' }}</div>
-            </div>
-        </div>
-    </div>
-    </div>
+    {{ macros.header(community)}}
     <div class="row">
     <div class="col-md-8 col-md-offset-2 news-list">
         {% for post in community.posts %}

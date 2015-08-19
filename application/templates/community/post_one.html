@@ -1,12 +1,14 @@
 {% import "macros/user.html" as user %}
+{% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
+{{ macros.header(post.community)}}
 <div class="col-md-8 col-md-offset-2 news-one">
     <article class="frame">
         {% if current_user == post.author %}
         <div class="edit-buttons">
             <a href="{{ url_for('community.post_form', community_id=post.community.id, id=post.id) }}"><span class="fa fa-edit"></span></a>
-            <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-trash-o"></span></a>
+            <a href="javascript: deleteCommunityPost({{ post.id }})"><span class="fa fa-trash-o"></span></a>
         </div>
         {% endif %}
         <h3 class="title">{{ post.title or '' }}</h3>
