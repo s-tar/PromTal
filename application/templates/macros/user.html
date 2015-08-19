@@ -1,3 +1,6 @@
 {% macro icon(user) %}
-    <div class="user-icon" onClick="window.location.href='/user/profile/{{ user.id }}'" {% if user.photo %} style="background-image: url('{{ user.photo.get_url('thumbnail') or '' }}')" {% endif %} title="{{ user.full_name or '' }}"></div>
+    <div class="user-icon"
+         onClick="window.location.href='/user/profile/{{ user.id }}'"
+         style="{% if user.photo %} background-image: url('{{ user.photo.get_url('thumbnail') or '' }}') {% endif %} "
+         title="{{ user.full_name or '' }}"></div>
 {% endmacro %}

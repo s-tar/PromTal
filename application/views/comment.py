@@ -137,7 +137,6 @@ def save_quote(id=None):
 
 def save(comment, data):
     comment.text = data.comment
-
     db.session.add(comment)
     db.session.flush()
 

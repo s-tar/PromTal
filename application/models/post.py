@@ -24,12 +24,15 @@ class Post(db.Model, Mixin, HasComments, HasVotes):
     text = db.Column(db.Text())
     status = db.Column(db.Integer, default=STATUS.ACTIVE)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    community_id = db.Column(db.Integer, db.ForeignKey('community.id'))
+
     datetime = db.Column(db.DateTime, default=datetime.now)
     comments_count = db.Column(db.Integer, default=0)
     votes_count = db.Column(db.Integer, default=0)
     views_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="posts", lazy="joined")
+    community = db.relationship("Community", backref="posts")
 
     @classmethod
     def all(cls):

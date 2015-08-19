@@ -57,12 +57,16 @@
   white-space: nowrap
   cursor: pointer
   margin: 5px -10px
-
+  div.closed
+    position: absolute
+    top: 10px
+    right: 15px
+    color: #999
+    font-size: 2em
   .image, .info
     display: inline-block
     vertical-align: top
     white-space: normal
-
   .name
     font-size: 1.3em
     width: 100%
@@ -86,3 +90,22 @@
     -border-radius 5px
     overflow: hidden
     background-image: url('/static/img/community.png')
+.community-header .community
+  padding: 5px
+  cursor: default
+  margin: 0px
+  margin-bottom: 10px
+  a.post-create
+    position: absolute
+    text-align: center
+    top: 9px
+    right: 10px
+  .closed
+    font-size: 1em;
+  .name
+    color: #fd8a16
+  .image
+    width: 47px
+    height: 47px
+  .description
+    height: auto
