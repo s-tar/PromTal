@@ -20,6 +20,7 @@ def sync_permissions():
             p = Permission()
             p.name = name
             p.title = title
+            db.session.add(p)
             db.session.commit()
 
 
@@ -42,6 +43,7 @@ def insert_roles():
             for p in permissions:
                 r.permissions.append(permissions_map.get(p))
             r.name = role
+            db.session.add(r)
             db.session.commit()
 
 
