@@ -3,13 +3,13 @@
 {% block title %}Структура компании{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h2>Структура компании</h2>
+    <h2>Структура компании <span id="roll-btn" class="glyphicon glyphicon-resize-small" onclick="roll_btn_click() "></span></h2>
     <ul class="metisFolder">
     {%- for dep in departments recursive %}
-        <li>
+        <li class="active">
           <a href="#">
             {%- if dep.dep_list -%}
-                <span class="fa fa-plus-square-o"></span>
+                <span class="fa fa-minus-square-o"></span>
             {%- else %}
                 <span class="fa fa-square-o"></span>
             {%- endif %}
@@ -31,6 +31,23 @@ $(document).ready(function() {
   $('.metisFolder').metisMenu({
     toggle: false
   });
+
+  roll_btn_click = function() {
+    btn = $("#roll-btn")
+    metis = $(".metisFolder")
+    if (btn.hasClass('glyphicon-resize-small')) {
+        btn.removeClass('glyphicon-resize-small').addClass('glyphicon-resize-full');
+        metis.find('li.active').has('ul').children('ul').removeClass('collapse in').addClass('collapse');
+        metis.find('li').children('a').children('span.fa-minus-square-o').removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+        metis.find('li.active').removeClass('active');
+    } else {
+        btn.removeClass('glyphicon-resize-full').addClass('glyphicon-resize-small');
+        metis.find('li').not('.active').has('ul').children('ul').removeClass('collapse').addClass('collapse in');
+        metis.find('li').children('a').children('span.fa-plus-square-o').removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+        metis.find('li').not('.active').addClass('active');
+    }
+  }
+
 });
 </script>
 {% endblock %}

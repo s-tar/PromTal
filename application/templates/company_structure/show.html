@@ -20,17 +20,17 @@
                         <span class="position">Должность</span>
                     </div>
                     {% endif %}
-                    {% if  dep.users|length %}
+                    {% if  dep.workers|length %}
                     <div class="workers">
                         <div class="workers-toggle">
-                            <a href="#" class="show-link">Сотрудники ({{ dep.users|length }})</a>
+                            <a href="#" class="show-link">Сотрудники ({{ dep.workers|length }})</a>
                             <a href="#" class="hide-link">Скрыть сотрудников</a>
                         </div>
                         <div class="workers-list">
-                        {% for u in dep.users %}
+                        {% for worker in dep.workers %}
                         <div class="user">
-                            {{ user.icon(u) }}
-                            <a href="{{ url_for("user.profile", user_id=u.id) }}" title="{{ u.full_name }}">{{ u.full_name }}</a>
+                            {{ user.icon(worker) }}
+                            <a href="{{ url_for("user.profile", user_id=worker.id) }}" title="{{ worker.full_name }}">{{ worker.full_name }}</a>
                             <span class="position">Должность</span>
                         </div>
                         {% endfor %}

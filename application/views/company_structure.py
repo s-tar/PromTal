@@ -39,5 +39,4 @@ def show_structure():
     departments = defaultdict(list)
     for department in Department.all():
         departments[department.parent_id].append(department)
-
     return render_template('company_structure/show.html', departments=departments)

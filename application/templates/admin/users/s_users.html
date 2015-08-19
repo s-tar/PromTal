@@ -33,6 +33,42 @@ window.onload = function() {
             "sAjaxSource": "{{ url_for('admin.s_users_json') }}"
         });
     } );
+
+    window.change_user_role = function(role_user){
+        console.log("role =", role_user);
+        $.ajax({
+          url: "/admin/users/set-user-role/"+role_user+"/",
+          success: function(json) {
+                if(json.status == 'ok'){
+                    console.log("OK");
+                }
+          }
+        });
+    }
+
+    window.change_user_per = function(user_id, per_list){
+        //console.log(per_user.selectedOptions);
+        pers = per_list.selectedOptions;
+        var per_values = [];
+        for (var i = 0; i < pers.length; i++) {
+          per_values[i] = pers[i].value;
+        }
+        var per_string = per_values.join();
+
+        console.log("permissions =", per_string);
+        if(per_string == ''){
+            per_string = "None";
+        }
+        $.ajax({
+          url: "/admin/users/set-user-per/"+user_id+"/"+per_string+"/",
+          success: function(json) {
+                if(json.status == 'ok'){
+                    console.log("OK");
+                }
+          }
+        });
+    }
+    
 }
 </script>
 

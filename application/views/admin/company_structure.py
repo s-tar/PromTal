@@ -1,7 +1,7 @@
 from flask import render_template, request, url_for, redirect, jsonify
 from application.views.admin.main import module
 from application.models.department import Department
-from application.models.user import User
+from application.models.user import User, Role
 from application import db
 from application.utils.datatables_sqlalchemy.datatables import row2dict
 from application.utils.validator import Validator
@@ -174,4 +174,26 @@ def set_user_to_dep(dep_id, user_id):
 @module.get('/company-structure/set-head-dep/<int:option>/<int:dep_id>/<int:user_id>/')
 def set_user_head_dep(option, dep_id, user_id):
     Department.add_head4dep(option, dep_id, user_id)
+    return jsonify({'status': 'ok'})
+
+
+@module.get('/company-structure/test/<int:role_id>/<int:user_id>/')
+def set_rol_test(role_id, user_id):
+    if role_id:
+        User.set_user_role(user_id, role_id)
+    else:
+        User.set_user_is_admin(user_id)
+    """
+    u = User.get_by_id(818)
+    print(u.roles)
+    r = Role.get_by_id(1)
+    print(r)
+    if r in u.roles:
+        print("Yes")
+        #u.roles.remove(r)
+    print(u.roles)
+    u.roles.append(r)
+    db.session.add(u)
+    db.session.commit()
+    """
     return jsonify({'status': 'ok'})
