@@ -15,7 +15,7 @@
             </div>
             {% endif %}
             <h3 class="title"><a href="{{ url_for('community.post_page', community_id=community.id, id=post.id) }}">{{ post.title or '' }}</a></h3>
-            <div class="text" onCLick="javascript: window.location.href='/post/{{ post.id }}'">{{ post.announcement|safe or '' }}</div>
+            <div class="text" onCLick="javascript: window.location.href='{{ url_for('community.post_page', community_id=community.id, id=post.id) }}'">{{ post.announcement|safe or '' }}</div>
             <div class="datetime">{{ post.datetime|datetime(old_time=False) or '' }}</div>
             <div class="footer">
                 <div class="author">

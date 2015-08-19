@@ -129,9 +129,7 @@
 }
 .community-header .community .closed {
   font-size: 1em;
-}
-.community-header .community .name {
-  color: #fd8a16;
+  color: #999;
 }
 .community-header .community .image {
   width: 47px;
