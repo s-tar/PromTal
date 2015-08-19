@@ -10,6 +10,7 @@ from application.models.user import User
 from application.models.news import News
 from application.models.comment import Comment
 from application.models.serializers.user import user_schema
+from application.utils.validator import Validator
 from application.views.api.decorators import json
 
 
@@ -55,31 +56,66 @@ def delete_user(id):
 @json()
 def edit_user(id):
     user = User.query.get_or_404(id)
-    result = user_schema.load(request.form)
 
-    if result.errors:
-        return result.errors, 400
+    v = Validator(request.form)
+    v.field('full_name').required()
+    v.field('email').required().email()
+    v.field('mobile_phone').required().phone_number()
+    v.field('inner_phone').required()
+    v.field('department').required()
+    v.field('birth_date').datetime(format="%d.%m.%Y")
+    v.field('file').image()
+
+    if v.errors:
+        return {'status': 'fail', 'errors': v.errors}, 200
+
+    result = user_schema.load(request.form)
 
     for field, value in result.data.items():
         setattr(user, field, value)
 
     db.session.commit()
-    return user.to_json().data, 200
+    return {'status': 'ok', 'user_data': user.to_json().data}, 200
 
 
 @api_v1.post('/users/')
 @json()
 def create_user():
-    result = user_schema.load(request.get_json())
 
-    if result.errors:
-        return result.errors, 400
+    v = Validator(request.form)
+    v.field('name').required()
+    v.field('surname').required()
+    v.field('inner_phone').required()
+    v.field('email').required().email()
+    v.field('login').required()
+    v.field('department').required()
+    v.field('groups').required()
+    v.field('mobile_phone').required().phone_number()
+
+    data = dict()
+    for key, value in request.form.items():
+        data[key] = value
+
+    data['full_name'] = '{} {}'.format(request.form['name'], request.form['surname'])
+
+    already_used_login = User.get_by_login(request.form['login'])
+    already_used_email = User.get_by_email(request.form['email'])
+
+    if already_used_login:
+        v.add_error('login', 'Такой логин уже занят')
+    if already_used_email:
+        v.add_error('email', 'Такой email уже занят')
+
+    if v.errors:
+        return {'status': 'fail', 'errors': v.errors}, 200
+
+    result = user_schema.load(data)
 
     user = User(**result.data)
 
     db.session.add(user)
     db.session.commit()
-    return user.to_json().data, 200
+    return {'status': 'ok', 'user_data': user.to_json().data}, 200
 
 
 @api_v1.get('/users/<int:id>/news/')

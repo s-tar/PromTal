@@ -1,8 +1,9 @@
 {% extends "admin/layout.html" %}
 {% block content %}
+
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('api_v1.edit_user', id=user.id) }}" method="put" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
+    <AJAXForm action="{{ url_for('api_v1.edit_user', id=user.id) }}" method="put" encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-md-8">
             <table className="table table-striped">
@@ -13,7 +14,7 @@ React.render(
                     </tr>
                     <tr>
                         <td>Аватар</td>
-                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
+                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonbefore="true" /></td>
                     </tr>
                     <tr>
                         <td>Внутренний номер</td>
@@ -54,7 +55,7 @@ React.render(
                         <td><Input className="form-control" type="text" name="skype" defaultValue="{% if user.skype %}{{ user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
                     </tr>
                     <tr>
-                        <td><a href="/message/ну ты и лошара" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><a href="javascript: window.history.back()" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
                         <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
                     </tr>
                 </tbody>
@@ -65,7 +66,7 @@ React.render(
     document.getElementById('edit_user_form'))
 
 function wellDone(){
-    window.location.href = "{{ url_for('admin.admin_index') }}";
+    window.location.href = "{{ url_for('admin.s_users') }}";
 }
 
 function showErrors( data ) {

@@ -7,8 +7,8 @@ from application.models.serializers.custom_fields import StatusField, RolesField
 class UserSchema(Schema):
 
     id = fields.Int()
-    email = fields.Email()
-    full_name = fields.Str()
+    email = fields.Email(required=True)
+    full_name = fields.Str(required=True)
     login = fields.Str()
     status = StatusField()
     is_admin = fields.Boolean()

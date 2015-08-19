@@ -15,9 +15,9 @@ def before_request():
 
 @module.get('/')
 def admin_index():
-    return redirect(url_for('admin.users_index'))
+    return redirect(url_for('admin.s_users'))
 
 
 @module.get("/logout")
 def logout():
-    return redirect(url_for('admin.index'))
+    return redirect(url_for('login.login'))

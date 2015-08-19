@@ -62,10 +62,10 @@ def s_users_json():
             <a href="{edit_user_profile}">
                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
-            <a href="{delete_user_profile}">
+            <a href="javascript: user.delete(%s)">
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
-        """
+        """ % row_id
         row[last_columns] = manage_html.format(
             edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
@@ -135,14 +135,6 @@ def activate_user(id):
     return redirect(url_for('admin.users_index'))
 
 
-@module.get('/users/block/<int:id>')
-def block_user(id):
-    user = User.query.get_or_404(id)
-    user.status = User.STATUS_BLOCKED
-    db.session.commit()
-    return redirect(url_for('admin.users_index'))
-
-
 @module.get('/users/add')
 def add_user():
     groups = ldap.get_all_groups()
@@ -152,45 +144,45 @@ def add_user():
                            departments={department.name for department in departments})
 
 
-@module.post('/users/add')
-def add_user_post():
-    v = Validator(request.form)
-    v.field('name').required()
-    v.field('surname').required()
-    v.field('email').required().email()
-    v.field('login').required()
-    v.field('department').required()
-    v.field('groups').required()
-    v.field('mobile_phone').required().phone_number()
-    if v.is_valid():
-        data = {
-            'name': v.valid_data.name,
-            'surname': v.valid_data.surname,
-            'email': v.valid_data.email,
-            'login': v.valid_data.login,
-            'department': v.valid_data.department,
-            'groups': v.valid_data.list('groups'),
-            'mobile_phone': v.valid_data.mobile_phone
-        }
-
-        already_used_login = User.get_by_login(data['login'])
-        already_used_email = User.get_by_email(data['email'])
-
-        if already_used_login:
-            v.add_error('login', 'Такой логин уже занят')
-        if already_used_email:
-            v.add_error('email', 'Такой email уже занят')
-
-        if already_used_login or already_used_email:
-            return jsonify({"status": "fail",
-                            "errors": v.errors})
-
-        try:
-            create_user(**data)
-            return jsonify({"status": "ok"})
-        except DataProcessingError as e:
-            return jsonify({'status': 'failOnProcess',
-                            'error': e.value})
-
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
+# @module.post('/users/add')
+# def add_user_post():
+#     v = Validator(request.form)
+#     v.field('name').required()
+#     v.field('surname').required()
+#     v.field('email').required().email()
+#     v.field('login').required()
+#     v.field('department').required()
+#     v.field('groups').required()
+#     v.field('mobile_phone').required().phone_number()
+#     if v.is_valid():
+#         data = {
+#             'name': v.valid_data.name,
+#             'surname': v.valid_data.surname,
+#             'email': v.valid_data.email,
+#             'login': v.valid_data.login,
+#             'department': v.valid_data.department,
+#             'groups': v.valid_data.list('groups'),
+#             'mobile_phone': v.valid_data.mobile_phone
+#         }
+#
+#         already_used_login = User.get_by_login(data['login'])
+#         already_used_email = User.get_by_email(data['email'])
+#
+#         if already_used_login:
+#             v.add_error('login', 'Такой логин уже занят')
+#         if already_used_email:
+#             v.add_error('email', 'Такой email уже занят')
+#
+#         if already_used_login or already_used_email:
+#             return jsonify({"status": "fail",
+#                             "errors": v.errors})
+#
+#         try:
+#             create_user(**data)
+#             return jsonify({"status": "ok"})
+#         except DataProcessingError as e:
+#             return jsonify({'status': 'failOnProcess',
+#                             'error': e.value})
+#
+#     return jsonify({"status": "fail",
+#                     "errors": v.errors})
