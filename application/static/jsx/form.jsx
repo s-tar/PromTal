@@ -60,6 +60,7 @@ var TextArea = React.createClass({
     },
     componentDidMount: function(event) {
         this.updateHeight()
+        tinymceInit()
         if(this.props.focus)
             this.refs.textarea.getDOMNode().focus()
     },
@@ -70,6 +71,39 @@ var TextArea = React.createClass({
         return(
             <div className="field-wrapper">
                 <textarea ref='textarea' {...this.props} onChange={this.onChange}>{this.props.children}</textarea>
+                <FieldError ref='error' registerError={this.props.registerError}/>
+            </div>
+        )
+    }
+});
+
+var ImageLoader = React.createClass({
+    getInitialState: function(){
+        return {value: this.props.value}
+    },
+    onChange: function(event) {
+        this.refs.error.setState({text: ''})
+
+        var self = this;
+        var input = this.refs.image.getDOMNode();
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                self.setState({value: e.target.result});
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+        if(typeof this.props.onChange == 'function')
+            this.props.onChange(event)
+    },
+    render: function() {
+        var preview = this.state.value ? {backgroundImage: 'url("'+this.state.value+'")'} : {} ;
+        return(
+            <div className="field-wrapper">
+                <div className="image-loader" >
+                    <input onChange={this.onChange} type="file" ref="image" name={this.props.name || 'image'}/>
+                    <div className="image-preview" style={preview}></div>
+                </div>
                 <FieldError ref='error' registerError={this.props.registerError}/>
             </div>
         )

@@ -216,3 +216,37 @@ select[multiple] + .error-wrapper .error {
   border: 0 none;
   box-sizing: content-box;
 }
+.image-loader {
+  width: 100px;
+  height: 100px;
+  padding: 4px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #eee;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.image-loader input {
+  border: 1px solid #f00;
+  font-size: 0px;
+  width: 9999px;
+  height: 9999px;
+  position: absolute;
+  left: -4000px;
+  top: -4000px;
+  opacity: 1;
+  cursor: pointer;
+}
+.image-loader .image-preview {
+  background-image: url("/static/img/picture_icon.png");
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+}
