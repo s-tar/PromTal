@@ -8,23 +8,25 @@
       position: absolute
       top: 15px
       right: 15px
-
-
       input
         display: none
       input:checked+label
-        background: #fd8a16
+        background: #e7422c
         color: white
         border-color: transparent
+        &:before
+          content: 'Закрытая'
       label
         -border-radius 5px
         padding: 5px 10px
-        color: #ccc
+        color: #aaa
         cursor: pointer
         font-size: 14px
         font-weight: normal
         margin: 0
-        border: 1px dashed #EEEEEE
+        border: 1px dashed #ccc
+        &:before
+          content: 'Открытая'
 
 
   .name-wrapper
@@ -45,14 +47,16 @@
     top: 9px
     right: 10px
   .communities-list
+    float: left
     padding: 0px
-    margin: -5px
+    margin: 5px -5px
+
 .community
   padding: 10px
   position: relative
   white-space: nowrap
   cursor: pointer
-  margin: 10px -10px
+  margin: 5px -10px
 
   .image, .info
     display: inline-block

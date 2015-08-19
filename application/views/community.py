@@ -46,6 +46,7 @@ def save():
     v = Validator(data)
     v.fields('id').integer(nullable=True)
     v.field('name').required()
+    v.field('private').boolean()
     v.field('description').required()
     v.field('image').image()
     user = auth.service.get_user()
@@ -58,6 +59,7 @@ def save():
             community = Community.get(data.id)
         if not community or (community.owner and community.owner != user):
             abort(403)
+        community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
         community.name = data.name
         community.description = data.description
         community.owner = user

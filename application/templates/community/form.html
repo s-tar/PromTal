@@ -8,8 +8,8 @@
             <h3 className='title'>
                 {{ 'Редактировать группу' if community.id else 'Новая группа' }}
                 <div className="switch">
-                    <input id="privaty" name="private" type="checkbox" defaultValue={ {{ 'true' if community.type == community.TYPE.PRIVATE else 'false'}} } />
-                    <label htmlFor="privaty">Закрытая</label>
+                    <input id="privaty" name="private" type="checkbox"  defaultChecked={ {{ 'true' if community.type == community.TYPE.PRIVATE else 'false'}} } />
+                    <label htmlFor="privaty"></label>
                 </div>
             </h3>
             <input type="hidden" name="id" value="{{ community.id or '' }}"/>
