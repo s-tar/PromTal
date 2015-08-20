@@ -29,10 +29,8 @@
                     $(this).children('span').removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
                 }
                 $(this).parent('li').toggleClass('active').children('ul').collapse('toggle');
-                console.log("qqqqqqqqqq3");
                 if ($toggle) {
                     $(this).parent('li').siblings().removeClass('active').children('ul.in').collapse('hide');
-                    //$(this).children('span').removeClass('fa-minus-square-o');
                 }
             });
         }
