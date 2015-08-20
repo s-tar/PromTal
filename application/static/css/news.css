@@ -24,6 +24,10 @@
   text-align: center;
   font-size: 1.7em;
 }
+.news-list .title,
+.news-one .title {
+  margin-bottom: 10px;
+}
 .news-list article,
 .news-one article {
   margin: 0;
