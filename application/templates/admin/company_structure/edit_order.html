@@ -1,0 +1,33 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Структура{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h2>{{ department.name }}</h2>
+    <div id="manage-users"></div>
+    <ol class="sortable">
+      <li><div>Some content</div></li>
+      <li>
+          <div>Some content</div>
+          <ol>
+              <li><div>Some sub-item content</div></li>
+              <li><div>Some sub-item content</div></li>
+          </ol>
+      </li>
+      <li><div>Some content</div></li>
+    </ol>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $('.sortable').nestedSortable({
+        handle: 'div',
+        items: 'li',
+        toleranceElement: '> div'
+    });
+
+});
+</script>
+
+
+{% endblock %}
