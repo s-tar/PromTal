@@ -18,7 +18,6 @@ def before_requets():
         return redirect(url_for('login.login'))
 
 
-
 @module.get("/profile")
 @module.get("/profile/<int:user_id>")
 def profile(user_id=None):
