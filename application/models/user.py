@@ -69,7 +69,7 @@ class Role(db.Model):
 
     @classmethod
     def get_all(cls):
-        return cls.query.all()
+        return cls.query.order_by(cls.name.desc()).all()
 
 
 class User(db.Model, AuthUser, Mixin):
@@ -206,6 +206,7 @@ class User(db.Model, AuthUser, Mixin):
 
     @classmethod
     def edit_user(cls, uid, full_name=full_name,
+                            position=position,
                             mobile_phone=mobile_phone,
                             inner_phone=inner_phone,
                             email=email,
@@ -216,6 +217,7 @@ class User(db.Model, AuthUser, Mixin):
 
         if u:
             u.full_name = full_name
+            u.position = position
             u.mobile_phone = mobile_phone
             u.inner_phone = inner_phone
             u.email = email

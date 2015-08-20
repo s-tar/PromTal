@@ -12,15 +12,20 @@
     display: inline-block
     height: 20px
     padding: 5px
+.news-list article .text
+  max-height: 800px
+  overflow: hidden
 .news-list, .news-one
-
   > .title
     text-align: center
     font-size: 1.7em
+  .title
+    margin-bottom: 10px
   article
     margin: 0
     margin-bottom: 5px
     position: relative
+
     &:hover
       .edit-buttons
         display: block

@@ -101,6 +101,7 @@ h3.title {
   margin: 0;
   padding: 15px 20px;
   color: #fd8a16;
+  border-bottom: 1px solid #eee;
 }
 h3.title a {
   color: #fd8a16;
@@ -551,4 +552,8 @@ h3.title a:hover {
   cursor: pointer;
   font-size: 16px;
   margin-left: 5px;
+}
+.edit-buttons-in-profile {
+  font-size: 1em !important;
+  display: block !important;
 }

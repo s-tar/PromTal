@@ -87,7 +87,7 @@ def _add_user_to_local_db(login, name, surname, email, department, mobile_phone,
         return False
 
 
-def update_user(id, login, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def update_user(id, login, full_name, position, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
     ldap_user_attr = {
         'mobile': mobile_phone,
         'telephoneNumber': inner_phone,
@@ -95,7 +95,7 @@ def update_user(id, login, full_name, department, email, mobile_phone, inner_pho
         'mail': email
     }
 
-    if not _edit_user_at_local_db(id, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+    if not _edit_user_at_local_db(id, full_name, position, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
         raise DataProcessingError('Произошла ошибка при обновлении пользователя в локальной базе данных')
 
     if not _edit_user_at_ldap(login, ldap_user_attr):
@@ -104,11 +104,12 @@ def update_user(id, login, full_name, department, email, mobile_phone, inner_pho
     db.session.commit()
 
 
-def _edit_user_at_local_db(id, full_name, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def _edit_user_at_local_db(id, full_name, position, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
     try:
         User.edit_user(
             uid=id,
             full_name=full_name,
+            position=position,
             email=email,
             inner_phone=inner_phone,
             mobile_phone=mobile_phone,
