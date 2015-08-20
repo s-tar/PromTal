@@ -11,11 +11,11 @@ React.render(
             <table className="table table-striped">
                 <tbody>
                     <tr>
-                        <td>Имя и фамилия</td>
+                        <td><span className="fa fa-male"></span> Имя и фамилия</td>
                         <td><Input className="form-control" type="text" name="full_name" defaultValue="{% if current_user.full_name %}{{ current_user.full_name }}{% else %}{% endif %}" placeholder="Имя и фамилия"/></td>
                     </tr>
                     <tr>
-                        <td>Аватар</td>
+                        <td><span className="fa fa-picture-o"></span> Аватар</td>
                         <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
                     </tr>
                     <tr>
@@ -35,7 +35,7 @@ React.render(
                         <td><Input className="form-control" type="text" name="mobile_phone" defaultValue="{% if current_user.mobile_phone %}{{ current_user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
                     </tr>
                     <tr>
-                        <td>Подразделение</td>
+                        <td><span className="fa fa-sitemap"></span> Подразделение</td>
                         <td>
                             <Select className="form-control" type="text" name="department">
                             {% for department in departments %}

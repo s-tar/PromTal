@@ -29,6 +29,12 @@
                     <td># Manager</td>
                     <td><span class="glyphicon glyphicon-user"></span> # Anakin Skywalker</td>
                 </tr>
+                {% if user_department.name %}
+                    <tr>
+                        <td>Кем руководит</td>
+                        <td><span class="fa fa-users"></span> {{ user_department.name }}</td>
+                    </tr>
+                {% endif %}
                 {% if user.position %}
                     <tr>
                         <td>Должность</td>
