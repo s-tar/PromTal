@@ -37,6 +37,8 @@
 .news-list article .text,
 .news-one article .text {
   padding: 0px 20px;
+  max-height: 800px;
+  overflow: hidden;
 }
 .news-list article .text img,
 .news-one article .text img {
