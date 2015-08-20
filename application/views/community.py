@@ -20,7 +20,7 @@ def before_request():
 
 @main.get('/communities')
 def list_communities():
-    communities = Community.all()
+    communities = Community.all_active()
     return render_template('community/all.html', **{'communities': communities})
 
 
@@ -87,8 +87,8 @@ def delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         community = Community.get(id)
-        if community:
-            db.session.delete(community)
+        if community and community.owner == user:
+            community.status = community.STATUS.DELETED
             db.session.commit()
             return jsonify({'status': 'ok'})
 
@@ -164,7 +164,7 @@ def post_delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         post = Post.get(id)
-        if post and post.community.has_member(user):
+        if post and post.author == user:
             db.session.delete(post)
             db.session.commit()
             return jsonify({'status': 'ok', 'community': post.community.as_dict()})

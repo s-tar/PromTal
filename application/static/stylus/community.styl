@@ -1,4 +1,9 @@
 @import 'mixins'
+.community-page
+  .message
+    text-align: center
+    font-size: 2em
+    color: #999
 .community-form
   .title
     margin: 0 -35px
@@ -53,20 +58,53 @@
     padding: 0px
     padding-top: 5px
     width: 100%
+  .community .info
+    width: 100%
+    padding-left: 110px
+    position: absolute
+    top: 10px
+    left: 0px
+    cursor: pointer
 .community
   padding: 10px
   position: relative
   white-space: nowrap
-  cursor: pointer
   margin: 5px 0px
   &:hover .edit-buttons
     display: block
-  div.closed
+  .bottom-buttons
     position: absolute
     bottom: 10px
     right: 15px
-    color: #999
-    font-size: 2em
+    div.closed
+      display: inline-block
+      color: #999
+      font-size: 2em
+      vertical-align: middle
+      margin-left: 10px
+  .top-buttons
+    position: absolute
+    top: 10px
+    right: 10px
+    .edit-buttons
+      padding: 0
+    button
+      padding: 7px 10px 5px
+      margin-left: 10px
+      vertical-align: middle
+      -border-radius(3px)
+      border: 0 none
+      color: white
+      text-transform: uppercase
+      &.community-join
+        background: #fd8a16
+        &:hover
+          background: #fd9e3f
+      &.community-leave
+        background: #e7422c
+      &:hover
+        background: #FF6961
+
   .image, .info
     display: inline-block
     vertical-align: top

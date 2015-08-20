@@ -3,6 +3,9 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="community-page">
+    {% if community.status != community.STATUS.ACTIVE %}
+    <div class="message">Группа удалена</div>
+    {% else %}
     {{ macros.header(community)}}
     <div class="row">
     <div class="col-md-8 col-md-offset-2 news-list">
@@ -29,5 +32,6 @@
         {% endfor %}
     </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
