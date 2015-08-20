@@ -1,43 +1,71 @@
 {% extends "admin/layout.html" %}
-{% block content %}
 
+{% block title %}
+    {% if user.id %}
+        Редактирование пользователя
+    {% else %}
+        Создание нового пользователя
+    {% endif %}
+{% endblock %}
+
+{% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('api_v1.create_user') }}" method="post" encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
+    <AJAXForm action="{{ url_for('api_v1.save_user', id=user.id) }}" method="{{ 'put' if user.id else 'post' }}"  encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-md-8">
             <table className="table table-striped">
                 <tbody>
                     <tr>
                         <td>Имя</td>
-                        <td><Input className="form-control" type="text" name="name" placeholder="Вася"/></td>
+                        <td><Input className="form-control" type="text" name="name" defaultValue="{% if user.full_name %}{{ user.full_name.split(' ')[0]}}{% else %}{% endif %}" placeholder="Вася"/></td>
                     </tr>
                     <tr>
                         <td>Фамилия</td>
-                        <td><Input className="form-control" type="text" name="surname" placeholder="Пупкин"/></td>
+                        <td><Input className="form-control" type="text" name="surname" defaultValue="{% if user.full_name %}{{ user.full_name.split(' ')[1]}}{% else %}{% endif %}" placeholder="Пупкин"/></td>
                     </tr>
                     <tr>
                         <td>Аватар</td>
-                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonbefore="true" /></td>
+                        <td><ImageLoader name="file" value="{{ user.photo.get_url() if user.photo or '' }}"/></td>
                     </tr>
                     <tr>
-                        <td>Внутренний номер</td>
-                        <td><Input className="form-control" type="text" name="inner_phone" placeholder="????"/></td>
+                        <td>Email</td>
+                        <td><Input className="form-control on-change-email" type="text" name="email" defaultValue="{% if user.email %}{{ user.email }}{% else %}{% endif %}" placeholder="mail@prom.ua"/></td>
                     </tr>
                     <tr>
-                        <td>Дата рождения</td>
-                        <td><Input className="form-control datepicker" type="text" name="birth_date" placeholder="??.??.????"/></td>
+                        <td>Login</td>
+                        <td><Input className="form-control on-change-login" type="text" name="login" defaultValue="{% if user.login %}{{ user.login }}{% else %}{% endif %}" placeholder="v.pupkin"/></td>
                     </tr>
                     <tr>
                         <td>Номер мобильного телефона</td>
-                        <td><Input className="form-control" type="text" name="mobile_phone" placeholder="???-??-??-???"/></td>
+                        <td><Input className="form-control" type="text" name="mobile_phone" defaultValue="{% if user.mobile_phone %}{{ user.mobile_phone }}{% else %}{% endif %}" placeholder="???-??-??-???"/></td>
+                    </tr>
+                    <tr>
+                        <td>Внутренний номер</td>
+                        <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if user.inner_phone %}{{ user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
+                    </tr>
+                    <tr>
+                        <td>Дата рождения</td>
+                        <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
+                    </tr>
+                    <tr>
+                        <td>Skype</td>
+                        <td><Input className="form-control" type="text" name="skype" defaultValue="{% if user.skype %}{{ user.skype }}{% else %}{% endif %}" placeholder="skype"/></td>
                     </tr>
                     <tr>
                         <td>Подразделение</td>
                         <td>
                             <Select className="form-control" type="text" name="department">
                             {% for department in departments %}
-                                <option>{{ department }}</option>
+                                {% if user.department %}
+                                    {% if department == user.department.name %}
+                                        <option selected="selected">{{ department }}</option>
+                                    {% else %}
+                                        <option>{{ department }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option>{{ department }}</option>
+                                {% endif %}
                             {% endfor %}
                             </Select>
                         </td>
@@ -53,18 +81,6 @@ React.render(
                         </td>
                     </tr>
                     <tr>
-                        <td>Email</td>
-                        <td><Input className="form-control on-change-email" type="text" name="email" placeholder="mail@prom.ua"/></td>
-                    </tr>
-                    <tr>
-                        <td>Login</td>
-                        <td><Input className="form-control on-change-login" type="text" name="login" placeholder="v.pupkin"/></td>
-                    </tr>
-                    <tr>
-                        <td>Skype</td>
-                        <td><Input className="form-control" type="text" name="skype" placeholder="skype"/></td>
-                    </tr>
-                    <tr>
                         <td><a href="javascript: window.history.back()" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
                         <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
                     </tr>
@@ -73,7 +89,7 @@ React.render(
           </div>
         </div>
     </AJAXForm>,
-    document.getElementById('add_user_form'))
+    document.getElementById('edit_user_form'))
 
 function wellDone(){
     window.location.href = "{{ url_for('admin.s_users') }}";
@@ -104,11 +120,6 @@ window.onload = function () {
         $(this).datepicker();
     });
 
-    function funcfilestyle() {
-      $(":file").filestyle({buttonBefore: true});
-    }
-    setTimeout(funcfilestyle, 200);
-
     function on_change() {
         $( ".on-change-email" ).on('blur keyup',function() {
           $(".on-change-login").val(this.value.split('@')[0])
@@ -138,7 +149,8 @@ $( function() {
 
 <div class="container">
     <div class="centered col-md-offset-3">
-        <div id="add_user_form"></div>
+        <div id="edit_user_form"></div>
     </div>
 </div>
 {% endblock %}
+

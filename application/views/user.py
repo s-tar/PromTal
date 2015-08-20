@@ -1,9 +1,10 @@
+from flask import request, render_template, abort, redirect, url_for
+from flask.json import jsonify
+
 from application import Module
 from application.utils.validator import Validator
 from application.utils import auth
 from application.utils.widget import widget
-from flask import request, render_template, abort, redirect, url_for
-from flask.json import jsonify
 from application.models.user import User
 from application.models.department import Department
 from application.bl.users import modify_password, PasswordError, DataProcessingError, update_user
@@ -12,7 +13,7 @@ module = Module('user', __name__, url_prefix='/user')
 
 
 @module.before_request
-def before_requets():
+def before_request():
     user = auth.service.get_user()
     if not user.is_authorized():
         return redirect(url_for('login.login'))

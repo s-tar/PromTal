@@ -102,8 +102,8 @@ class User(db.Model, AuthUser, Mixin):
     is_admin = db.Column(db.Boolean, default=False)
     reg_date = db.Column(db.DateTime, default=datetime.now)
 
-    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users")
-    roles = db.relationship("Role", secondary=user_role_associate, backref="users")
+    permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users", lazy='dynamic')
+    roles = db.relationship("Role", secondary=user_role_associate, backref="users", lazy='dynamic')
     department = db.relationship("Department", backref="users", foreign_keys=[department_id])
     photo = db.relationship("File", lazy="joined")
 
@@ -169,7 +169,7 @@ class User(db.Model, AuthUser, Mixin):
         u = cls.query.filter_by(id=user_id).first()
         if u.is_admin:
             return 0
-        elif u.roles:
+        elif u.roles and len(u.roles.all()):
             return u.roles[0].id
         return ''
 
@@ -237,7 +237,8 @@ class User(db.Model, AuthUser, Mixin):
         return u
 
     def get_permissions(self):
-        return set(self.permissions.all() + [role.permissions for role in self.roles.all()])
+        permissions = self.permissions.all() + [role.permissions for role in self.roles.all()]
+        return set(permissions)
 
     def has_role(self, role):
         return role in self.roles

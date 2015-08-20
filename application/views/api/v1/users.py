@@ -1,7 +1,8 @@
-from flask import request, current_app, url_for
-from flask.json import jsonify
-from sqlalchemy import func, desc
+from application.models.file import File
+from application.utils import image, auth
+from flask import request, current_app, url_for, render_template
 from flask.ext.sqlalchemy import BaseQuery
+from sqlalchemy import func, desc
 
 from . import api_v1
 
@@ -52,58 +53,39 @@ def delete_user(id):
     return {}, 204
 
 
+@api_v1.post('/users/')
 @api_v1.put('/users/<int:id>/')
 @json()
-def edit_user(id):
-    user = User.query.get_or_404(id)
-
-    v = Validator(request.form)
-    v.field('full_name').required()
-    v.field('email').required().email()
-    v.field('mobile_phone').required().phone_number()
-    v.field('inner_phone').required()
-    v.field('department').required()
-    v.field('birth_date').datetime(format="%d.%m.%Y")
-    v.field('file').image()
-
-    if v.errors:
-        return {'status': 'fail', 'errors': v.errors}, 200
-
-    result = user_schema.load(request.form)
-
-    for field, value in result.data.items():
-        setattr(user, field, value)
-
-    db.session.commit()
-    return {'status': 'ok', 'user_data': user.to_json().data}, 200
-
-
-@api_v1.post('/users/')
-@json()
-def create_user():
-
-    v = Validator(request.form)
-    v.field('name').required()
-    v.field('surname').required()
-    v.field('inner_phone').required()
-    v.field('email').required().email()
-    v.field('login').required()
-    v.field('department').required()
-    v.field('groups').required()
-    v.field('mobile_phone').required().phone_number()
+def save_user(id=None):
 
     data = dict()
     for key, value in request.form.items():
         data[key] = value
 
+    data["file"] = request.files["file"]
     data['full_name'] = '{} {}'.format(request.form['name'], request.form['surname'])
 
-    already_used_login = User.get_by_login(request.form['login'])
-    already_used_email = User.get_by_email(request.form['email'])
+    v = Validator(data)
+    v.field('name').required()
+    v.field('surname').required()
+    v.field('file').image()
+    v.field('inner_phone')
+    v.field('email').required().email()
+    v.field('login').required()
+    v.field('department').required()
+    v.field('groups')
+    v.field('mobile_phone')
+    v.field('skype')
+    v.field('birth_date')
 
-    if already_used_login:
+    already_used_login = User.get_by_login(data['login'])
+    already_used_email = User.get_by_email(data['email'])
+
+    user = User.query.get_or_404(id) if id else User()
+
+    if already_used_login and already_used_login != user:
         v.add_error('login', 'Такой логин уже занят')
-    if already_used_email:
+    if already_used_email and already_used_email != user:
         v.add_error('email', 'Такой email уже занят')
 
     if v.errors:
@@ -111,10 +93,20 @@ def create_user():
 
     result = user_schema.load(data)
 
-    user = User(**result.data)
+    for field, value in result.data.items():
+        setattr(user, field, value)
 
     db.session.add(user)
+    db.session.flush()
+
+    if data["file"]:
+        p = user.photo = user.photo or File.create(name='photo.png', module='users', entity=user)
+        p.makedir()
+        p.update_hash()
+        image.thumbnail(data["file"], width=100, height=100, fill=image.COVER).save(p.get_path(sufix="thumbnail"))
+        image.resize(data["file"]).save(p.get_path())
     db.session.commit()
+
     return {'status': 'ok', 'user_data': user.to_json().data}, 200
 
 
