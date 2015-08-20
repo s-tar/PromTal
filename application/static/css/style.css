@@ -320,10 +320,6 @@ h3.title a:hover {
 .company-structure .user-icon span {
   display: inline-block;
 }
-.company-structure .worker-info .name,
-.company-structure .user-icon .name {
-  margin-bottom: -2px;
-}
 .company-structure .level-0 {
   float: left;
 }
@@ -484,7 +480,7 @@ h3.title a:hover {
   padding: 10px;
   text-align: left;
   font-size: 0.9em;
-  padding-bottom: 5px;
+  padding-bottom: 2px;
   margin-bottom: 0px;
 }
 .company-structure .department .title:last-child {
@@ -520,11 +516,14 @@ h3.title a:hover {
   display: inline-block;
   width: 100%;
   white-space: nowrap;
+  margin-bottom: -2px;
 }
 .company-structure .department .user .position {
   padding: 0px 5px;
   width: 100%;
   color: #999;
+  padding-top: 2px;
+  margin-bottom: -2px;
 }
 .company-structure .department > .user + .workers .workers-toggle {
   margin-top: 5px;
@@ -533,7 +532,7 @@ h3.title a:hover {
 .company-structure .department .workers .workers-toggle {
   text-align: center;
   margin: 0px -10px 0px;
-  padding: 5px 5px 3px;
+  padding: 5px;
 }
 .company-structure .department .workers.show .workers-toggle {
   border-bottom: 1px solid #eee;
