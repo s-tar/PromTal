@@ -2,7 +2,7 @@
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('password.restore') }}" method="post" className="form-signin" onSuccess={function(){window.location.href = "{{ url_for('login.login') }}";}}>
+    <AJAXForm action="{{ url_for('password.restore') }}" method="post" className="form-signin" onSuccess={function(){window.location.href = "/message/Вам отправлен email";}}>
         <Input className="form-control email-restore" type="text" name="email" placeholder="Email"/>
         <Input className="btn btn-lg btn-primary btn-block" type="submit" value="Восстановить"/>
     </AJAXForm>,

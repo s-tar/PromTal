@@ -51,7 +51,10 @@ def s_news_json():
         row_id = i['0']
         i['1'] = "<a href='"+url_for('news.news_one', id=int(row_id))+"'>"+i['1']+"</a>"
         i['2'] = "<a href='"+url_for('user.profile', user_id=int(i['4']))+"'>"+i['2']+"</a>"
-        i['3'] = "<a href='"+url_for('news.list_all_by_category', id=i['5'])+"'>"+i['3']+"</a>"
+        if i['5'] == 'None':
+            i['3'] = "-"
+        else:
+            i['3'] = "<a href='"+url_for('news.list_all_by_category', id=i['5'])+"'>"+i['3']+"</a>"
         last_columns = str(4)
         last_columns = str(len(columns))
         manage_html = """Edit Delete"""

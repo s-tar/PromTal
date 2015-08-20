@@ -183,17 +183,10 @@ def set_rol_test(role_id, user_id):
         User.set_user_role(user_id, role_id)
     else:
         User.set_user_is_admin(user_id)
-    """
-    u = User.get_by_id(818)
-    print(u.roles)
-    r = Role.get_by_id(1)
-    print(r)
-    if r in u.roles:
-        print("Yes")
-        #u.roles.remove(r)
-    print(u.roles)
-    u.roles.append(r)
-    db.session.add(u)
-    db.session.commit()
-    """
     return jsonify({'status': 'ok'})
+
+
+@module.get('/department-order/<int:dep_id>')
+def department_order(dep_id):
+    department = Department.get_by_id(dep_id)
+    return render_template('admin/company_structure/edit_order.html', department=department)

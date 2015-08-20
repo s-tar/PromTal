@@ -14,6 +14,7 @@
                 <span class="fa fa-square-o"></span>
             {%- endif %}
             {{ dep.name }}
+            <div class="glyphicon glyphicon-list" onClick="window.location.href = '{{ url_for('admin.department_order', dep_id=dep.id) }}';"></div>
             <div class="glyphicon glyphicon-user" onClick="window.location.href = '{{ url_for('admin.department_info', dep_id=dep.id) }}';"></div>
             <div class="glyphicon glyphicon-pencil" onClick="window.location.href = '{{ url_for('admin.edit_structure', dep_id=dep.id) }}';"></div>
             <div class="glyphicon glyphicon-plus" onClick="window.location.href = '{{ url_for('admin.add_structure', dep_id=dep.id) }}';"></div>
