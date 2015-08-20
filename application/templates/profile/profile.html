@@ -32,25 +32,25 @@
                 {% if user.department %}
                     <tr>
                         <td>Подразделение</td>
-                        <td><span class="glyphicon glyphicon-tower"></span> {{ user.department.name }}</td>
+                        <td><span class="fa fa-sitemap"></span> {{ user.department.name }}</td>
                     </tr>
                 {% endif %}
                 {% if user.inner_phone %}
                     <tr>
                         <td>Внутренний номер</td>
-                        <td><span class="glyphicon glyphicon-home"></span> {{ user.inner_phone }}</td>
+                        <td><span class="fa fa-phone"></span> {{ user.inner_phone }}</td>
                     </tr>
                 {% endif %}
                 {% if user.birth_date %}
                     <tr>
                         <td>Дата рождения</td>
-                        <td><span class="glyphicon glyphicon-glass"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
+                        <td><span class="fa fa-birthday-cake"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
                     </tr>
                 {% endif %}
                 {% if user.mobile_phone %}
                     <tr>
                         <td>Номер мобильного телефона</td>
-                        <td><span class="glyphicon glyphicon-headphones"></span> {{ user.mobile_phone }}</td>
+                        <td><span class="fa fa-mobile" style="font-size: 18px;margin-top: -2px;"></span> {{ user.mobile_phone }}</td>
                     </tr>
                 {% endif %}
                 {% if user.email %}
@@ -62,7 +62,7 @@
                 {% if user.skype %}
                     <tr>
                         <td>Skype</td>
-                        <td><span class="glyphicon glyphicon-link"></span> {{ user.skype }}</td>
+                        <td><span class="fa fa-skype" style="font-size: 15px;"></span> {{ user.skype }}</td>
                     </tr>
                 {% endif %}
             </tbody>
