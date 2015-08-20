@@ -224,7 +224,21 @@ h3.title a
   frame_width = 180px
   lines_border = 1px solid #ccc
   text-align: center
-
+  .user:before
+    vertical-align: middle
+    display: inline-block
+    min-height: 26px
+    height: 100%
+    content: ''
+  .worker-info, .user-icon
+    vertical-align: middle
+    display: inline-block
+    padding-top: 2px
+    white-space: normal
+    span
+      display: inline-block
+    .name
+      margin-bottom: -2px
   .level-0
     float: left
   .level-0 > li > .department .title
@@ -271,7 +285,7 @@ h3.title a
     padding: 20px
     margin: 0
     > li > .department
-      margin-bottom: 20px
+      margin-bottom: 15px
   .level-0 > li
     text-align: center
     position: relative
@@ -356,7 +370,7 @@ h3.title a
     text-align: left
     font-size: 0.9em
     padding-bottom: 5px
-    margin-bottom: 5px
+    margin-bottom: 0px
     .title:last-child
       margin-bottom: -5px
     .user-icon
@@ -373,11 +387,12 @@ h3.title a
       margin-bottom: 0px
       padding: 10px 5px
     .user
-      padding: 2px 10px 2px 40px
+      padding: 2px 10px 4px 40px
       margin: 4px -10px
-      line-height: 1.3em
-      height: 30px
+      line-height: 1.2em
+      min-height: 30px
       position: relative
+      white-space: nowrap
       a
         padding: 0px 5px
         overflow: hidden

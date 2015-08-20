@@ -97,6 +97,7 @@ class User(db.Model, AuthUser, Mixin):
     birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
     skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
+    position = db.Column(db.String(255))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
     is_admin = db.Column(db.Boolean, default=False)
     reg_date = db.Column(db.DateTime, default=datetime.now)

@@ -185,6 +185,7 @@ $(document).ready(function(){
     $('.company-structure .structure').removeClass('loading');
     structure.scrollLeft((structure.find('.level-0').outerWidth()-structure.parent().width()) /2);
 })
+
 $(document).on('mousedown', '.company-structure .structure', function(e){
     if(event.which == 1) {
         var $this = $(this);
@@ -217,6 +218,36 @@ $(document).on('mousedown', '.company-structure .structure', function(e){
 });
 
 
+function deleteCommunity(id) {
+    Popup.show({
+        title: 'Удалить группу',
+        content: 'Вы уверены,что хотите удалить группу?',
+        closeButton: false,
+        buttons: [
+            {
+                name: 'Да',
+                className: 'left',
+                action: function(popup){
+                    $.ajax({
+                        url: '/community/'+id,
+                        type: 'DELETE',
+                        success: function(json) {
+                            window.location.href = '/communities';
+                        }
+                    });
+                }
+            },
+            {
+                name: 'Нет',
+                className: 'right',
+                action: function(popup){
+                    popup.onClose()
+                }
+            },
+        ]
+    })
+}
+
 function deleteCommunityPost(id) {
     Popup.show({
         title: 'Удалить новость',
@@ -245,4 +276,5 @@ function deleteCommunityPost(id) {
             },
         ]
     })
+    return false;
 }

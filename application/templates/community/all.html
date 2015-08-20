@@ -14,16 +14,25 @@
         <div class="communities-list">
         {% for community in communities %}
         <div class="col-md-12">
-        <div class="community frame" onclick="window.location.href='{{ url_for("community.community_page", id=community.id) }}'">
+        <div class="community frame">
+            <div onclick="window.location.href='{{ url_for("community.community_page", id=community.id) }}'">
+                <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
+                <div class="info">
+                    <a href="{{ url_for("community.community_page", id=community.id) }}" class="name">{{ community.name or '' }}</a>
+                    <div class="description">{{ community.description or '' }}</div>
+                    <div class="members"> Учасников: {{ community.members|length + 1}}</div>
+                </div>
+            </div>
+            {% if current_user == community.owner %}
+                <div class="edit-buttons">
+                    <a href="{{ url_for("community.community_form", id=community.id) }}"><span class="fa fa-edit"></span></a>
+                    <a href="javascript: deleteCommunity({{ community.id }})"><span class="fa fa-trash-o"></span></a>
+                </div>
+            {% endif %}
             {% if community.type == community.TYPE.PRIVATE %}
                 <div class="closed fa fa-lock" title="Закрытая группа"></div>
             {% endif %}
-            <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
-            <div class="info">
-                <a href="{{ url_for("community.community_page", id=community.id) }}" class="name">{{ community.name or '' }}</a>
-                <div class="description">{{ community.description or '' }}</div>
-                <div class="members"> Учасников: {{ community.members|length + 1}}</div>
-            </div>
+
         </div>
         </div>
         {% endfor %}

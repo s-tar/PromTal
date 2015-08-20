@@ -16,8 +16,10 @@
                     {% if dep.user %}
                     <div class="user">
                         {{ user.icon(dep.user) }}
-                        <a href="{{ url_for("user.profile", user_id=dep.user.id) }}" title="{{ dep.user.full_name }}">{{ dep.user.full_name }}</a>
-                        <span class="position">Должность</span>
+                        <span class="worker-info">
+                            <a href="{{ url_for("user.profile", user_id=dep.user.id) }}" title="{{ dep.user.full_name }}">{{ dep.user.full_name }}</a>
+                            {% if dep.user.position %}<span class="position">{{ dep.user.position }}</span>{% endif %}
+                        </span>
                     </div>
                     {% endif %}
                     {% if  dep.workers|length %}
@@ -30,8 +32,10 @@
                         {% for worker in dep.workers %}
                         <div class="user">
                             {{ user.icon(worker) }}
-                            <a href="{{ url_for("user.profile", user_id=worker.id) }}" title="{{ worker.full_name }}">{{ worker.full_name }}</a>
-                            <span class="position">Должность</span>
+                            <span class="worker-info">
+                                <a href="{{ url_for("user.profile", user_id=worker.id) }}" title="{{ worker.full_name }}">{{ worker.full_name }}</a>
+                                {% if worker.position %}<span class="position">{{ worker.position }}</span>{% endif %}
+                            </span>
                         </div>
                         {% endfor %}
                         </div>
