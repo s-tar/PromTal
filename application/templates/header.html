@@ -31,7 +31,7 @@
         </li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="{{ url_for('company_structure.show_structure') }}">Структура компании </a></li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/communities">Группы </a></li>
-        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Техническая поддержка </a></li>
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="http://helpdesk.uaprom">Техническая поддержка </a></li>
         {% if current_user.is_authorized() %}
         <li><a href="{{ url_for('admin.s_users') }}">Админка </a></li>
         {% endif %}
