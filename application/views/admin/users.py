@@ -70,7 +70,7 @@ def s_users_json():
             sel = 'selected' if per.id in set_per else ''
             per_options += "<option value='"+str(per.id)+"' "+sel+">"+per.title+"</option>"
         per_html = """
-          <select name="named[]" onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-width="170px">
+          <select onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-selected-text-format="count>1" data-width="170px">
             """+per_options+"""
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>

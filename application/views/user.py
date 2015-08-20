@@ -24,7 +24,11 @@ def profile(user_id=None):
     user = auth.service.get_user() if user_id is None else User.get_by_id(user_id)
     if user is None:
         abort(404)
-    return render_template('profile/profile.html', user=user)
+    user_department = Department.get_dep_if_user_head(user.id)
+    if user_department:
+        c = Department.count_users_in_dep_tree(user_department.id)
+        print("count users =", c)
+    return render_template('profile/profile.html', user=user, user_department=user_department)
 
 
 @module.get("/profile/edit")

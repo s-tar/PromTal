@@ -77,6 +77,17 @@ class Department(db.Model, Mixin):
         return False
 
     @classmethod
+    def get_dep_if_user_head(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).first()
+
+    @classmethod
+    def count_users_in_dep_tree(cls, dep_id):
+        dep = cls.query.filter_by(id=dep_id).first()
+        c_u = User.count_users_in_department(dep_id)
+        print("c_u", c_u)
+        return c_u
+
+    @classmethod
     def delete(cls, uid):
         parent_dep = cls.query.filter_by(parent_id=uid)
         if (parent_dep.count() == 0) and (User.count_users_in_department(uid) == 0):
