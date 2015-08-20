@@ -547,3 +547,13 @@ h3.title a:hover {
 .company-structure .department .workers:not(.show) .workers-list {
   display: none;
 }
+#roll-btn {
+  color: #337ab7;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 5px;
+}
+.edit-buttons-in-profile {
+  font-size: 1em !important;
+  display: block !important;
+}
