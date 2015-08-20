@@ -69,7 +69,7 @@ class Role(db.Model):
 
     @classmethod
     def get_all(cls):
-        return cls.query.all()
+        return cls.query.order_by(cls.name.desc()).all()
 
 
 class User(db.Model, AuthUser, Mixin):
