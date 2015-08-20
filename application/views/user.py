@@ -52,6 +52,7 @@ def edit_profile_post():
             'id': current_user.id,
             'login': current_user.login,
             'full_name': v.valid_data.full_name,
+            'position': v.valid_data.position,
             'mobile_phone': v.valid_data.mobile_phone,
             'inner_phone': v.valid_data.inner_phone,
             'department': v.valid_data.department,
