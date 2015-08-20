@@ -11,12 +11,13 @@ from application.models.user import User
 
 main = Module('main', __name__)
 
-
+"""
 @main.before_request
 def before_requets():
     user = auth.service.get_user()
     if not user.is_authorized():
         return redirect(url_for('login.login'))
+"""
 
 
 @main.get("/force_login")
