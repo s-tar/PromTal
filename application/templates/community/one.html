@@ -16,7 +16,7 @@
             {% if current_user == post.author %}
             <div class="edit-buttons">
                 <a href="{{ url_for('community.post_form', community_id=community.id, id=post.id) }}"><span class="fa fa-edit"></span></a>
-                <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-times"></span></a>
+                <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-trash-o"></span></a>
             </div>
             {% endif %}
             <h3 class="title"><a href="{{ url_for('community.post_page', community_id=community.id, id=post.id) }}">{{ post.title or '' }}</a></h3>
