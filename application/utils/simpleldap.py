@@ -61,10 +61,18 @@ class LDAP(object):
             return None
         server = self.initialize()
         h_password = hashlib.sha1(password.encode()).hexdigest()
+
         conn = ldap3.Connection(server=server,
                                 user=user_dn,
-                                password=h_password,
+                                password=password,
                                 authentication=ldap3.SIMPLE)
+
+        if not conn.bound:
+            conn = ldap3.Connection(server=server,
+                                    user=user_dn,
+                                    password=h_password,
+                                    authentication=ldap3.SIMPLE)
+
         conn.bind()
         if get_connection:
             return conn
