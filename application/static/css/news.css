@@ -123,9 +123,14 @@
 .news-one article .footer .views {
   color: #999;
 }
+.news-header {
+  margin-bottom: 10px;
+}
 .news-create {
-  width: 100%;
+  position: absolute;
   text-align: center;
+  top: 9px;
+  right: 25px;
 }
 .news-list article {
   margin-bottom: 10px;
