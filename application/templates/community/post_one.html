@@ -2,7 +2,7 @@
 {% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
-{{ macros.header(community, current_user)}}
+{{ macros.header(post.community, current_user)}}
 <div class="col-md-8 col-md-offset-2 news-one">
     <article class="frame">
         {% if current_user == post.author %}
