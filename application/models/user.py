@@ -94,7 +94,7 @@ class User(db.Model, AuthUser, Mixin):
     status = db.Column(db.Integer, default=STATUS_ACTIVE)
     mobile_phone = db.Column(db.String, nullable=True)  # TODO Add constraint on length and format
     inner_phone = db.Column(db.String, nullable=True)   # TODO Add constraint on length and format
-    birth_date = db.Column(db.Date, nullable=True)  # TODO Add default value
+    birth_date = db.Column(db.DateTime, nullable=True)  # TODO Add default value
     skype = db.Column(db.String(64), nullable=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
     position = db.Column(db.String(255))

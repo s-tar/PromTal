@@ -68,3 +68,25 @@ select
 	count_votes_news_category(news_category.id) count_votes,
 	count_comments_news_category(news_category.id) count_comments
 from news_category;
+
+-- view_users4search
+-- #########################################################################################
+drop table view_users4search;
+drop view view_users4search;
+create view view_users4search as
+select
+	users.id users_id,
+	users.full_name users_full_name,
+	users.login users_login,
+	users.email users_email,
+	users.status users_status,
+	users.mobile_phone users_mobile_phone,
+	users.inner_phone users_inner_phone,
+	users.birth_date users_birth_date,
+	users.skype users_skype,
+	users.position users_position,
+	department.name department_name,
+	users.photo_id users_photo_id
+from users
+left join department on department.id = users.department_id
+;
