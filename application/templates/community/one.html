@@ -5,8 +5,10 @@
 <div class="community-page">
     {% if community.status != community.STATUS.ACTIVE %}
     <div class="message">Группа удалена</div>
+    {% elif community.type == community.TYPE.PRIVATE and (community.owner != current_user and community.member_status_title(current_user) != 'accepted') %}
+    <div class="message">Группа закрыта</div>
     {% else %}
-    {{ macros.header(community)}}
+    {{ macros.header(community, current_user)}}
     <div class="row">
     <div class="col-md-8 col-md-offset-2 news-list">
         {% for post in community.posts %}

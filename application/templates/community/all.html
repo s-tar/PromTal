@@ -20,7 +20,7 @@
                 <div class="info" onclick="window.location.href='{{ url_for("community.community_page", id=community.id) }}'">
                     <a href="{{ url_for("community.community_page", id=community.id) }}" class="name">{{ community.name or '' }}</a>
                     <div class="description">{{ community.description or '' }}</div>
-                    <div class="members"> Учасников: {{ community.members|length + 1}}</div>
+                    <div class="members-counter-component members" data-community-id="{{ community.id }}" data-count="{{community.count_members}}"></div>
                 </div>
             </div>
             <div class="top-buttons">
@@ -30,11 +30,7 @@
                     <a href="javascript: deleteCommunity({{ community.id }})"><span class="fa fa-trash-o"></span></a>
                 </div>
                 {% else %}
-                    {% if not community.has_member(current_user) %}
-                        <button class="community-join">Присоединиться</button>
-                    {% else %}
-                        <button class="community-leave">Покинуть</button>
-                    {% endif %}
+                    <div class="community-subscription-component" data-community-id="{{ community.id }}" data-subscribed="{{ community.has_member(current_user) }}" data-status="{{ community.member_status_title(current_user) or ''}}"></div>
                 {% endif %}
             </div>
             <div class="bottom-buttons">

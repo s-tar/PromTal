@@ -56,7 +56,7 @@
   .communities-list
     float: left
     padding: 0px
-    padding-top: 5px
+    padding-top: 10px
     width: 100%
   .community .info
     width: 100%
@@ -94,16 +94,14 @@
       vertical-align: middle
       -border-radius(3px)
       border: 0 none
-      color: white
-      text-transform: uppercase
-      &.community-join
-        background: #fd8a16
-        &:hover
-          background: #fd9e3f
-      &.community-leave
-        background: #e7422c
-      &:hover
+      background: transparent
+      color: #337ab7
+      &.community-join:hover
+        background: #779dca
+        color: white
+      &.community-leave:hover
         background: #FF6961
+        color: white
 
   .image, .info
     display: inline-block
@@ -136,7 +134,7 @@
   padding: 5px
   cursor: default
   margin: 0px
-  margin-bottom: 10px
+  margin-bottom: 15px
   a.post-create
     position: absolute
     text-align: center
