@@ -2,7 +2,7 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from application import db, create_app
-from application.models.user import Permission, Role
+from application.models.user import Permission, Role, User
 
 app = create_app('default')
 manager = Manager(app)
@@ -23,6 +23,17 @@ def sync_permissions():
             db.session.add(p)
             db.session.commit()
 
+
+@manager.command
+def set_default_role():
+
+    user_role = Role.query.filter_by(name='user').first()
+
+    for user in User.query:
+        if not user.roles.all():
+            user.roles.append(user_role)
+            db.session.add(user)
+            db.session.commit()
 
 @manager.command
 def insert_roles():
