@@ -32,7 +32,7 @@ def profile(user_id=None):
     if user.department_id:
         head_user = Department.get_head_user_in_dep_tree(user.department_id, user.id)
     else:
-        dep = db.session.query(User).filter_by(parent_id=None).first()
+        dep = db.session.query(Department).filter_by(parent_id=None).first()
         head_user = Department.get_head_user_in_dep_tree(dep.id, user.id)
     return render_template('profile/profile.html', user=user,
                                                    user_department=user_department,
@@ -110,6 +110,11 @@ def edit_pass_post():
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
+
+
+@module.get('/users_search')
+def users_search():
+    return render_template('user/users_search.html')
 
 
 @widget('user.birthdays')
