@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from marshmallow import fields
 
@@ -19,11 +19,9 @@ class RolesField(fields.Field):
         return [{'id': x.id, 'name': x.name} for x in obj.roles]
 
 
-class DateField(fields.Date):
+class DateTimeField(fields.DateTime):
 
     def _deserialize(self, value):
         if value == '':
             return
-        if isinstance(value, datetime.datetime):
-            value = value.isoformat()
-        return fields.Date._deserialize(self, value)
+        return fields.DateTime._deserialize(self, value)

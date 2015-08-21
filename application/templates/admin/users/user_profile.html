@@ -46,7 +46,7 @@ React.render(
                     </tr>
                     <tr>
                         <td>Дата рождения</td>
-                        <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
+                        <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
                     </tr>
                     <tr>
                         <td>Skype</td>
@@ -115,10 +115,11 @@ function showErrors( data ) {
 
 </script>
 <script>
-window.onload = function () {
-    $(document).on("focus", ".datepicker", function(){
-        $(this).datepicker();
-    });
+    window.onload = function () {
+        $(document).on("focus", ".datepicker", function(){
+            $(this).datepicker();
+        });
+    };
 
     function on_change() {
         $( ".on-change-email" ).on('blur keyup',function() {
@@ -127,7 +128,6 @@ window.onload = function () {
     }
     setTimeout(on_change, 500);
 
-};
 </script>
 <script>
 $( function() {
