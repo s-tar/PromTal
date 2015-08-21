@@ -3,7 +3,12 @@
 
 {% block index_content %}
 <div class="frame news-header">
-    <h3 class="title">Новости</h3>
+    <h3 class="title">
+        {{ 'Все новости' if not category and not tag }}
+        {% if category or tag %} <a href="/" >Новости</a> &rsaquo; {% endif %}
+        {{ category.name if category }}
+        {% if tag %} <span class="fa fa-tag"></span> {{ tag.name }} {% endif %}
+    </h3>
     {% if current_user.is_authorized() %}
         <a href="/news/new" class="button new news-create">Новая новость</a>
     {% endif %}
