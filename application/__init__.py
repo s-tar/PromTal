@@ -74,7 +74,7 @@ def create_app(config_name):
         return render_template('403.html'), 403
 
     @app.context_processor
-    def inject_user():
+    def inject_variables():
         return {
             'current_user': get_user(),
             'widget': widget.get

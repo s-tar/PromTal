@@ -1,8 +1,8 @@
 import pickle
-from application import redis
 from flask import request, render_template, redirect, url_for
 from flask.json import jsonify
 
+from application import redis
 from application.utils import auth
 from application.utils.validator import Validator
 from application.module import Module
@@ -11,13 +11,13 @@ from application.models.user import User
 
 main = Module('main', __name__)
 
-"""
+
 @main.before_request
-def before_requets():
+def before_request():
     user = auth.service.get_user()
     if not user.is_authorized():
         return redirect(url_for('login.login'))
-"""
+
 
 
 @main.get("/force_login")

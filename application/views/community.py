@@ -1,4 +1,4 @@
-from application.models.community import Community
+from application.models.community import Community, CommunityMember
 from application.models.file import File
 from application import Module, db
 from application.models.post import Post
@@ -20,7 +20,7 @@ def before_request():
 
 @main.get('/communities')
 def list_communities():
-    communities = Community.all()
+    communities = Community.all_active()
     return render_template('community/all.html', **{'communities': communities})
 
 
@@ -87,8 +87,8 @@ def delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         community = Community.get(id)
-        if community:
-            db.session.delete(community)
+        if community and community.owner == user:
+            community.status = community.STATUS.DELETED
             db.session.commit()
             return jsonify({'status': 'ok'})
 
@@ -164,9 +164,44 @@ def post_delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         post = Post.get(id)
-        if post and post.community.has_member(user):
+        if post and post.author == user:
             db.session.delete(post)
             db.session.commit()
             return jsonify({'status': 'ok', 'community': post.community.as_dict()})
 
     return jsonify({'status': 'fail'})
+
+
+@module.route("/subscription/<int:community_id>", methods=['POST'])
+def subscribe(community_id):
+    subscription = True if request.form['subscription'] == 'subscribe' \
+        else False if request.form['subscription'] == 'unsubscribe' \
+        else None
+    user = utils.auth.service.get_user()
+    if not user.is_authorized:
+        abort(403)
+
+    community = Community.get(community_id)
+    if not community:
+        abort(404)
+
+    if community.owner != user:
+        if subscription is True and not community.has_member(user):
+            cm = CommunityMember(user=user, community=community)
+            if community.type == community.TYPE.PUBLIC:
+                cm.status = cm.STATUS.ACCEPTED
+            db.session.add(cm)
+            db.session.commit()
+        elif subscription is False and community.has_member(user):
+            community.members.remove(user)
+            db.session.commit()
+
+    res = {
+        'status': 'ok',
+        'community': community.as_dict(),
+        'subscribed': community.has_member(user)
+    }
+    res['community']['type'] = community.TYPE.TITLE[community.type]
+    res['community']['count_members'] = community.count_members
+
+    return jsonify(res)

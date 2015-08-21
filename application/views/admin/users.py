@@ -83,7 +83,6 @@ def s_users_json():
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
           """
         row[per_columns] = per_html
-        
 
         # Roles
         last_col += 1
@@ -118,7 +117,7 @@ def s_users_json():
             </a>
         """ % row_id
         row[last_columns] = manage_html.format(
-            edit_user_profile = url_for('admin.edit_user', id=row_id),
+            edit_user_profile = url_for('admin.save_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
     return jsonify(**json_result)
 
@@ -213,12 +212,15 @@ def activate_user(id):
     db.session.commit()
     return redirect(url_for('admin.users_index'))
 
-
+@module.get('/users/edit/<int:id>')
 @module.get('/users/add')
-def add_user():
+def save_user(id=None):
+    user = User.query.get_or_404(id) if id else User()
+
     groups = ldap.get_all_groups()
     departments = Department.query.all()
-    return render_template('admin/users/add_user_profile.html',
+    return render_template('admin/users/user_profile.html',
+                           user=user,
                            groups={group['cn'][0] for group in groups},
                            departments={department.name for department in departments})
 

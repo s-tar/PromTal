@@ -1,5 +1,5 @@
-from http.cookies import SimpleCookie
 import uuid
+from http.cookies import SimpleCookie
 
 
 class AuthMiddleware(object):

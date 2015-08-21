@@ -45,7 +45,7 @@
                         <td>{{ user.department }}</td>
                         <td>
                             <a style="text-decoration:none" href="{{ url_for('admin.activate_user', id=user.id) }}"><span><i class="fa fa-lg fa-thumbs-o-up"></i></span> Активировать </a><br/>
-                            <a style="text-decoration:none" href="{{ url_for('admin.edit_user', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i> Редактировать </span></a><br/>
+                            <a style="text-decoration:none" href="{{ url_for('admin.save_user', id=user.id) }}"><span><i class="fa fa-lg fa-pencil"></i> Редактировать </span></a><br/>
                             <a style="text-decoration:none" href="{{ url_for('admin.block_user', id=user.id) }}"><span><i class="fa fa-lg fa-thumbs-o-down"></i></span> Заблокировать </a><br/>
                             <a style="text-decoration:none" href="{{ url_for('admin.delete_user', id=user.id) }}"><span><i class="fa fa-lg fa-trash-o"></i></span> Удалить </a><br/>
                         </td>

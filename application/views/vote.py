@@ -1,9 +1,10 @@
-from application import Module, db
-from application.models.vote import Vote
-from application.utils import auth
-from application.utils.validator import Validator
 from flask import request
 from flask.json import jsonify
+
+from application import Module, db
+from application.utils import auth
+from application.utils.validator import Validator
+from application.models.vote import Vote
 
 module = Module('vote', __name__, url_prefix='/vote')
 

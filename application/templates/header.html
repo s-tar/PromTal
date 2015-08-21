@@ -31,16 +31,16 @@
         </li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="{{ url_for('company_structure.show_structure') }}">Структура компании </a></li>
         <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/communities">Группы </a></li>
-        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="http://helpdesk.uaprom">Техническая поддержка </a></li>
-        {% if current_user.is_authorized() %}
-        <li><a href="{{ url_for('admin.s_users') }}">Админка </a></li>
-        {% endif %}
+        <li class="{% if request.path in ['/profile', ] %}active{% endif %}"><a href="/">Техническая поддержка </a></li>
       </ul>
         {% if current_user.is_authorized() %}
           <div class="user-profile-header">
             <div class="user-info">
                 <a class="user-name" href="{{ url_for('user.profile') }}">{{ current_user.full_name }}</a>
                 <a class="user-logout" href="{{ url_for('login.logout') }}">Выход</a>
+                {% if current_user.can_administrate() %}
+                    <a class="user-logout block" href="{{ url_for('admin.admin_index') }}">Админка </a>
+                {% endif %}
             </div>
             <div class="user-icon" {% if current_user.photo %} style="background-image: url('{{ current_user.photo.get_url('thumbnail')}}')" {% endif %}>
             <a href="{{ url_for('user.profile') }}"></a>
@@ -55,5 +55,3 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-

@@ -16,7 +16,7 @@ React.render(
                     </tr>
                     <tr>
                         <td><span className="fa fa-picture-o"></span> Аватар</td>
-                        <td><Input className="file-inputs form-control filestyle" type="file" name="file" title="Search for a file to add" data-buttonBefore="true" /></td>
+                        <td><ImageLoader name="file" value="{{ current_user.photo.get_url() if current_user.photo or '' }}"/></td>
                     </tr>
                     <tr>
                         <td><span className="fa fa-users"></span> Должность</td>
@@ -91,11 +91,6 @@ window.onload = function () {
     $(document).on("focus", ".datepicker", function(){
         $(this).datepicker();  
     });
-    
-    function funcfilestyle() {
-      $(":file").filestyle({buttonBefore: true});
-    }
-    setTimeout(funcfilestyle, 200);
 };
 </script>
 <div class="container">

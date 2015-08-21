@@ -1,7 +1,7 @@
 __author__ = 'kdegtyarenko'
 
 from marshmallow import Schema, fields
-from application.models.serializers.custom_fields import StatusField, RolesField, DateField
+from application.models.serializers.custom_fields import StatusField, RolesField, DateTimeField
 
 
 class UserSchema(Schema):
@@ -15,7 +15,7 @@ class UserSchema(Schema):
     roles = RolesField()
     mobile_phone = fields.Str()
     inner_phone = fields.Str()
-    birth_date = DateField()
+    birth_date = DateTimeField()
     photo_id = fields.Int()
     department_id = fields.Int()
     skype = fields.Str()

@@ -1,4 +1,4 @@
-{% macro header(community) %}
+{% macro header(community, current_user=None) %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2 community-header">
         <div class="community frame">
@@ -12,7 +12,9 @@
                 </div>
                 <div class="description">{{ community.description or '' }}</div>
             </div>
+            {% if community.owner == current_user or community.member_status_title(current_user) == 'accepted' %}
             <a href="{{ url_for('community.post_form', community_id=community.id) }}" class="button new post-create">Новая новость</a>
+            {% endif %}
         </div>
     </div>
 </div>

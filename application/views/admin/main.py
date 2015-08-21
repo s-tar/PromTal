@@ -11,6 +11,8 @@ def before_request():
     user = auth.service.get_user()
     if not user.is_authorized():
         return redirect(url_for('login.login'))
+    if not user.is_admin and ('moderator' not in [r.name for r in user.roles]):
+            return render_template('403.html')
 
 
 @module.get('/')

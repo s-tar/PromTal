@@ -150,6 +150,13 @@ h3.title a:hover {
   display: inline-block;
   position: relative;
 }
+.popup-wrapper td .popup-window.no-title.has-close-button {
+  padding-right: 20px;
+}
+.popup-wrapper td .popup-window.no-title.has-close-button .close {
+  right: 10px;
+  top: 10px;
+}
 .popup-wrapper td .popup-window.has-close-button > .close {
   display: block;
 }
@@ -224,6 +231,9 @@ h3.title a:hover {
 }
 .user-profile-header .user-info a.user-logout {
   color: #fd8a16;
+}
+.user-profile-header .user-info a.user-logout.block {
+  clear: none;
 }
 .profile .header {
   border-bottom: 1px solid #eee;
@@ -546,14 +556,4 @@ h3.title a:hover {
 }
 .company-structure .department .workers:not(.show) .workers-list {
   display: none;
-}
-#roll-btn {
-  color: #337ab7;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 5px;
-}
-.edit-buttons-in-profile {
-  font-size: 1em !important;
-  display: block !important;
 }
