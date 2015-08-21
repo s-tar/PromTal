@@ -48,6 +48,20 @@ class LDAP(object):
 
     def bind(self):
         server = self.initialize()
+        conn = ldap3.Connection(server=server,
+                                user=current_app.config['LDAP_USERNAME'],
+                                password=current_app.config['LDAP_PASSWORD'],
+                                authentication=ldap3.SIMPLE)
+        conn.bind()
+        return conn if conn.bound else None
+
+    def bind_user(self, user, password, get_connection=False):
+        user_dn = self.get_object_details(user=user, dn_only=True)
+        if user_dn is None:
+            return None
+        server = self.initialize()
+        h_password = hashlib.sha1(password.encode()).hexdigest()
+
         conn = ldap3.Connection(
             server=server,
             user=user_dn,
@@ -63,31 +77,13 @@ class LDAP(object):
                 authentication=ldap3.SIMPLE,
             )
             conn.bind()
-        return conn if conn.bound else None
 
-    def bind_user(self, user, password, get_connection=False):
-        user_dn = self.get_object_details(user=user, dn_only=True)
-        if user_dn is None:
-            return None
-        server = self.initialize()
-        h_password = hashlib.sha1(password.encode()).hexdigest()
-
-        conn = ldap3.Connection(server=server,
-                                user=user_dn,
-                                password=password,
-                                authentication=ldap3.SIMPLE)
-
-        if not conn.bound:
-            conn = ldap3.Connection(server=server,
-                                    user=user_dn,
-                                    password=h_password,
-                                    authentication=ldap3.SIMPLE)
-
-        conn.bind()
         if get_connection:
             return conn
+
         bound = conn.bound
         conn.unbind()
+
         return bound
 
     def restore_password(self, user, new_password):
