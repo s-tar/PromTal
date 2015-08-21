@@ -84,8 +84,33 @@ class Department(db.Model, Mixin):
     def count_users_in_dep_tree(cls, dep_id):
         dep = cls.query.filter_by(id=dep_id).first()
         c_u = User.count_users_in_department(dep_id)
-        print("c_u", c_u)
-        return c_u
+        def count_users_recursively(dep):
+            dep_childs = cls.query.filter_by(parent_id=dep.id).all()
+            count_users = 0
+            for dep_child in dep_childs:
+                count_users += User.count_users_in_department(dep_child.id)
+                count_users += count_users_recursively(dep_child)
+            return count_users
+        c_u += count_users_recursively(dep)
+        return c_u - 1
+
+    @classmethod
+    def get_head_user_in_dep_tree(cls, dep_id, user_id):
+        dep = cls.query.filter_by(id=dep_id).first()
+        def head_user_recursively(dep):
+            if dep.user_id:
+                return User.get_by_id(dep.user_id)
+            if dep.parent_id:
+                dep_parent = cls.query.filter_by(id=dep.parent_id).first()
+                return head_user_recursively(dep_parent)
+            return None
+        if dep.user_id == user_id:
+            if dep.parent_id:
+                dep_parent = cls.query.filter_by(id=dep.parent_id).first()
+                return head_user_recursively(dep_parent)
+            return None
+        return head_user_recursively(dep)
+    
 
     @classmethod
     def delete(cls, uid):

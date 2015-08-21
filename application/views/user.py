@@ -6,6 +6,7 @@ from flask import request, render_template, abort, redirect, url_for
 from flask.json import jsonify
 from application.models.user import User
 from application.models.department import Department
+from application.db import db
 from application.bl.users import modify_password, PasswordError, DataProcessingError, update_user
 
 module = Module('user', __name__, url_prefix='/user')
@@ -25,10 +26,18 @@ def profile(user_id=None):
     if user is None:
         abort(404)
     user_department = Department.get_dep_if_user_head(user.id)
+    count_users = ''
     if user_department:
-        c = Department.count_users_in_dep_tree(user_department.id)
-        print("count users =", c)
-    return render_template('profile/profile.html', user=user, user_department=user_department)
+        count_users = Department.count_users_in_dep_tree(user_department.id)
+    if user.department_id:
+        head_user = Department.get_head_user_in_dep_tree(user.department_id, user.id)
+    else:
+        dep = db.session.query(User).filter_by(parent_id=None).first()
+        head_user = Department.get_head_user_in_dep_tree(dep.id, user.id)
+    return render_template('profile/profile.html', user=user,
+                                                   user_department=user_department,
+                                                   count_users=count_users,
+                                                   head_user=head_user)
 
 
 @module.get("/profile/edit")
