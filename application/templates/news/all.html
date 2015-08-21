@@ -2,6 +2,12 @@
 {% import "macros/user.html" as user %}
 
 {% block index_content %}
+<div class="frame news-header">
+    <h3 class="title">Новости</h3>
+    {% if current_user.is_authorized() %}
+        <a href="/news/new" class="button new news-create">Новая новость</a>
+    {% endif %}
+</div>
 <div class="news-list">
     {% for n in news %}
     <article class="frame">

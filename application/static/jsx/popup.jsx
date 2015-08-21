@@ -36,7 +36,9 @@ var Popup = React.createClass({
         return {
             flash: false,
             closeButton: true,
-            title: ''
+            title: '',
+            buttons: [],
+            outsideClickClose: false
         }
     },
     onClose: function(){
@@ -60,8 +62,10 @@ var Popup = React.createClass({
     },
 
     render: function(){
-        var wrapperClass = 'popup-wrapper' + (this.props.hidden ? ' hidden' : '')
-        var windowClass = 'popup-window' + (this.props.closeButton ? ' has-close-button' : '')
+        var wrapperClass = 'popup-wrapper' + (this.props.hidden ? ' hidden' : '');
+        var windowClass = 'popup-window' +
+            (this.props.closeButton ? ' has-close-button' : '') +
+            (!this.props.title ? ' no-title' : '');
         return (
             <table className={wrapperClass}>
                 <tr>

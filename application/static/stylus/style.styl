@@ -104,6 +104,11 @@ h3.title a
       width: auto
       display: inline-block
       position: relative
+      &.no-title.has-close-button
+        padding-right: 20px
+        .close
+          right: 10px
+          top: 10px
       &.has-close-button
         > .close
           display: block
@@ -164,6 +169,8 @@ h3.title a
           color: #333
       &.user-logout
         color: #fd8a16
+        &.block
+          clear: none
 
 .profile
   .header
