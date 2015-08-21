@@ -13,19 +13,23 @@
             <li><a href="{{ url_for('admin.company_structure_show') }}">Структура компании </a></li>
             <li><a href="{{ url_for('admin.news_categories') }}">Разделы новостей </a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a class="dropdown-toggle" id="settings" role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Account settings
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="settings">
-                <li><a href="{{ url_for('user.edit_profile') }}">My profile</a></li>
-                <li class="divider"></li>
-              </ul>
-            </li>
-          </ul>
+          <div class="user-profile-header">
+            <div class="user-info">
+                <a class="user-name" href="{{ url_for('user.profile') }}">{{ current_user.full_name }}</a>
+                <a class="user-logout" href="{{ url_for('login.logout') }}">Выход</a>
+                <a class="user-logout block" href="{{ url_for('main.list_all') }}">Портал </a>
+            </div>
+            <div class="user-icon" {% if current_user.photo %} style="background-image: url('{{ current_user.photo.get_url('thumbnail')}}')" {% endif %}>
+            <a href="{{ url_for('user.profile') }}"></a>
+            </div>
+          </div>
         </div>
     </div>
 </nav>
 {% endblock %}
+
+<style>
+a.user-logout.block {
+    clear: none;
+}
+</style>

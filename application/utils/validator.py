@@ -195,19 +195,6 @@ class Field:
                 self.validator.valid_data.list(self.name)[i] = None
         return self
 
-    def date(self, message=None, format='%d.%m.%Y'):
-        code, message = get_message("wrong_datetime_format", message)
-        for i, val in enumerate(self.val):
-            if val is not None and val != "":
-                try:
-                    val = val.strip()
-                    self.validator.valid_data.list(self.name)[i] = datetime.strptime(val, format)
-                except ValueError:
-                    self.validator.add_error(self.name, message, code, index=i)
-            else:
-                self.validator.valid_data.list(self.name)[i] = None
-        return self
-
     def equal(self, field, message=None):
         code, message = get_message("equal", message)
         if self.value != field.value:

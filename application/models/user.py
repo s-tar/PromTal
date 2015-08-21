@@ -239,8 +239,9 @@ class User(db.Model, AuthUser, Mixin):
         return u
 
     def get_permissions(self):
-        permissions = self.permissions.all() + [role.permissions for role in self.roles.all()]
-        return set(permissions)
+        return set([permission.name for permission in self.permissions]).union(
+            set([permission.name for role in self.roles for permission in role.permissions])
+        )
 
     def has_role(self, role):
         return role in self.roles

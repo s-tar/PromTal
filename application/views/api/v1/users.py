@@ -76,8 +76,9 @@ def save_user(id=None):
     v.field('groups')
     v.field('mobile_phone')
     v.field('skype')
-    v.field('birth_date').date()
+    v.field('birth_date').datetime(format='%d.%m.%Y')
 
+    print(v.valid_data.birth_date)
     already_used_login = User.get_by_login(data['login'])
     already_used_email = User.get_by_email(data['email'])
 

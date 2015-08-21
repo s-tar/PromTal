@@ -1,13 +1,15 @@
+from flask import render_template, request, abort, redirect, url_for
+from flask.json import jsonify
 from collections import defaultdict
+
 from application import Module, db
+from application.utils.decorators import requires_permissions
+from application.utils import auth
+from application.utils.validator import Validator
 from application.models.news import News
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
-from application.utils import auth
-from application.utils.validator import Validator
 from application.views.main import main
-from flask import render_template, request, abort, redirect, url_for
-from flask.json import jsonify
 
 module = Module('news', __name__, url_prefix='/news')
 
@@ -43,6 +45,7 @@ def news_one(id):
 
 @module.get('/new')
 @module.get('/edit/<int:id>')
+@requires_permissions('write_articles')
 def news_form(id=None):
     news = News.get(id) or News()
     categories = defaultdict(list)
