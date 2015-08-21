@@ -4,6 +4,7 @@ from flask import render_template, request, current_app, flash, url_for, redirec
 from application.views.admin.main import module
 from application.models.user import User, Role, Permission
 from application.models.department import Department
+from application.models.view_users4search import ViewUsers4Search
 from application import db, ldap
 from application.utils.validator import Validator
 from application.bl.users import create_user, update_user, DataProcessingError
@@ -12,6 +13,12 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 
 def _default_value(chain):
     return chain or '-'
+
+
+def _default_value_view(chain):
+    if chain == 'None':
+        return None
+    return chain
 
 
 @module.get('/users_list')
@@ -113,6 +120,81 @@ def s_users_json():
             edit_user_profile = url_for('admin.save_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
     return jsonify(**json_result)
+
+
+@module.get('/users_search')
+def users_search():
+    return render_template('admin/users/users_search.html')
+
+
+@module.get('/users_search_json')
+def users_search_json():
+    columns = list()
+    columns.append(ColumnDT('users_id', filter=_default_value_view))
+    columns.append(ColumnDT('users_full_name', filter=_default_value_view))
+    columns.append(ColumnDT('users_login', filter=_default_value_view))
+    columns.append(ColumnDT('users_email', filter=_default_value_view))
+    columns.append(ColumnDT('users_status', filter=_default_value_view))
+    columns.append(ColumnDT('users_mobile_phone', filter=_default_value_view))
+    columns.append(ColumnDT('users_inner_phone', filter=_default_value_view))
+    columns.append(ColumnDT('users_birth_date', filter=_default_value_view))
+    columns.append(ColumnDT('users_skype', filter=_default_value_view))
+    columns.append(ColumnDT('users_position', filter=_default_value_view))
+    columns.append(ColumnDT('users_photo_id', filter=_default_value_view))
+    columns.append(ColumnDT('department_name', filter=_default_value_view))
+    query = db.session.query(ViewUsers4Search)
+    rowTable = DataTables(request, ViewUsers4Search, query, columns)
+    json_result = rowTable.output_result()
+    for row in json_result['aaData']:
+        row_id = row['0']
+    return jsonify(**json_result)
+
+
+@module.get('/users/edit/<int:id>')
+def edit_user(id):
+    user = User.get_by_id(id)
+    departments = Department.query.all()
+    return render_template('admin/users/edit_user_profile.html',
+                           user=user,
+                           departments={department.name for department in departments})
+
+
+@module.post('/users/edit/<int:id>')
+def edit_user_post(id):
+    user = User.get_by_id(id)
+    data = dict(request.form)
+    data["file"] = request.files["file"]
+
+    v = Validator(data)
+    v.field('full_name').required()
+    v.field('email').required().email()
+    v.field('mobile_phone').required().phone_number()
+    v.field('inner_phone').required()
+    v.field('department').required()
+    v.field('birth_date').datetime(format="%d.%m.%Y")
+    v.field('file').image()
+    if v.is_valid():
+        data = {
+            'login': user.login,
+            'full_name': v.valid_data.full_name,
+            'mobile_phone': v.valid_data.mobile_phone,
+            'inner_phone': v.valid_data.inner_phone,
+            'department': v.valid_data.department,
+            'email': v.valid_data.email,
+            'skype': v.valid_data.skype,
+            'photo': v.valid_data.photo,
+            'birth_date': v.valid_data.birth_date
+        }
+
+        try:
+            update_user(**data)
+            return jsonify({"status": "ok"})
+        except DataProcessingError as e:
+            return jsonify({'status': 'failOnProcess',
+                            'error': e.value})
+
+    return jsonify({"status": "fail",
+                    "errors": v.errors})
 
 
 @module.get('/users/delete/<int:id>')
