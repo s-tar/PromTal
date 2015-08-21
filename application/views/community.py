@@ -112,7 +112,7 @@ def post_form(community_id, id=None):
     if not community or not post:
         abort(404)
 
-    if not community.has_member(user) or (id and post.author != user):
+    if not community.has_member(user) and not (id and post.author == user):
         abort(403)
 
     return render_template('community/post_form.html', **{'community': community, 'post': post})
@@ -164,7 +164,7 @@ def post_delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         post = Post.get(id)
-        if post and post.author == user:
+        if post and (post.author == user or post.community.owner == user):
             db.session.delete(post)
             db.session.commit()
             return jsonify({'status': 'ok', 'community': post.community.as_dict()})
