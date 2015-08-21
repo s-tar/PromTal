@@ -41,6 +41,10 @@ class Community(db.Model, Mixin):
     def has_member(self, user):
         return user is self.owner or user in self.members
 
+    @classmethod
+    def all_active(cls):
+        return cls.query.filter(cls.status == cls.STATUS.ACTIVE).order_by(cls.id.desc()).all()
+
 
 class CommunityMember(db.Model):
     __tablename__ = 'community_member'

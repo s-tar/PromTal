@@ -1,3 +1,8 @@
+.community-page .message {
+  text-align: center;
+  font-size: 2em;
+  color: #999;
+}
 .community-form .title {
   margin: 0 -35px;
   border-bottom: 1px solid #eee;
@@ -63,22 +68,65 @@
   padding-top: 5px;
   width: 100%;
 }
+.communities .community .info {
+  width: 100%;
+  padding-left: 110px;
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  cursor: pointer;
+}
 .community {
   padding: 10px;
   position: relative;
   white-space: nowrap;
-  cursor: pointer;
   margin: 5px 0px;
 }
 .community:hover .edit-buttons {
   display: block;
 }
-.community div.closed {
+.community .bottom-buttons {
   position: absolute;
   bottom: 10px;
   right: 15px;
+}
+.community .bottom-buttons div.closed {
+  display: inline-block;
   color: #999;
   font-size: 2em;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+.community .top-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.community .top-buttons .edit-buttons {
+  padding: 0;
+}
+.community .top-buttons button {
+  padding: 7px 10px 5px;
+  margin-left: 10px;
+  vertical-align: middle;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 0 none;
+  color: #fff;
+  text-transform: uppercase;
+}
+.community .top-buttons button.community-join {
+  background: #fd8a16;
+}
+.community .top-buttons button.community-join:hover {
+  background: #fd9e3f;
+}
+.community .top-buttons button.community-leave {
+  background: #e7422c;
+}
+.community .top-buttons button:hover {
+  background: #ff6961;
 }
 .community .image,
 .community .info {
