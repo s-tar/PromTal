@@ -9,14 +9,14 @@
         {{ category.name if category }}
         {% if tag %} <span class="fa fa-tag"></span> {{ tag.name }} {% endif %}
     </h3>
-    {% if current_user.is_authorized() %}
+    {% if current_user.is_admin or 'post_comment' in current_user.get_permissions() %}
         <a href="/news/new" class="button new news-create">Новая новость</a>
     {% endif %}
 </div>
 <div class="news-list">
     {% for n in news %}
     <article class="frame">
-        {% if current_user == n.author %}
+        {% if current_user == n.author or current_user.is_admin or 'manage_articles' in current_user.get_permissions() %}
         <div class="edit-buttons">
             <a href="/news/edit/{{ n.id }}"><span class="fa fa-edit"></span></a>
             <a href="javascript: news.delete({{ n.id }})"><span class="fa fa-trash-o"></span></a>

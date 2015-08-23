@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime, timedelta, date
 from sqlalchemy import or_, and_, extract
 from uuid import uuid1
@@ -29,11 +31,11 @@ class Permission(db.Model):
     __tablename__ = 'permissions'
 
     PERMISSIONS = [
-        ('post_comment', 'Post comment'), ('edit_comments', 'Edit comments'),
-        ('write_articles', 'Write articles'), ('moderate_comments', 'Moderate comments'),
-        ('manage_users', 'Manage users'), ('set_permissions', 'Set permissions'),
-        ('change_company_structure', 'Change company structure'),
-        ('manage_user_groups', 'Manage user groups'),
+        ('post_comment', 'Писать комментарии'), ('edit_comments', 'Редактировать комментарии'),
+        ('write_articles', 'Писать новости'), ('moderate_comments', 'Модерировать комментарии'),
+        ('manage_users', 'Управлять пользователями'), ('set_permissions', 'Выдавать разрешения'),
+        ('change_company_structure', 'Изменять структуру компании'),
+        ('manage_user_groups', 'Управлять группами пользователей'), ('manage_articles', 'Управлять новостями'),
     ]
 
     id = db.Column(db.Integer, primary_key=True)

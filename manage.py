@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
@@ -42,7 +44,8 @@ def insert_roles():
         'moderator': [
             'post_comment', 'edit_comments',
             'write_articles', 'moderate_comments',
-            'manage_users', 'set_permissions'
+            'manage_users', 'set_permissions',
+            'manage_articles',
         ]
     }
     permissions_map = {p.name: p for p in Permission.query}
