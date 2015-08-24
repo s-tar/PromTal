@@ -23,6 +23,10 @@ def list_communities():
     communities = Community.all_active()
     return render_template('community/all.html', **{'communities': communities})
 
+@main.get('/communities/mine')
+def mine_communities():
+    communities = Community.all_mine()
+    return render_template('community/all.html', **{'communities': communities})
 
 @module.get('/<int:id>')
 def community_page(id):

@@ -42,6 +42,8 @@
     position: absolute
     width: 70px
     height: 70px
+
+
 .communities
   .frame.header
     position: relative
@@ -65,6 +67,8 @@
     top: 10px
     left: 0px
     cursor: pointer
+
+
 .community
   padding: 10px
   position: relative
@@ -130,6 +134,8 @@
     -border-radius 5px
     overflow: hidden
     background-image: url('/static/img/community.png')
+
+
 .community-header .community
   padding: 5px
   cursor: default
@@ -148,3 +154,28 @@
     height: 47px
   .description
     height: auto
+
+.members-list
+  position: relative
+  .user-frame
+    margin: 5px 10px
+  .top-buttons
+    position: absolute
+    top: 9px
+    right: 25px
+    button
+      text-transform: uppercase
+      padding: 12px 15px 10px
+      margin-left: 10px
+      vertical-align: middle
+      -border-radius(3px)
+      border: 0 none
+      color: white
+      &.community-join
+        background: #6188CA
+      &.community-leave
+        background: #e7422c
+      &.community-join:hover
+        background: #779dca
+      &.community-leave:hover
+        background: #FF6961

@@ -4,3 +4,13 @@
          style="{% if user.photo %} background-image: url('{{ user.photo.get_url('thumbnail') or '' }}') {% endif %} "
          title="{{ user.full_name or '' }}"></div>
 {% endmacro %}
+
+{% macro frame(user, description=None) %}
+    <div class="user-frame">
+        {{ icon(user) }}
+        <div class="info">
+            <div class="name" ><a href="/user/profile/{{ user.id }}">{{ user.full_name or '' }}</a></div>
+            {% if description %}<div class="description">{{description}}</div>{% endif %}
+        </div>
+    </div>
+{% endmacro %}

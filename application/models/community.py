@@ -3,6 +3,9 @@ from application import db
 from application.models.mixin import Mixin
 from application.models.post import Post
 from application.models.user import User
+from application.utils import auth
+from sqlalchemy import or_
+
 __author__ = 's.taran'
 
 
@@ -35,7 +38,7 @@ class Community(db.Model, Mixin):
     owner = db.relationship("User", backref="community", lazy="joined")
     image = db.relationship("File", backref="community", lazy="joined")
 
-    members = db.relationship("User", secondary="community_member", backref="communities")
+    members = db.relationship("User", secondary="community_member", backref="communities", lazy='joined')
     community_members = db.relationship("CommunityMember", backref=db.backref("community"), lazy='joined')
     posts = db.relationship("Post", backref="community", order_by=(Post.datetime.desc()))
 
@@ -61,6 +64,12 @@ class Community(db.Model, Mixin):
     def all_active(cls):
         return cls.query.filter(cls.status == cls.STATUS.ACTIVE).order_by(cls.id.desc()).all()
 
+    @classmethod
+    def all_mine(cls):
+        user = auth.service.get_user()
+        communities = [c.community for c in CommunityMember.query.filter(CommunityMember.user == user).all()]
+        mine_communities = cls.query.filter(cls.owner == user, cls.status == cls.STATUS.ACTIVE).all()
+        return mine_communities + communities
 
 class CommunityMember(db.Model):
     __tablename__ = 'community_member'

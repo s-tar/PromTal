@@ -185,3 +185,37 @@
 .community-header .community .description {
   height: auto;
 }
+.members-list {
+  position: relative;
+}
+.members-list .user-frame {
+  margin: 5px 10px;
+}
+.members-list .top-buttons {
+  position: absolute;
+  top: 9px;
+  right: 25px;
+}
+.members-list .top-buttons button {
+  text-transform: uppercase;
+  padding: 12px 15px 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 0 none;
+  color: #fff;
+}
+.members-list .top-buttons button.community-join {
+  background: #6188ca;
+}
+.members-list .top-buttons button.community-leave {
+  background: #e7422c;
+}
+.members-list .top-buttons button.community-join:hover {
+  background: #779dca;
+}
+.members-list .top-buttons button.community-leave:hover {
+  background: #ff6961;
+}

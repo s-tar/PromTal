@@ -8,31 +8,48 @@
     {% elif community.type == community.TYPE.PRIVATE and (community.owner != current_user and community.member_status_title(current_user) != 'accepted') %}
     <div class="message">Группа закрыта</div>
     {% else %}
-    {{ macros.header(community, current_user)}}
     <div class="row">
-    <div class="col-md-8 col-md-offset-2 news-list">
-        {% for post in community.posts %}
-        <article class="frame">
-            {% if current_user == post.author %}
-            <div class="edit-buttons">
-                <a href="{{ url_for('community.post_form', community_id=community.id, id=post.id) }}"><span class="fa fa-edit"></span></a>
-                <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-trash-o"></span></a>
-            </div>
-            {% endif %}
-            <h3 class="title"><a href="{{ url_for('community.post_page', community_id=community.id, id=post.id) }}">{{ post.title or '' }}</a></h3>
-            <div class="text" onCLick="javascript: window.location.href='{{ url_for('community.post_page', community_id=community.id, id=post.id) }}'">{{ post.announcement|safe or '' }}</div>
-            <div class="datetime">{{ post.datetime|datetime(old_time=False) or '' }}</div>
-            <div class="footer">
-                <div class="author">
-                    {{ user.icon(post.author) }}
-                    <div class="comments-counter" title="Комментарии" data-count="{{ post.comments_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}"></div>
-                    <div class="likes-counter-component" title="Понравилось" data-count="{{ post.votes_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}" data-my-vote="{{ post.my_vote.value }}"></div>
-                    <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ post.views_count or 0 }}</div>
-                </div>
-            </div>
-        </article>
-        {% endfor %}
+        <div class="col-md-9"></div>
     </div>
+    <div class="row">
+        <div class="col-md-7 col-md-offset-2 news-list">
+            {{ macros.header(community, current_user)}}
+            {% for post in community.posts %}
+            <article class="frame">
+                {% if current_user == post.author %}
+                <div class="edit-buttons">
+                    <a href="{{ url_for('community.post_form', community_id=community.id, id=post.id) }}"><span class="fa fa-edit"></span></a>
+                    <a href="javascript: post.delete({{ post.id }})"><span class="fa fa-trash-o"></span></a>
+                </div>
+                {% endif %}
+                <h3 class="title"><a href="{{ url_for('community.post_page', community_id=community.id, id=post.id) }}">{{ post.title or '' }}</a></h3>
+                <div class="text" onCLick="javascript: window.location.href='{{ url_for('community.post_page', community_id=community.id, id=post.id) }}'">{{ post.announcement|safe or '' }}</div>
+                <div class="datetime">{{ post.datetime|datetime(old_time=False) or '' }}</div>
+                <div class="footer">
+                    <div class="author">
+                        {{ user.icon(post.author) }}
+                        <div class="comments-counter" title="Комментарии" data-count="{{ post.comments_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}"></div>
+                        <div class="likes-counter-component" title="Понравилось" data-count="{{ post.votes_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}" data-my-vote="{{ post.my_vote.value }}"></div>
+                        <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ post.views_count or 0 }}</div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="col-md-3 members-list">
+            <div class="frame">
+                <h3 class="title"> Учасники </h3>
+                {% if community.owner != current_user %}
+                <div class="top-buttons community-subscription-component" data-community-id="{{ community.id }}" data-subscribed="{{ community.has_member(current_user) }}" data-status="{{ community.member_status_title(current_user) or ''}}"></div>
+                {% endif %}
+                {{ user.frame(community.owner, 'Администратор группы') }}
+                {% for cm in community.community_members %}
+                {% if cm.status == cm.STATUS.ACCEPTED %}
+                {{ user.frame(cm.user) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>

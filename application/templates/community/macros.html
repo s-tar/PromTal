@@ -1,21 +1,19 @@
 {% macro header(community, current_user=None) %}
-<div class="row">
-    <div class="col-md-8 col-md-offset-2 community-header">
-        <div class="community frame">
-            <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
-            <div class="info">
-                <div class="name">
-                    <a href="{{ url_for("community.community_page", id=community.id) }}">{{ community.name or '' }}</a>
-                    {% if community.type == community.TYPE.PRIVATE %}
-                        <span class="closed fa fa-lock" title="Закрытая группа"></span>
-                    {% endif %}
-                </div>
-                <div class="description">{{ community.description or '' }}</div>
+<div class="community-header">
+    <div class="community frame">
+        <div class="image" {% if community.image %} style="background-image: url('{{ community.image.get_url() }}')" {% endif %}></div>
+        <div class="info">
+            <div class="name">
+                <a href="{{ url_for("community.community_page", id=community.id) }}">{{ community.name or '' }}</a>
+                {% if community.type == community.TYPE.PRIVATE %}
+                    <span class="closed fa fa-lock" title="Закрытая группа"></span>
+                {% endif %}
             </div>
-            {% if community.owner == current_user or community.member_status_title(current_user) == 'accepted' %}
-            <a href="{{ url_for('community.post_form', community_id=community.id) }}" class="button new post-create">Новая новость</a>
-            {% endif %}
+            <div class="description">{{ community.description or '' }}</div>
         </div>
+        {% if community.owner == current_user or community.member_status_title(current_user) == 'accepted' %}
+        <a href="{{ url_for('community.post_form', community_id=community.id) }}" class="button new post-create">Новая новость</a>
+        {% endif %}
     </div>
 </div>
 {% endmacro %}

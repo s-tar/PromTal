@@ -2,8 +2,8 @@
 {% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
-{{ macros.header(post.community, current_user)}}
 <div class="col-md-8 col-md-offset-2 news-one">
+    {{ macros.header(post.community, current_user)}}
     <article class="frame">
         {% if current_user == post.author %}
         <div class="edit-buttons">

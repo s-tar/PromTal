@@ -57,7 +57,28 @@ body
   background-image: url('/static/img/no-photo-s.png')
   cursor: pointer
   background-color: white
+.user-frame
+  position: relative
+  min-height: 40px
+  &:before
+    content: ''
+    display: inline-block
+    min-height: 40px
+    height: 100%
+    vertical-align: middle
+  .user-icon
+    position: absolute
+    width: 40px
+    height: 40px
+    top: 0px
+    left: 0px
+  .info
+    vertical-align: middle
+    display: inline-block
+    padding-left: 50px
 
+    .description
+      color: #cccccc
 h3.title
   margin: 0
   padding: 15px 20px

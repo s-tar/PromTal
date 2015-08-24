@@ -232,7 +232,7 @@ function deleteCommunity(id) {
                         url: '/community/'+id,
                         type: 'DELETE',
                         success: function(json) {
-                            window.location.href = '/communities';
+                            window.location.reload();
                         }
                     });
                 }
