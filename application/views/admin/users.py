@@ -7,6 +7,7 @@ from application.models.department import Department
 from application.models.view_users4search import ViewUsers4Search
 from application import db, ldap
 from application.utils.validator import Validator
+from application.utils import auth
 from application.bl.users import create_user, update_user, DataProcessingError
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
@@ -61,6 +62,12 @@ def s_users_json():
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
     json_result = rowTable.output_result()
+
+    current_user = auth.service.get_user()
+    disabled = ''
+    if not current_user.is_admin:
+        disabled = 'disabled'
+
     for row in json_result['aaData']:
         row_id = row['0']
         row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
@@ -77,7 +84,7 @@ def s_users_json():
             sel = 'selected' if per.id in set_per else ''
             per_options += "<option value='"+str(per.id)+"' "+sel+">"+per.title+"</option>"
         per_html = """
-          <select onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-selected-text-format="count>1" data-width="170px">
+          <select onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-selected-text-format="count>1" data-width="170px" """+disabled+""">
             """+per_options+"""
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
@@ -98,7 +105,7 @@ def s_users_json():
         sel = 'selected' if 0 == sel_role else ''
         role_options += "<option value='0/"+row_id+"' "+sel+">admin</option>"
         role_html = """
-          <select onchange="change_user_role(this.value)" class="selectpicker" data-width="110px">
+          <select onchange="change_user_role(this.value)" class="selectpicker" data-width="110px" """+disabled+""">
             """+role_options+"""
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
