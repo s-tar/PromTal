@@ -140,8 +140,8 @@ def users_search_json():
     columns.append(ColumnDT('users_birth_date', filter=_default_value_view))
     columns.append(ColumnDT('users_skype', filter=_default_value_view))
     columns.append(ColumnDT('users_position', filter=_default_value_view))
-    columns.append(ColumnDT('users_photo_id', filter=_default_value_view))
     columns.append(ColumnDT('department_name', filter=_default_value_view))
+    columns.append(ColumnDT('photo_url', filter=_default_value_view))
     query = db.session.query(ViewUsers4Search)
     rowTable = DataTables(request, ViewUsers4Search, query, columns)
     json_result = rowTable.output_result()
@@ -211,6 +211,7 @@ def activate_user(id):
     user.status = User.STATUS_ACTIVE
     db.session.commit()
     return redirect(url_for('admin.users_index'))
+
 
 @module.get('/users/edit/<int:id>')
 @module.get('/users/add')

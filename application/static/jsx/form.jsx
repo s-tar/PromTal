@@ -226,7 +226,7 @@ var ManageUsers = React.createClass({
         return (
             <div>
                 <div className="input-group fio">
-                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-user-plus"></i></span>
+                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-search"></i></span>
                   <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Фамилия или имя" aria-describedby="basic-addon1" />
                 </div>
                 <ul className="media-list">
