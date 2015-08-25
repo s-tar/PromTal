@@ -1,8 +1,9 @@
 {% import "community/macros.html" as macros %}
 {% extends "layout.html" %}
 {% block content %}
-{{ macros.header(community, current_user)}}
+
 <div class="col-md-8 col-md-offset-2">
+    {{ macros.header(community, current_user)}}
     <div class="frame news-form">
         <h3 class='title'>{{ 'Редактировать новость' if post.id else 'Новая новость' }}</h3>
         <div id="post-form"></div>

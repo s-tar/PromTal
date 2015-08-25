@@ -188,6 +188,15 @@
 .members-list {
   position: relative;
 }
+.members-list .member {
+  position: relative;
+}
+.members-list .member .buttons .button {
+  cursor: pointer;
+  padding: 3px 13px 1px;
+  text-transform: inherit;
+  margin-right: 5px;
+}
 .members-list .user-frame {
   margin: 5px 10px;
 }
