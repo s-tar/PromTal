@@ -226,7 +226,7 @@ var SearchUsers = React.createClass({
             <div>
                 <div className="input-group fio">
                   <span className="input-group-addon" id="basic-addon1"><i className="fa fa-search"></i></span>
-                  <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Фамилия или имя" aria-describedby="basic-addon1" />
+                  <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Введите данные пользователя" aria-describedby="basic-addon1" />
                 </div>
                 <ul className="media-list user-list">
                 {users.map(function(user) {
