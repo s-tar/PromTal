@@ -1,5 +1,4 @@
-from datetime import datetime
-from flask import render_template, request, current_app, flash, url_for, redirect, jsonify
+from flask import render_template, request, current_app, url_for, redirect, jsonify
 
 from application.views.admin.main import module
 from application.models.user import User, Role, Permission
@@ -124,7 +123,7 @@ def s_users_json():
             </a>
         """ % row_id
         row[last_columns] = manage_html.format(
-            edit_user_profile = url_for('admin.save_user', id=row_id),
+            edit_user_profile = url_for('admin.edit_user', id=row_id),
             delete_user_profile = url_for('admin.delete_user', id=row_id))
     return jsonify(**json_result)
 
@@ -157,53 +156,6 @@ def users_search_json():
     return jsonify(**json_result)
 
 
-@module.get('/users/edit/<int:id>')
-def edit_user(id):
-    user = User.get_by_id(id)
-    departments = Department.query.all()
-    return render_template('admin/users/edit_user_profile.html',
-                           user=user,
-                           departments={department.name for department in departments})
-
-
-@module.post('/users/edit/<int:id>')
-def edit_user_post(id):
-    user = User.get_by_id(id)
-    data = dict(request.form)
-    data["file"] = request.files["file"]
-
-    v = Validator(data)
-    v.field('full_name').required()
-    v.field('email').required().email()
-    v.field('mobile_phone').required().phone_number()
-    v.field('inner_phone').required()
-    v.field('department').required()
-    v.field('birth_date').datetime(format="%d.%m.%Y")
-    v.field('file').image()
-    if v.is_valid():
-        data = {
-            'login': user.login,
-            'full_name': v.valid_data.full_name,
-            'mobile_phone': v.valid_data.mobile_phone,
-            'inner_phone': v.valid_data.inner_phone,
-            'department': v.valid_data.department,
-            'email': v.valid_data.email,
-            'skype': v.valid_data.skype,
-            'photo': v.valid_data.photo,
-            'birth_date': v.valid_data.birth_date
-        }
-
-        try:
-            update_user(**data)
-            return jsonify({"status": "ok"})
-        except DataProcessingError as e:
-            return jsonify({'status': 'failOnProcess',
-                            'error': e.value})
-
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
 @module.get('/users/delete/<int:id>')
 def delete_user(id):
     user = User.query.get_or_404(id)
@@ -221,60 +173,23 @@ def activate_user(id):
 
 
 @module.get('/users/edit/<int:id>')
-@module.get('/users/add')
-def save_user(id=None):
-    user = User.query.get_or_404(id) if id else User()
-
+def edit_user(id):
+    user = User.query.get_or_404(id)
     groups = ldap.get_all_groups()
     departments = Department.query.all()
-    return render_template('admin/users/user_profile.html',
+    return render_template('admin/users/edit_user.html',
                            user=user,
                            groups={group['cn'][0] for group in groups},
                            departments={department.name for department in departments})
 
-#
-# @module.post('/users/add')
-# def add_user_post():
-#     v = Validator(request.form)
-#     v.field('name').required()
-#     v.field('surname').required()
-#     v.field('email').required().email()
-#     v.field('login').required()
-#     v.field('department').required()
-#     v.field('groups').required()
-#     v.field('mobile_phone').required().phone_number()
-#     if v.is_valid():
-#         data = {
-#             'name': v.valid_data.name,
-#             'surname': v.valid_data.surname,
-#             'email': v.valid_data.email,
-#             'login': v.valid_data.login,
-#             'department': v.valid_data.department,
-#             'groups': v.valid_data.list('groups'),
-#             'mobile_phone': v.valid_data.mobile_phone
-#         }
-#
-#         already_used_login = User.get_by_login(data['login'])
-#         already_used_email = User.get_by_email(data['email'])
-#
-#         if already_used_login:
-#             v.add_error('login', 'Такой логин уже занят')
-#         if already_used_email:
-#             v.add_error('email', 'Такой email уже занят')
-#
-#         if already_used_login or already_used_email:
-#             return jsonify({"status": "fail",
-#                             "errors": v.errors})
-#
-#         try:
-#             create_user(**data)
-#             return jsonify({"status": "ok"})
-#         except DataProcessingError as e:
-#             return jsonify({'status': 'failOnProcess',
-#                             'error': e.value})
-#
-#     return jsonify({"status": "fail",
-#                     "errors": v.errors})
+
+@module.get('/users/add')
+def add_user():
+    groups = ldap.get_all_groups()
+    departments = Department.query.all()
+    return render_template('admin/users/add_user.html',
+                           groups={group['cn'][0] for group in groups},
+                           departments={department.name for department in departments})
 
 
 @module.get('/users/set-user-role/<int:role_id>/<int:user_id>/')

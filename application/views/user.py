@@ -125,6 +125,6 @@ def birthdays():
 
 
 @widget('user.new.members')
-def birthdays():
+def new_members():
     users = User.get_new()
     return render_template('user/new_members.html',  **{'users': users})
