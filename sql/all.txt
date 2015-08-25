@@ -86,7 +86,8 @@ select
 	users.skype users_skype,
 	users.position users_position,
 	department.name department_name,
-	users.photo_id users_photo_id
+	COALESCE('/file/users/users.'||users.id||'/photo.id'||users.photo_id||'.thumbnail._'||file.hash||'_.'||file.extension, '/static/img/no_photo.jpg') photo_url
 from users
 left join department on department.id = users.department_id
+left join file on file.id = users.photo_id
 ;

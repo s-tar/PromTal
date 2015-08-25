@@ -38,8 +38,13 @@ var CommunitySubscriptionButton = React.createClass({
                     Popup.show({ content: 'Ваша заявка принята на рассмотрение.' });
                     self.setState({subscribed: res.subscribed, status: 'waiting'});
                 }else{
-                    communityStream.onNext({action: 'updateMembersCount', community: res.community, count: res.community.count_members});
-                    self.setState({subscribed: res.subscribed});
+                     if(self.props.reload) {
+                         window.location.reload()
+                     }else{
+                         communityStream.onNext({action: 'updateMembersCount', community: res.community, count: res.community.count_members});
+                         self.setState({subscribed: res.subscribed});
+                     }
+
                 }
             }
         });
@@ -68,9 +73,13 @@ var CommunitySubscriptionButton = React.createClass({
                             $.post('/community/subscription/' + self.props.community_id, {subscription: 'unsubscribe'},"json")
                             .done(function(res){
                                 if(res.status == 'ok'){
-                                    communityStream.onNext({action: 'updateMembersCount',  community: res.community, count: res.community.count_members});
-                                    self.setState({subscribed: res.subscribed});
-                                    popup.onClose();
+                                    if(self.props.reload) {
+                                        window.location.reload();
+                                    }else{
+                                        communityStream.onNext({action: 'updateMembersCount',  community: res.community, count: res.community.count_members});
+                                        self.setState({subscribed: res.subscribed});
+                                        popup.onClose();
+                                    }
                                 }
                             });
                         }
@@ -100,11 +109,104 @@ var CommunitySubscriptionButton = React.createClass({
             <button className="community-join" onClick={this.onJoin}>Присоединиться</button>:
             status == 'waiting' ?
                 <button className="community-leave" onClick={this.onLeave}>Отменить заявку</button> :
-                <button className="community-leave" onClick={this.onLeave}>Покинуть</button>;
+            status == 'accepted' ?
+                <button className="community-leave" onClick={this.onLeave}>Покинуть</button> :
+                null
 
         return button
     }
 });
+
+
+var CommunityMember = React.createClass({
+    getInitialState: function() {
+        return {
+            user: {
+                id: this.props.member_id,
+                full_name: this.props.member_name,
+                photo: this.props.member_photo,
+                description: this.props.member_description,
+                status: this.props.member_status
+            }
+        }
+    },
+    sendRequest: function(type){
+         var self = this;
+        $.post('/community/' + this.props.community_id + '/'+type+'/member/'+ this.state.user.id, "json")
+        .done(function(res){
+            if(res.status == 'ok'){
+                self.state.user.status = res.user.status;
+                self.setState({user:  self.state.user})
+            }
+        });
+    },
+    onAccept: function(){
+       this.sendRequest('accept');
+    },
+    onReject: function(){
+        this.sendRequest('reject');
+    },
+    onDelete: function(){
+        var self = this;
+        Popup.show({
+            title: 'Удалить пользователя',
+            content: 'Вы уверены,что хотите удалить пользователя из группы?',
+            closeButton: false,
+            buttons: [
+                {
+                    name: 'Да',
+                    className: 'left',
+                    action: function(popup){
+                        self.sendRequest('reject');
+                        popup.onClose();
+                    }
+                },
+                {
+                    name: 'Нет',
+                    className: 'right',
+                    action: function(popup){
+                        popup.onClose()
+                    }
+                },
+            ]
+        })
+    },
+    render: function() {
+        var description = this.state.user.description;
+        var is_owner = this.props.community_owner_id == current_user.id;
+
+        if(!is_owner && this.state.user.status == 'waiting') return null;
+        if(this.state.user.status == 'rejected') return null;
+
+        if(is_owner){
+            if(this.state.user.status == 'waiting') {
+                description = (
+                    <div className="buttons">
+                        <a className="button" onClick={this.onAccept}>Принять</a>
+                        <a className="button reject" onClick={this.onReject}>Отклонить</a>
+                    </div>
+                )
+            }else if(this.state.user.status == 'accepted') {
+                description = (
+                    <div className="buttons">
+                        <a className="button delete" onClick={this.onDelete}>Удалить</a>
+                    </div>
+                )
+            }
+        }
+        description = description ? <div className="description">{description}</div> : null;
+        return (
+            <div className="member user-frame">
+                <UserIcon user={this.state.user}/>
+                <div className="info">
+                    <div className="name"><a href={"/user/profile/" + this.state.user.id}>{this.state.user.full_name}</a></div>
+                    {description}
+                </div>
+            </div>
+        )
+    }
+});
+
 
 $(document).ready(function(){
     $('.members-counter-component').each(function(){
@@ -117,6 +219,27 @@ $(document).ready(function(){
         var community_id = $(this).attr('data-community-id');
         var subscribed = Boolean($(this).attr('data-subscribed') == 'True');
         var status = $(this).attr('data-status');
-        React.render( <CommunitySubscriptionButton community_id={community_id} subscribed={subscribed} status={status}/>, $(this)[0]);
+        var reload = $(this).attr('data-reload') == 'True' ? true : false;
+        React.render( <CommunitySubscriptionButton community_id={community_id} subscribed={subscribed} status={status} reload={reload}/>, $(this)[0]);
+    });
+
+    $('.community-member-component').each(function(){
+        var community_id = $(this).attr('data-community-id');
+        var community_owner_id = $(this).attr('data-community-owner-id');
+        var member_id = $(this).attr('data-member-id');
+        var member_name = $(this).attr('data-member-name');
+        var member_photo = $(this).attr('data-member-photo');
+        var member_status = $(this).attr('data-member-status');
+        var member_description = $(this).attr('data-member-description');
+        React.render(
+            <CommunityMember
+                community_id={community_id}
+                community_owner_id={community_owner_id}
+                member_id={member_id}
+                member_name={member_name}
+                member_photo={member_photo}
+                member_status={member_status}
+                member_description={member_description}
+            />, $(this)[0]);
     });
 });

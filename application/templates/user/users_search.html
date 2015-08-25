@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Структура{% endblock %}
+{% block content %}
+<script type="text/jsx">
+React.render(
+    <SearchUsers dep_id="1" />,
+    document.getElementById('search-users'))
+
+function wellDone(){
+    window.location.href = "{{ url_for('user.profile') }}";
+}
+</script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+            <div class="frame">
+                <h3 class="title">Поиск сотрудника</h2>
+                <div class="user-search" id="search-users"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

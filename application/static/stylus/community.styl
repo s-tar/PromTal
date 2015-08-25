@@ -157,6 +157,22 @@
 
 .members-list
   position: relative
+  .member
+    position: relative
+    &:hover .buttons .button.delete
+      display: inline-block
+    .buttons
+      .button
+        cursor: pointer
+        padding: 3px 13px 1px
+        text-transform: inherit
+        margin-right: 5px
+        &.delete
+          display: none
+        &.delete, &.reject
+          background: #e7422c
+          &:hover
+            background: #FF6961
   .user-frame
     margin: 5px 10px
   .top-buttons

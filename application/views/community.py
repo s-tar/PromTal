@@ -209,3 +209,45 @@ def subscribe(community_id):
     res['community']['count_members'] = community.count_members
 
     return jsonify(res)
+
+
+@module.route("/<int:community_id>/accept/member/<int:member_id>", methods=['POST'])
+def accept_member(community_id, member_id):
+    user = utils.auth.service.get_user()
+
+    if not user.is_authorized:
+        abort(403)
+
+    community = Community.get(community_id)
+    cm = CommunityMember.query.filter(
+        CommunityMember.user_id == member_id,
+        CommunityMember.community_id == community_id).first()
+    if not cm or not community or community.owner != user:
+        abort(404)
+
+    cm.status = cm.STATUS.ACCEPTED
+    db.session.commit()
+
+    res = {'status': 'ok', 'user': {'status': cm.STATUS.TITLE[cm.status]}}
+    return jsonify(res)
+
+
+@module.route("/<int:community_id>/reject/member/<int:member_id>", methods=['POST'])
+def reject_member(community_id, member_id):
+    user = utils.auth.service.get_user()
+
+    if not user.is_authorized:
+        abort(403)
+
+    community = Community.get(community_id)
+    cm = CommunityMember.query.filter(
+        CommunityMember.user_id == member_id,
+        CommunityMember.community_id == community_id).first()
+    if not cm or not community or community.owner != user:
+        abort(404)
+
+    cm.status = cm.STATUS.REJECTED
+    db.session.commit()
+
+    res = {'status': 'ok', 'user': {'status': cm.STATUS.TITLE[cm.status]}}
+    return jsonify(res)

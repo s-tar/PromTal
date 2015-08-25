@@ -28,8 +28,19 @@
                 <div class="footer">
                     <div class="author">
                         {{ user.icon(post.author) }}
-                        <div class="comments-counter" title="Комментарии" data-count="{{ post.comments_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}"></div>
-                        <div class="likes-counter-component" title="Понравилось" data-count="{{ post.votes_count or 0}}" data-entity="{{ post.entity.name }}" data-entity-id="{{ post.entity.id }}" data-my-vote="{{ post.my_vote.value }}"></div>
+                        <div class="comments-counter"
+                             title="Комментарии"
+                             data-count="{{ post.comments_count or 0}}"
+                             data-entity="{{ post.entity.name }}"
+                             data-entity-id="{{ post.entity.id }}">
+                        </div>
+                        <div class="likes-counter-component"
+                             title="Понравилось"
+                             data-count="{{ post.votes_count or 0}}"
+                             data-entity="{{ post.entity.name }}"
+                             data-entity-id="{{ post.entity.id }}"
+                             data-my-vote="{{ post.my_vote.value }}">
+                        </div>
                         <div class="views" title="Просмотры"><span class="fa fa-eye"></span>{{ post.views_count or 0 }}</div>
                     </div>
                 </div>
@@ -40,12 +51,32 @@
             <div class="frame">
                 <h3 class="title"> Учасники </h3>
                 {% if community.owner != current_user %}
-                <div class="top-buttons community-subscription-component" data-community-id="{{ community.id }}" data-subscribed="{{ community.has_member(current_user) }}" data-status="{{ community.member_status_title(current_user) or ''}}"></div>
+                <div class="top-buttons community-subscription-component"
+                     data-community-id="{{ community.id }}"
+                     data-subscribed="{{ community.has_member(current_user) }}"
+                     data-reload="True"
+                     data-status="{{ community.member_status_title(current_user) or ''}}">
+                </div>
                 {% endif %}
-                {{ user.frame(community.owner, 'Администратор группы') }}
-                {% for cm in community.community_members %}
-                {% if cm.status == cm.STATUS.ACCEPTED %}
-                {{ user.frame(cm.user) }}
+                <div class="community-member-component"
+                     data-community-id="{{ community.id }}"
+                     data-community-owner-id="{{ community.owner.id }}"
+                     data-member-id="{{ community.owner.id }}"
+                     data-member-photo="{{ community.owner.photo }}"
+                     data-member-name="{{ community.owner.full_name }}"
+                     data-member-status="approved"
+                     data-member-description="Администратор группы">
+                </div>
+                {% for cm in community.community_members|sort(attribute='status')|reverse %}
+                {% if cm.status != cm.STATUS.DELETED %}
+                <div class="member community-member-component"
+                     data-community-id="{{ community.id }}"
+                     data-community-owner-id="{{ community.owner.id }}"
+                     data-member-id="{{ cm.user.id }}"
+                     data-member-photo="{{ cm.user.photo }}"
+                     data-member-name="{{ cm.user.full_name }}"
+                     data-member-status="{{ cm.STATUS.TITLE[cm.status] }}">
+                </div>
                 {% endif %}
                 {% endfor %}
             </div>

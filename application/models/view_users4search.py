@@ -13,8 +13,8 @@ class ViewUsers4Search(db.Model):
     users_birth_date = db.Column(db.DateTime, nullable=True)
     users_skype = db.Column(db.String(64), nullable=True)
     users_position = db.Column(db.String(255))
-    users_photo_id = db.Column(db.Integer)
     department_name = db.Column(db.String(255))
+    photo_url = db.Column(db.String(255))
 
     def __repr__(self):
         return "<ViewUsers4Search {name}>".format(name=self.users_login)

@@ -76,7 +76,7 @@ body
     vertical-align: middle
     display: inline-block
     padding-left: 50px
-
+    width: 100%
     .description
       color: #cccccc
 h3.title
@@ -453,3 +453,25 @@ h3.title a
         display: none
       .workers-list
         display: none
+
+.user-search
+  padding: 10px 10px 0px
+  .user-list
+    position: absolute
+    width: 100%
+    left: 0px
+    padding: 10px
+    li
+      padding: 5px
+      width: 33.33333%
+      float: left
+      .user-frame
+        cursor: pointer
+        padding: 10px
+        .user-icon
+          top: 10px
+          left: 10px
+        .description
+          text-overflow: ellipsis;
+          overflow: hidden
+          white-space: nowrap

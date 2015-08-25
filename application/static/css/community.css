@@ -188,6 +188,29 @@
 .members-list {
   position: relative;
 }
+.members-list .member {
+  position: relative;
+}
+.members-list .member:hover .buttons .button.delete {
+  display: inline-block;
+}
+.members-list .member .buttons .button {
+  cursor: pointer;
+  padding: 3px 13px 1px;
+  text-transform: inherit;
+  margin-right: 5px;
+}
+.members-list .member .buttons .button.delete {
+  display: none;
+}
+.members-list .member .buttons .button.delete,
+.members-list .member .buttons .button.reject {
+  background: #e7422c;
+}
+.members-list .member .buttons .button.delete:hover,
+.members-list .member .buttons .button.reject:hover {
+  background: #ff6961;
+}
 .members-list .user-frame {
   margin: 5px 10px;
 }

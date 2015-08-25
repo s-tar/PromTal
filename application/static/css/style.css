@@ -119,6 +119,7 @@ body {
   vertical-align: middle;
   display: inline-block;
   padding-left: 50px;
+  width: 100%;
 }
 .user-frame .info .description {
   color: #ccc;
@@ -582,4 +583,31 @@ h3.title a:hover {
 }
 .company-structure .department .workers:not(.show) .workers-list {
   display: none;
+}
+.user-search {
+  padding: 10px 10px 0px;
+}
+.user-search .user-list {
+  position: absolute;
+  width: 100%;
+  left: 0px;
+  padding: 10px;
+}
+.user-search .user-list li {
+  padding: 5px;
+  width: 33.33333%;
+  float: left;
+}
+.user-search .user-list li .user-frame {
+  cursor: pointer;
+  padding: 10px;
+}
+.user-search .user-list li .user-frame .user-icon {
+  top: 10px;
+  left: 10px;
+}
+.user-search .user-list li .user-frame .description {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

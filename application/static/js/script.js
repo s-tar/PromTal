@@ -187,7 +187,8 @@ $(document).ready(function(){
 })
 
 $(document).on('mousedown', '.company-structure .structure', function(e){
-    if(event.which == 1) {
+
+    if(e.which == 1 || e.which == 2) {
         var $this = $(this);
         var start_x = e.clientX - $(this).offset().left;
         var start_y = e.clientY - $(this).offset().top;

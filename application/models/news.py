@@ -6,7 +6,7 @@ from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
 from application.models.serializers.news import news_schema
 from application.models.vote import HasVotes
-from sqlalchemy import event
+from sqlalchemy import event, desc
 
 
 class NewsTagAssociation(db.Model):
@@ -40,17 +40,18 @@ class News(db.Model, Mixin, HasComments, HasVotes):
     views_count = db.Column(db.Integer, default=0)
 
     author = db.relationship("User", backref="news", lazy="joined")
-    category = db.relationship("NewsCategory", backref="news", lazy="joined")
-    tags = db.relationship("NewsTag", secondary="news_tag_association", backref="news", lazy="joined")
+    category = db.relationship("NewsCategory", backref=db.backref('news', order_by=desc('News.datetime')), lazy="joined")
+    tags = db.relationship("NewsTag", secondary="news_tag_association", backref=db.backref('news', order_by=desc('News.datetime')), lazy="joined")
 
     @classmethod
     def all(cls):
-        return cls.query.filter().order_by(cls.datetime.desc()).all()
+        news = cls.query.filter().order_by(cls.datetime.desc()).all()
+        return news
 
     @classmethod
     def all_by_category(cls, id):
-        return cls.query.filter(News.category_id==id)\
-            .order_by(cls.datetime.desc()).all()
+        news = cls.query.filter(News.category_id==id).order_by(cls.datetime.desc()).all()
+        return news
 
     @classmethod
     def all_by_tag(cls, tag):
