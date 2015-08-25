@@ -45,7 +45,7 @@ class Config:
     LDAP_GROUP_FIELDS = ['cn']
 
     SKYSMS_USERNAME = 'uaprom'
-    SKYSMS_PASSWORD = '6gMZT3'
+    SKYSMS_PASSWORD = 'password'
     SKYSMS_PASSWORD_MESSAGE = "Логин:%(login)s\nПароль:%(password)s"
     SKYSMS_MSGCHRSET = 'cyr'
     SKYSMS_MSGENCODING = 'cp1251'

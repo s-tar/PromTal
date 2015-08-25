@@ -34,7 +34,8 @@ def modify_password(login, old_password, new_password):
         raise PasswordError("wrong password has been passed.")
 
 
-def create_user(login, name, surname, email, mobile_phone, department, groups):
+def create_user(login, name, surname, email, mobile_phone,
+                department, groups, photo, birth_date, skype):
     password = generate_password()
     inner_phone = generate_inner_phone(current_app.config['INNER_PHONE_DIAPASON_BEGIN'],
                                        current_app.config['INNER_PHONE_DIAPASON_END'])
@@ -50,17 +51,19 @@ def create_user(login, name, surname, email, mobile_phone, department, groups):
         'departmentNumber': department,
     }
 
-    if not _add_user_to_local_db(login, name, surname, email, department, mobile_phone, inner_phone):
+    if not _add_user_to_local_db(login, name, surname, email, department,
+                                 mobile_phone, inner_phone, photo, birth_date, skype):
         raise DataProcessingError('Произошла ошибка при добавлении пользователя в локальную базу данных')
 
     if not _add_user_to_ldap(ldap_user_attr, groups):
         db.session.rollback()
         raise DataProcessingError('Произошла ошибка при добавлении пользователя в каталог LDAP')
+    else:
+        db.session.commit()
 
     if not sms_service.send_password(mobile_phone.strip('+'), login, password):
         raise DataProcessingError('Произошла ошибка при отправлении запроса на сообщение '
                                   'с логином и паролем пользователя')
-    db.session.commit()
 
 
 def _add_user_to_ldap(user_attr, groups):
@@ -72,7 +75,8 @@ def _add_user_to_ldap(user_attr, groups):
         return False
 
 
-def _add_user_to_local_db(login, name, surname, email, department, mobile_phone, inner_phone):
+def _add_user_to_local_db(login, name, surname, email, department,
+                          mobile_phone, inner_phone, photo, birth_date, skype):
     try:
         user = User()
         user.login = login
@@ -81,13 +85,17 @@ def _add_user_to_local_db(login, name, surname, email, department, mobile_phone,
         user.inner_phone = inner_phone
         user.email = email
         user.department = Department.get_by_name(department)
+        user.photo = photo
+        user.birth_date = birth_date
+        user.skype = skype
         db.session.add(user)
         return True
     except:
         return False
 
 
-def update_user(id, login, full_name, position, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def update_user(id, login, full_name, position, department,
+                email, mobile_phone, inner_phone, birth_date, photo, skype):
     ldap_user_attr = {
         'mobile': mobile_phone,
         'telephoneNumber': inner_phone,
@@ -101,10 +109,12 @@ def update_user(id, login, full_name, position, department, email, mobile_phone,
     if not _edit_user_at_ldap(login, ldap_user_attr):
         db.session.rollback()
         raise DataProcessingError('Произошла ошибка при обновлении пользователя в каталоге LDAP')
-    db.session.commit()
+    else:
+        db.session.commit()
 
 
-def _edit_user_at_local_db(id, full_name, position, department, email, mobile_phone, inner_phone, birth_date, photo, skype):
+def _edit_user_at_local_db(id, full_name, position, department,
+                           email, mobile_phone, inner_phone, birth_date, photo, skype):
     try:
         User.edit_user(
             uid=id,

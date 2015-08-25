@@ -248,6 +248,9 @@ class User(db.Model, AuthUser, Mixin):
     def has_role(self, role):
         return role in self.roles
 
+    def has_permission(self, permission):
+        return permission in self.permissions
+
     @property
     def age(self):
         today, born = date.today(), self.birth_date

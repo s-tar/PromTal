@@ -1,17 +1,13 @@
 {% extends "admin/layout.html" %}
 
 {% block title %}
-    {% if user.id %}
         Редактирование пользователя
-    {% else %}
-        Создание нового пользователя
-    {% endif %}
 {% endblock %}
 
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <AJAXForm action="{{ url_for('api_v1.save_user', id=user.id) }}" method="{{ 'put' if user.id else 'post' }}"  encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
+    <AJAXForm action="{{ url_for('api_v1.edit_user', id=user.id) }}" method="put"  encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-md-8">
             <table className="table table-striped">
@@ -45,6 +41,10 @@ React.render(
                         <td><Input className="form-control" type="text" name="inner_phone" defaultValue="{% if user.inner_phone %}{{ user.inner_phone }}{% else %}{% endif %}" placeholder="????"/></td>
                     </tr>
                     <tr>
+                        <td>Должность</td>
+                            <td><Input className="form-control" type="text" name="position" defaultValue="{% if user.position %}{{ user.position }}{% else %}{% endif %}" placeholder="Генеральный директор"/></td>
+                    </tr>
+                    <tr>
                         <td>Дата рождения</td>
                         <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if user.birth_date %}{{ user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
                     </tr>
@@ -66,16 +66,6 @@ React.render(
                                 {% else %}
                                     <option>{{ department }}</option>
                                 {% endif %}
-                            {% endfor %}
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Группы</td>
-                        <td>
-                            <Select className="form-control" type="text" name="groups" multiple>
-                            {% for group in groups %}
-                                <option>{{ group }}</option>
                             {% endfor %}
                             </Select>
                         </td>

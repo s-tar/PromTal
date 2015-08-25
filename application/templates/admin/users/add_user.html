@@ -1,0 +1,140 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Создание нового пользователя
+{% endblock %}
+
+{% block content %}
+<script type="text/jsx">
+React.render(
+    <AJAXForm action="{{ url_for('api_v1.add_user') }}" method="post"  encType="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
+        <div className="row">
+          <div className="col-md-8">
+            <table className="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Имя</td>
+                        <td><Input className="form-control" type="text" name="name" placeholder="Вася"/></td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия</td>
+                        <td><Input className="form-control" type="text" name="surname" placeholder="Пупкин"/></td>
+                    </tr>
+                    <tr>
+                        <td>Аватар</td>
+                        <td><ImageLoader name="file"/></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><Input className="form-control on-change-email" type="text" name="email" placeholder="mail@prom.ua"/></td>
+                    </tr>
+                    <tr>
+                        <td>Login</td>
+                        <td><Input className="form-control on-change-login" type="text" name="login" placeholder="v.pupkin"/></td>
+                    </tr>
+                    <tr>
+                        <td>Номер мобильного телефона</td>
+                        <td><Input className="form-control" type="text" name="mobile_phone" placeholder="???-??-??-???"/></td>
+                    </tr>
+                    <tr>
+                        <td>Дата рождения</td>
+                        <td><Input className="form-control datepicker" type="text" name="birth_date" placeholder="??.??.????"/></td>
+                    </tr>
+                    <tr>
+                        <td>Skype</td>
+                        <td><Input className="form-control" type="text" name="skype" placeholder="skype"/></td>
+                    </tr>
+                    <tr>
+                        <td>Подразделение</td>
+                        <td>
+                            <Select className="form-control" type="text" name="department">
+                            {% for department in departments %}
+                                <option>{{ department }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Группы</td>
+                        <td>
+                            <Select className="form-control" type="text" name="groups" multiple>
+                            {% for group in groups %}
+                                <option>{{ group }}</option>
+                            {% endfor %}
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="javascript: window.history.back()" className="btn btn-lg btn-danger btn-block">Отмена</a></td>
+                        <td><Input className="btn btn-lg btn-primary btn-block" type="submit" defaultValue="Сохранить"/></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </AJAXForm>,
+    document.getElementById('edit_user_form'))
+
+function wellDone(){
+    window.location.href = "{{ url_for('admin.s_users') }}";
+}
+
+function onChangeEmail(event) {
+    console.log(event.target.value);
+    /*this.refs.error.setState({text: ''})
+    if(typeof this.props.onChange == 'function')
+        this.props.onChange(event)*/
+}
+
+function showErrors( data ) {
+    if (data.status == 'failOnProcess') {
+        console.log(data);
+        Popup.show({
+            content: data.error,
+            closeButton: true,
+            buttons: []
+        });
+    }
+}
+
+</script>
+<script>
+    window.onload = function () {
+        $(document).on("focus", ".datepicker", function(){
+            $(this).datepicker();
+        });
+    };
+
+    function on_change() {
+        $( ".on-change-email" ).on('blur keyup',function() {
+          $(".on-change-login").val(this.value.split('@')[0])
+        });
+    }
+    setTimeout(on_change, 500);
+
+</script>
+<script>
+$( function() {
+    var customLogin = false;
+    var loginElem = $( "[name='login']" );
+    var emailElem = $( "[name='email']"  );
+
+    loginElem.on( "keyup", function() {
+        customLogin = true;
+    });
+
+    emailElem.on( "keyup", function() {
+        if (!~emailElem.val().indexOf('@') && !customLogin) {
+            loginElem.val(emailElem.val());
+        }
+    });
+});
+</script>
+
+<div class="container">
+    <div class="centered col-md-offset-3">
+        <div id="edit_user_form"></div>
+    </div>
+</div>
+{% endblock %}
+
