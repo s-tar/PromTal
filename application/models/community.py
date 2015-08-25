@@ -67,9 +67,13 @@ class Community(db.Model, Mixin):
     @classmethod
     def all_mine(cls):
         user = auth.service.get_user()
-        communities = [c.community for c in CommunityMember.query.filter(CommunityMember.user == user).all()]
+        communities = [
+            c.community for c in CommunityMember.query.filter(CommunityMember.user == user).all()
+            if c.community.status == Community.STATUS.ACTIVE
+        ]
         mine_communities = cls.query.filter(cls.owner == user, cls.status == cls.STATUS.ACTIVE).all()
         return mine_communities + communities
+
 
 class CommunityMember(db.Model):
     __tablename__ = 'community_member'
