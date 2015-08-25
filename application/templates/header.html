@@ -23,7 +23,7 @@
         <li class="{% if request.path in ['/profile', ] %}active{% endif %} dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Сотрудники <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/">Поиск сотрудника</a></li>
+            <li><a href="{{ url_for('user.users_search') }}">Поиск сотрудника</a></li>
             <li><a href="/">Кадровые изменения</a></li>
             <li><a href="/">Развитие сотрудника</a></li>
             <li><a href="/">Дни рождения</a></li>

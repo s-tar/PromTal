@@ -286,5 +286,5 @@ li.media {
   display: block !important;
 }
 .media-search {
-    font-size: 20px;
+    cursor: pointer;
 }

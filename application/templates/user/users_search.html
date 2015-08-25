@@ -4,8 +4,8 @@
 {% block content %}
 <script type="text/jsx">
 React.render(
-    <ManageUsers dep_id="1" />,
-    document.getElementById('manage-users'))
+    <SearchUsers dep_id="1" />,
+    document.getElementById('search-users'))
 
 function wellDone(){
     window.location.href = "{{ url_for('user.profile') }}";
@@ -14,37 +14,7 @@ function wellDone(){
 <div class="container-fluid">
     <h2>Поиск сотрудника</h2>
 
-    <div id="manage-users"></div>
-
-    <ul class="media-list">
-      <li class="media media-search">
-        <div class="media-left">
-            <img src="{{ current_user.photo.get_url('thumbnail') if current_user.photo else '/static/img/no_photo.jpg' }}" class="media-object foto-small" alt="Фото {{ current_user.full_name }}">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Media heading 111111111111111 111111111111111 11111111111111</h4>
-          Отдел 111111111111 111111111111111 11111111111111
-        </div>
-      </li>
-      <li class="media">
-        <div class="media-left">
-            <img src="{{ current_user.photo.get_url('thumbnail') if current_user.photo else '/static/img/no_photo.jpg' }}" class="media-object foto-small" alt="Фото {{ current_user.full_name }}">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Media heading</h4>
-          Отдел
-        </div>
-      </li>
-      <li class="media">
-        <div class="media-left">
-            <img src="{{ current_user.photo.get_url('thumbnail') if current_user.photo else '/static/img/no_photo.jpg' }}" class="media-object foto-small" alt="Фото {{ current_user.full_name }}">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Media heading</h4>
-          Отдел
-        </div>
-      </li>
-    </ul>
+    <div id="search-users"></div>
 </div>
 </div>
 
