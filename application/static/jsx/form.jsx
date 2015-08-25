@@ -228,7 +228,7 @@ var SearchUsers = React.createClass({
                   <span className="input-group-addon" id="basic-addon1"><i className="fa fa-search"></i></span>
                   <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Фамилия или имя" aria-describedby="basic-addon1" />
                 </div>
-                <ul className="media-list">
+                <ul className="media-list user-list">
                 {users.map(function(user) {
                   return <SearchUser userIn={user} />;
                 })}
@@ -240,7 +240,8 @@ var SearchUsers = React.createClass({
 });
 
 var SearchUser = React.createClass({
-    clickedUser: function(){
+    clickedUser: function(e){
+        e.preventDefault();
         var self = this;
         document.location.href = '/user/profile/'+self.props.userIn[0];
     },
@@ -249,14 +250,16 @@ var SearchUser = React.createClass({
         var self = this;
         var user = self.props.userIn;
         return (
-              <li className="media media-search" onClick={self.clickedUser}>
-                <div className="media-left">
-                    <img src={user[11]} className="media-object foto-small" />
-                </div>
-                <div className="media-body">
-                  <h4 className="media-heading">{user[1]}</h4>
-                  {user[10]}
-                </div>
+              <li onClick={self.clickedUser}>
+                  <div className="user-frame frame">
+                      <div className="user-icon">
+                          <img src={user[11]} className="media-object foto-small" />
+                      </div>
+                      <div className="info">
+                          <div className="name"><a href="#" onClick={self.clickedUser}>{user[1]}</a></div>
+                          <div className="description" title={user[10]}>{user[10]}</div>
+                      </div>
+                  </div>
               </li>
         );
     }
