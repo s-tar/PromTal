@@ -144,6 +144,31 @@ var CommunityMember = React.createClass({
     onReject: function(){
         this.sendRequest('reject');
     },
+    onDelete: function(){
+        var self = this;
+        Popup.show({
+            title: 'Удалить пользователя',
+            content: 'Вы уверены,что хотите удалить пользователя из группы?',
+            closeButton: false,
+            buttons: [
+                {
+                    name: 'Да',
+                    className: 'left',
+                    action: function(popup){
+                        self.sendRequest('reject');
+                        popup.onClose();
+                    }
+                },
+                {
+                    name: 'Нет',
+                    className: 'right',
+                    action: function(popup){
+                        popup.onClose()
+                    }
+                },
+            ]
+        })
+    },
     render: function() {
         var description = this.state.user.description;
         var is_owner = this.props.community_owner_id == current_user.id;
@@ -151,13 +176,21 @@ var CommunityMember = React.createClass({
         if(!is_owner && this.state.user.status == 'waiting') return null;
         if(this.state.user.status == 'rejected') return null;
 
-        if(is_owner && this.state.user.status == 'waiting') {
-            description = (
-                <div className="buttons">
-                    <a className="button" onClick={this.onAccept}>Принять</a>
-                    <a className="button" onClick={this.onReject}>Отклонить</a>
-                </div>
-            )
+        if(is_owner){
+            if(this.state.user.status == 'waiting') {
+                description = (
+                    <div className="buttons">
+                        <a className="button" onClick={this.onAccept}>Принять</a>
+                        <a className="button reject" onClick={this.onReject}>Отклонить</a>
+                    </div>
+                )
+            }else if(this.state.user.status == 'accepted') {
+                description = (
+                    <div className="buttons">
+                        <a className="button delete" onClick={this.onDelete}>Удалить</a>
+                    </div>
+                )
+            }
         }
         description = description ? <div className="description">{description}</div> : null;
         return (

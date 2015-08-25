@@ -231,6 +231,7 @@ def accept_member(community_id, member_id):
     res = {'status': 'ok', 'user': {'status': cm.STATUS.TITLE[cm.status]}}
     return jsonify(res)
 
+
 @module.route("/<int:community_id>/reject/member/<int:member_id>", methods=['POST'])
 def reject_member(community_id, member_id):
     user = utils.auth.service.get_user()
