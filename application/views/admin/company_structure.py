@@ -135,12 +135,6 @@ def delete_structure(dep_id):
     return redirect(url_for('admin.company_structure'))
 
 
-@module.get('/company-structure/manage-users/<int:dep_id>')
-def manage_users(dep_id):
-    department = Department.get_by_id(dep_id)
-    return render_template('admin/company_structure/manage_users.html', department=department)
-
-
 @module.get('/company-structure/get-users/<int:dep_id>/<user_name>/')
 def get_list_users(dep_id, user_name):
     department = Department.get_by_id(dep_id)
