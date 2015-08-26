@@ -9,7 +9,9 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 
 
 def _default_value(chain):
-    return chain or '-'
+    if (not chain) or (chain == 'None'):
+        return '-'
+    return chain
 
 
 def get_departments(parent_id=None):
@@ -184,3 +186,9 @@ def set_rol_test(role_id, user_id):
 def department_order(dep_id):
     department = Department.get_by_id(dep_id)
     return render_template('admin/company_structure/edit_order.html', department=department)
+
+
+@module.get('/company-structure/manage-users/<int:dep_id>')
+def manage_users(dep_id):
+    department = Department.get_by_id(dep_id)
+    return render_template('admin/company_structure/manage_users.html', department=department)
