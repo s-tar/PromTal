@@ -58,7 +58,7 @@
                 {% if user.birth_date %}
                     <tr>
                         <td>Дата рождения</td>
-                        <td><span class="fa fa-birthday-cake"></span> {{ user.birth_date.strftime('%d.%m.%Y') }} (Age: {{ user.age }})</td>
+                        <td><span class="fa fa-birthday-cake"></span> {{ user.birth_date.strftime('%d.%m') }}</td>
                     </tr>
                 {% endif %}
                 {% if user.mobile_phone %}
