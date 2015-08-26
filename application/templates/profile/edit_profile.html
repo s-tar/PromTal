@@ -28,7 +28,7 @@ React.render(
                     </tr>
                     <tr>
                         <td><span className="fa fa-birthday-cake"></span> Дата рождения</td>
-                        <td><Input className="form-control datepicker" type="text" name="birth_date" defaultValue="{% if current_user.birth_date %}{{ current_user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
+                        <td><Input className="form-control datetimepicker" type="text" name="birth_date" defaultValue="{% if current_user.birth_date %}{{ current_user.birth_date.strftime('%d.%m.%Y') }}{% else %}{% endif %}" placeholder="??.??.????"/></td>
                     </tr>
                     <tr>
                         <td><span className="fa fa-mobile" style={mobilePhoneStyle}></span> Номер мобильного телефона</td>
@@ -88,8 +88,10 @@ function showErrors( data ) {
 </script>
 <script>
 window.onload = function () {
-    $(document).on("focus", ".datepicker", function(){
-        $(this).datepicker();  
+    jQuery('.datetimepicker').datetimepicker({
+     lang:'ru',
+     timepicker:false,
+     format:'d.m.Y'
     });
 };
 </script>
