@@ -136,7 +136,7 @@ class User(db.Model, AuthUser, Mixin):
     def get_new(cls):
         today = date.today()
         delta = today - timedelta(days=30)
-        return cls.query.filter(User.reg_date > delta).order_by(User.reg_date.desc(), User.full_name).all()
+        return cls.query.filter(User.reg_date > delta, or_(User.status != User.STATUS_DELETED, User.status==None)).order_by(User.reg_date.desc(), User.full_name).all()
 
     @classmethod
     def get_birthday(cls):
@@ -146,7 +146,7 @@ class User(db.Model, AuthUser, Mixin):
             or_(
                 and_(extract('month', User.birth_date) == today.month, extract('day', User.birth_date) == today.day),
                 and_(extract('month', User.birth_date) == tomorrow.month, extract('day', User.birth_date) == tomorrow.day)
-            )).order_by(User.birth_date.desc(), User.full_name).all()
+            ), or_(User.status != User.STATUS_DELETED, User.status==None)).order_by(User.birth_date.desc(), User.full_name).all()
 
     @classmethod
     def set_user_is_admin(cls, user_id):

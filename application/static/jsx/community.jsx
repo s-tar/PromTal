@@ -105,7 +105,7 @@ var CommunitySubscriptionButton = React.createClass({
     },
     render: function() {
         var status = this.state.status;
-        var button = !this.state.subscribed ?
+        var button = !this.state.subscribed || status == 'rejected' ?
             <button className="community-join" onClick={this.onJoin}>Присоединиться</button>:
             status == 'waiting' ?
                 <button className="community-leave" onClick={this.onLeave}>Отменить заявку</button> :
