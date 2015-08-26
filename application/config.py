@@ -51,6 +51,17 @@ class Config:
     SKYSMS_MSGENCODING = 'cp1251'
     # SKYSMS_LOGFILE = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'log', 'smslog')
 
+    CELERY_BROKER_URL = "redis://{0}:{1}@{2}:{3}/{4}".format(REDIS_USERNAME,
+                                                             REDIS_PASSWORD,
+                                                             REDIS_HOST,
+                                                             REDIS_PORT,
+                                                             1)
+    CELERY_RESULT_BACKEND = "redis://{0}:{1}@{2}:{3}/{4}".format(REDIS_USERNAME,
+                                                                 REDIS_PASSWORD,
+                                                                 REDIS_HOST,
+                                                                 REDIS_PORT,
+                                                                 2)
+
     session = {
         'session.type': 'file',
         'session.cookie_expires': True,

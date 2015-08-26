@@ -1,6 +1,6 @@
 from application.models.file import File
 from application.utils import image
-from flask import request, current_app, abort
+from flask import request, current_app
 from flask.ext.sqlalchemy import BaseQuery
 from sqlalchemy import func, desc
 
@@ -11,6 +11,7 @@ from application.models.user import User
 from application.models.news import News
 from application.models.comment import Comment
 from application.models.serializers.user import user_schema
+from application.utils.decorators import requires_permissions
 from application.utils.validator import Validator
 from application.utils import auth
 from application.bl.users import create_user, update_user, DataProcessingError
@@ -55,6 +56,7 @@ def delete_user(id):
     return {}, 204
 
 
+@requires_permissions('manage_users')
 @api_v1.post('/users/')
 @json()
 def add_user():
@@ -109,15 +111,10 @@ def add_user():
     return {"status": "fail", "errors": v.errors}
 
 
+@requires_permissions('manage_users')
 @api_v1.put('/users/<int:id>/')
 @json()
 def edit_user(id):
-    #  --- HARDCODE ZONE begin ---
-    current_user = auth.service.get_user()
-    if not current_user.has_permission('manage_users') and current_user.id != id:
-        abort(403)
-    #  --- HARDCODE ZONE end ---
-
     v = Validator(request.form)
     v.field('name').required()
     v.field('surname').required()
@@ -125,6 +122,7 @@ def edit_user(id):
     v.field('email').required().email()
     v.field('login').required()
     v.field('department').required()
+    v.field('inner_phone').integer(nullable=True)
     v.field('mobile_phone').required().phone_number()
     v.field('birth_date').datetime(format='%d.%m.%Y')
     if v.is_valid():
