@@ -7,6 +7,7 @@
             {% block index_content %}{% endblock %}
         </div>
         <div class="col-sm-3 right-column">
+        {% if not category and not tag %}
             <div class="frame">
                 <h3 class="title">Именинники</h3>
                 <div class="user-list">
@@ -19,6 +20,7 @@
                     {{ widget('user.new.members')|safe }}
                 </div>
             </div>
+        {% endif %}
         </div>
     </div>
 </div>

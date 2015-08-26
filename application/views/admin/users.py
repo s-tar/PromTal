@@ -5,11 +5,17 @@ from application.models.user import User, Role, Permission
 from application.models.department import Department
 from application.models.view_users4search import ViewUsers4Search
 from application import db, ldap
+from application.utils.validator import Validator
+from application.utils import auth
+from application.bl.users import create_user, update_user, DataProcessingError
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
 
 
 def _default_value(chain):
     return chain or '-'
+
+def _empty(chain):
+    return ''
 
 
 def _default_value_view(chain):
@@ -58,6 +64,12 @@ def s_users_json():
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
     json_result = rowTable.output_result()
+
+    current_user = auth.service.get_user()
+    disabled = ''
+    if not current_user.is_admin:
+        disabled = 'disabled'
+
     for row in json_result['aaData']:
         row_id = row['0']
         row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
@@ -74,7 +86,7 @@ def s_users_json():
             sel = 'selected' if per.id in set_per else ''
             per_options += "<option value='"+str(per.id)+"' "+sel+">"+per.title+"</option>"
         per_html = """
-          <select onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-selected-text-format="count>1" data-width="170px">
+          <select onchange="change_user_per("""+row_id+""", this)" class="selectpicker" multiple data-selected-text-format="count>1" data-width="170px" """+disabled+""">
             """+per_options+"""
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
@@ -95,7 +107,7 @@ def s_users_json():
         sel = 'selected' if 0 == sel_role else ''
         role_options += "<option value='0/"+row_id+"' "+sel+">admin</option>"
         role_html = """
-          <select onchange="change_user_role(this.value)" class="selectpicker" data-width="110px">
+          <select onchange="change_user_role(this.value)" class="selectpicker" data-width="110px" """+disabled+""">
             """+role_options+"""
           </select>
           <script type="text/javascript">$('.selectpicker').selectpicker({style: 'btn-default',size: 5});</script>
@@ -129,22 +141,17 @@ def users_search_json():
     columns = list()
     columns.append(ColumnDT('users_id', filter=_default_value_view))
     columns.append(ColumnDT('users_full_name', filter=_default_value_view))
-    columns.append(ColumnDT('users_login', filter=_default_value_view))
-    columns.append(ColumnDT('users_email', filter=_default_value_view))
-    columns.append(ColumnDT('users_status', filter=_default_value_view))
-    columns.append(ColumnDT('users_mobile_phone', filter=_default_value_view))
-    columns.append(ColumnDT('users_inner_phone', filter=_default_value_view))
-    columns.append(ColumnDT('users_birth_date', filter=_default_value_view))
-    columns.append(ColumnDT('users_skype', filter=_default_value_view))
-    columns.append(ColumnDT('users_position', filter=_default_value_view))
+    columns.append(ColumnDT('users_login', filter=_empty))
+    columns.append(ColumnDT('users_email', filter=_empty))
+    columns.append(ColumnDT('users_status', filter=_empty))
+    columns.append(ColumnDT('users_mobile_phone', filter=_empty))
+    columns.append(ColumnDT('users_inner_phone', filter=_empty))
+    columns.append(ColumnDT('users_birth_date', filter=_empty))
+    columns.append(ColumnDT('users_skype', filter=_empty))
+    columns.append(ColumnDT('users_position', filter=_empty))
     columns.append(ColumnDT('department_name', filter=_default_value_view))
     columns.append(ColumnDT('photo_url', filter=_default_value_view))
-    query = db.session.query(ViewUsers4Search)
-    rowTable = DataTables(request, ViewUsers4Search, query, columns)
-    json_result = rowTable.output_result()
-    for row in json_result['aaData']:
-        row_id = row['0']
-    return jsonify(**json_result)
+    return jsonify(**DataTables(request, ViewUsers4Search, db.session.query(ViewUsers4Search), columns).output_result())
 
 
 @module.get('/users/delete/<int:id>')

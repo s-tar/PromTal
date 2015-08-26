@@ -162,8 +162,6 @@ class DataTables:
             for i in range(int(self.request_values['iSortingCols'])):
                 sorting.append(Order(self.columns[int(self.request_values['iSortCol_' + str(i)])].column_name, self.request_values['sSortDir_' + str(i)]))
         for sort in sorting:
-            print(sort.name)
-        for sort in sorting:
             tmp_sort_name = sort.name.split('.')
             for tmp_name in tmp_sort_name:
                 if tmp_sort_name.index(tmp_name) == 0:

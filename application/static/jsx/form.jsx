@@ -194,6 +194,33 @@ var AJAXForm = React.createClass({
 });
 
 var SearchUsers = React.createClass({
+    componentDidMount: function(e){
+        var self = this;
+        var inputNode = this.refs.input.getDOMNode();
+        this.onInputChangeObservable = Rx.Observable.fromEvent(
+                inputNode, 'keydown'
+            ).debounce(200)
+        this.onChangeObserver = this.onInputChangeObservable.subscribe(function(e){
+                this.setState({userName:e.target.value});
+                var name = e.target.value;
+                var self = this;
+                if(name) {
+                    $.ajax({
+                      url: "/admin/users_search_json?sEcho=3&iColumns=12&sColumns=%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C&iDisplayStart=0&iDisplayLength=21&mDataProp_0=0&sSearch_0=&bRegex_0=false&bSearchable_0=true&bSortable_0=true&mDataProp_1=1&sSearch_1=&bRegex_1=false&bSearchable_1=true&bSortable_1=true&mDataProp_2=2&sSearch_2=&bRegex_2=false&bSearchable_2=true&bSortable_2=true&mDataProp_3=3&sSearch_3=&bRegex_3=false&bSearchable_3=true&bSortable_3=true&mDataProp_4=4&sSearch_4=&bRegex_4=false&bSearchable_4=true&bSortable_4=true&mDataProp_5=5&sSearch_5=&bRegex_5=false&bSearchable_5=true&bSortable_5=true&mDataProp_6=6&sSearch_6=&bRegex_6=false&bSearchable_6=true&bSortable_6=true&mDataProp_7=7&sSearch_7=&bRegex_7=false&bSearchable_7=true&bSortable_7=true&mDataProp_8=8&sSearch_8=&bRegex_8=false&bSearchable_8=true&bSortable_8=true&mDataProp_9=9&sSearch_9=&bRegex_9=false&bSearchable_9=true&bSortable_9=true&mDataProp_10=10&sSearch_10=&bRegex_10=false&bSearchable_10=true&bSortable_10=true&mDataProp_11=11&sSearch_11=&bRegex_11=false&bSearchable_11=true&bSortable_11=true&sSearch="+name+"&bRegex=false&iSortCol_0=0&sSortDir_0=asc&iSortingCols=1&_=1440505648017",
+                      success: function(data){
+                        self.setState({userList:[]});
+                        self.setState({userList:data['aaData']});
+                      }
+                    });
+                } else {
+                    self.setState({userList:[]});
+                }
+            }.bind(this))
+    },
+
+    componentWillUnmount: function(){
+        this.onChangeObserver.dispose()
+    },
 
     getInitialState: function(){
         return { userName: '', userList: []};
@@ -203,30 +230,16 @@ var SearchUsers = React.createClass({
         this.setState({userName:e.target.value});
         var name = e.target.value;
         var self = this;
-        console.log(name);
-
-        $.ajax({
-          url: "/admin/users_search_json?sEcho=3&iColumns=12&sColumns=%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C&iDisplayStart=0&iDisplayLength=200&mDataProp_0=0&sSearch_0=&bRegex_0=false&bSearchable_0=true&bSortable_0=true&mDataProp_1=1&sSearch_1=&bRegex_1=false&bSearchable_1=true&bSortable_1=true&mDataProp_2=2&sSearch_2=&bRegex_2=false&bSearchable_2=true&bSortable_2=true&mDataProp_3=3&sSearch_3=&bRegex_3=false&bSearchable_3=true&bSortable_3=true&mDataProp_4=4&sSearch_4=&bRegex_4=false&bSearchable_4=true&bSortable_4=true&mDataProp_5=5&sSearch_5=&bRegex_5=false&bSearchable_5=true&bSortable_5=true&mDataProp_6=6&sSearch_6=&bRegex_6=false&bSearchable_6=true&bSortable_6=true&mDataProp_7=7&sSearch_7=&bRegex_7=false&bSearchable_7=true&bSortable_7=true&mDataProp_8=8&sSearch_8=&bRegex_8=false&bSearchable_8=true&bSortable_8=true&mDataProp_9=9&sSearch_9=&bRegex_9=false&bSearchable_9=true&bSortable_9=true&mDataProp_10=10&sSearch_10=&bRegex_10=false&bSearchable_10=true&bSortable_10=true&mDataProp_11=11&sSearch_11=&bRegex_11=false&bSearchable_11=true&bSortable_11=true&sSearch="+name+"&bRegex=false&iSortCol_0=0&sSortDir_0=asc&iSortingCols=1&_=1440505648017",
-          success: function(data){
-            //console.log(data['aaData']);
-            self.setState({userList:[]});
-            self.setState({userList:data['aaData']});
-            //console.log(self.state.userList);
-          }
-        });
-
     },
 
     render: function() {
         var self = this;
         var users = self.state.userList;
-        //console.log(users);
-        //console.log(self.props.dep_id);
         return (
             <div>
                 <div className="input-group fio">
                   <span className="input-group-addon" id="basic-addon1"><i className="fa fa-search"></i></span>
-                  <input type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Фамилия или имя" aria-describedby="basic-addon1" />
+                  <input ref='input' type="text" className="form-control" value={this.state.userName} onChange={this.userNameChange} placeholder="Введите данные пользователя" aria-describedby="basic-addon1" />
                 </div>
                 <ul className="media-list user-list">
                 {users.map(function(user) {
