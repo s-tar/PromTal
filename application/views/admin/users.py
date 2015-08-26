@@ -14,6 +14,9 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 def _default_value(chain):
     return chain or '-'
 
+def _empty(chain):
+    return ''
+
 
 def _default_value_view(chain):
     if chain == 'None':
@@ -138,22 +141,17 @@ def users_search_json():
     columns = list()
     columns.append(ColumnDT('users_id', filter=_default_value_view))
     columns.append(ColumnDT('users_full_name', filter=_default_value_view))
-    columns.append(ColumnDT('users_login', filter=_default_value_view))
-    columns.append(ColumnDT('users_email', filter=_default_value_view))
-    columns.append(ColumnDT('users_status', filter=_default_value_view))
-    columns.append(ColumnDT('users_mobile_phone', filter=_default_value_view))
-    columns.append(ColumnDT('users_inner_phone', filter=_default_value_view))
-    columns.append(ColumnDT('users_birth_date', filter=_default_value_view))
-    columns.append(ColumnDT('users_skype', filter=_default_value_view))
-    columns.append(ColumnDT('users_position', filter=_default_value_view))
+    columns.append(ColumnDT('users_login', filter=_empty))
+    columns.append(ColumnDT('users_email', filter=_empty))
+    columns.append(ColumnDT('users_status', filter=_empty))
+    columns.append(ColumnDT('users_mobile_phone', filter=_empty))
+    columns.append(ColumnDT('users_inner_phone', filter=_empty))
+    columns.append(ColumnDT('users_birth_date', filter=_empty))
+    columns.append(ColumnDT('users_skype', filter=_empty))
+    columns.append(ColumnDT('users_position', filter=_empty))
     columns.append(ColumnDT('department_name', filter=_default_value_view))
     columns.append(ColumnDT('photo_url', filter=_default_value_view))
-    query = db.session.query(ViewUsers4Search)
-    rowTable = DataTables(request, ViewUsers4Search, query, columns)
-    json_result = rowTable.output_result()
-    for row in json_result['aaData']:
-        row_id = row['0']
-    return jsonify(**json_result)
+    return jsonify(**DataTables(request, ViewUsers4Search, db.session.query(ViewUsers4Search), columns).output_result())
 
 
 @module.get('/users/delete/<int:id>')
