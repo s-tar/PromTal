@@ -61,6 +61,10 @@ class Department(db.Model, Mixin):
 
     @classmethod
     def add_head4dep(cls, option, dep_id, user_id):
+        deps = cls.query.filter_by(user_id=user_id).all()
+        for dep in deps:
+            dep.user_id = None
+            db.session.add(dep)
         dep = cls.query.filter_by(id=dep_id).first()
         if option == 1:
             dep.user_id = user_id

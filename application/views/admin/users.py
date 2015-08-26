@@ -12,7 +12,9 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 
 
 def _default_value(chain):
-    return chain or '-'
+    if (not chain) or (chain == 'None'):
+        return '-'
+    return chain
 
 
 def _empty(chain):
@@ -65,12 +67,12 @@ def s_users():
 @module.get('/s_users_json')
 def s_users_json():
     columns = list()
-    columns.append(ColumnDT('id', filter=_default_value_view))
-    columns.append(ColumnDT('full_name', filter=_default_value_view))
-    columns.append(ColumnDT('email', filter=_default_value_view))
-    columns.append(ColumnDT('login', filter=_default_value_view))
-    columns.append(ColumnDT('mobile_phone', filter=_default_value_view))
-    columns.append(ColumnDT('inner_phone', filter=_default_value_view))
+    columns.append(ColumnDT('id', filter=_default_value))
+    columns.append(ColumnDT('full_name', filter=_default_value))
+    columns.append(ColumnDT('email', filter=_default_value))
+    columns.append(ColumnDT('login', filter=_default_value))
+    columns.append(ColumnDT('mobile_phone', filter=_default_value))
+    columns.append(ColumnDT('inner_phone', filter=_default_value))
     columns.append(ColumnDT('status', filter=_status))
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
