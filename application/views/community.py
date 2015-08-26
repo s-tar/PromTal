@@ -2,6 +2,7 @@ from application.models.community import Community, CommunityMember
 from application.models.file import File
 from application import Module, db
 from application.models.post import Post
+from application.models.user import User
 from application.utils import auth
 from application.utils.validator import Validator
 from flask import render_template, request, abort, redirect, url_for
@@ -240,14 +241,16 @@ def reject_member(community_id, member_id):
         abort(403)
 
     community = Community.get(community_id)
-    cm = CommunityMember.query.filter(
-        CommunityMember.user_id == member_id,
-        CommunityMember.community_id == community_id).first()
-    if not cm or not community or community.owner != user:
+    member = User.get(member_id)
+    # cm = CommunityMember.query.filter(
+    #     CommunityMember.user_id == member_id,
+    #     CommunityMember.community_id == community_id).first()
+    if not member or not community or community.owner != user:
         abort(404)
 
-    cm.status = cm.STATUS.REJECTED
+    # cm.status = cm.STATUS.REJECTED
+    community.members.remove(member)
     db.session.commit()
 
-    res = {'status': 'ok', 'user': {'status': cm.STATUS.TITLE[cm.status]}}
+    res = {'status': 'ok', 'user': {'status': CommunityMember.STATUS.TITLE[CommunityMember.STATUS.REJECTED]}}
     return jsonify(res)

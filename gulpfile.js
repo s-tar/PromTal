@@ -9,6 +9,8 @@ var gzip = require('gulp-gzip');
 var concat = require('gulp-concat');
 var livereload = require('gulp-livereload');
 var react = require('gulp-react');
+var strip = require('gulp-strip-comments');
+var stripCssComments = require('gulp-strip-css-comments');
 
 var gzip_options = {
     threshold: '1kb',
@@ -19,7 +21,9 @@ var gzip_options = {
 var static_folder = './application/static';
 /* Compile Our Stylus */
 gulp.task('stylus', function() {
-    return gulp.src(static_folder+'/stylus/*.styl')
+    return gulp.src([
+            static_folder+'/stylus/*.styl',
+            static_folder+'/stylus/style.styl'])
         .pipe(concat('bundle.styl'))
         .pipe(gulp.dest(static_folder+'/stylus'))
         .pipe(stylus())
@@ -37,7 +41,9 @@ gulp.task('css', function() {
     return gulp.src(static_folder+'/css/*.css')
         .pipe(concat('style.min.css'))
         .pipe(gulp.dest(static_folder+'/bundle'))
-        .pipe(minifycss())
+        .pipe(stripCssComments())
+        .pipe(gulp.dest(static_folder+'/bundle'))
+        .pipe(minifycss({compatibility: 'ie8'}))
         .pipe(gulp.dest(static_folder+'/bundle'))
         //.pipe(gzip(gzip_options))
         //.pipe(gulp.dest(static_folder+'/bundle'))
@@ -61,9 +67,10 @@ gulp.task('js', function() {
             static_folder+'/js/lib/rx.all.js',
             static_folder+'/js/*.js',
             static_folder+'/js/lib/*.js',
-            static_folder+'/js/lib/jquery.dataTables.min.js',
-            static_folder+'/js/lib/dataTables.bootstrap.js',
-            static_folder+'/js/lib/dataTables.responsive.min.js',
+            '!'+static_folder+'/js/lib/jquery.dataTables.min.js',
+            '!'+static_folder+'/js/lib/dataTables.bootstrap.js',
+            '!'+static_folder+'/js/lib/dataTables.responsive.min.js',
+            '!'+static_folder+'/js/lib/bootstrap-select.js',
             '!'+static_folder+'/js/jquery.1.11.3.min.js',
             ] )
         .pipe(concat('js.bundle.js'))
