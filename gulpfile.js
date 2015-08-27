@@ -66,6 +66,7 @@ gulp.task('js', function() {
             static_folder+'/js/lib/rx.all.js',
             static_folder+'/js/*.js',
             static_folder+'/js/lib/*.js',
+            '!'+static_folder+'/js/lib/bootstrap.js',
             '!'+static_folder+'/js/lib/jquery.dataTables.min.js',
             '!'+static_folder+'/js/lib/dataTables.bootstrap.js',
             '!'+static_folder+'/js/lib/dataTables.responsive.min.js',
