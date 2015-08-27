@@ -28,7 +28,6 @@ gulp.task('stylus', function() {
         .pipe(gulp.dest(static_folder+'/stylus'))
         .pipe(stylus())
         .pipe(gulp.dest(static_folder+'/css'))
-        .pipe(rename('stylus.min.css'))
         .pipe(minifycss())
         .pipe(gulp.dest(static_folder+'/css'))
         //.pipe(gzip(gzip_options))
