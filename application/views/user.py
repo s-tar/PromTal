@@ -48,45 +48,6 @@ def edit_profile():
                            departments={department.name for department in departments})
 
 
-@module.post('/profile/edit')
-def edit_profile_post():
-    current_user = auth.service.get_user()
-    data = dict(request.form)
-    data["file"] = request.files["file"]
-
-    v = Validator(data)
-    v.field('full_name').required()
-    v.field('email').required().email()
-    v.field('mobile_phone').required().phone_number()
-    v.field('department').required()
-    v.field('birth_date').datetime(format="%d.%m.%Y")
-    v.field('file').image()
-    if v.is_valid():
-        data = {
-            'id': current_user.id,
-            'login': current_user.login,
-            'full_name': v.valid_data.full_name,
-            'position': v.valid_data.position,
-            'mobile_phone': v.valid_data.mobile_phone,
-            'inner_phone': v.valid_data.inner_phone,
-            'department': v.valid_data.department,
-            'email': v.valid_data.email,
-            'skype': v.valid_data.skype,
-            'photo': v.valid_data.file,
-            'birth_date': v.valid_data.birth_date
-        }
-
-        try:
-            update_user(**data)
-            return jsonify({"status": "ok"})
-        except DataProcessingError as e:
-            return jsonify({'status': 'failOnProcess',
-                            'error': e.value})
-
-    return jsonify({"status": "fail",
-                    "errors": v.errors})
-
-
 @module.route("/password/change")
 def edit_pass():
     return render_template('profile/edit_pass.html')

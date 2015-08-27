@@ -3,15 +3,29 @@
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
-from application import db, create_app
+from application import db, create_app, celery
 from application.models.user import Permission, Role, User
 
+from celery.bin import worker
+
 app = create_app('default')
+
 manager = Manager(app)
 migrate = Migrate(app, db)
 
 manager.add_command("shell", Shell)
 manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def runcelery():
+    celery_worker = worker.worker(app=celery)
+
+    options = {
+        'traceback': True,
+    }
+
+    celery_worker.run(**options)
 
 
 @manager.command

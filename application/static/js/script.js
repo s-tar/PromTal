@@ -123,7 +123,7 @@ function niceDateFormat(date, time){
     var now = new Date()
     if(!date) return ''
     time = time || true;
-    date = new Date(date)
+    date = new Date((date.replace(' ', 'T')));
     if(dateDiffInDays(now, date) == 0) return date.format("Сегодня" + (time ? " в HH:MM" : ""));
     if(dateDiffInDays(now, date) == -1) return date.format("Вчера" + (time ? " в HH:MM" : ""));
     if(dateDiffInDays(now, date) == 1) return date.format("Завтра" + (time ? " в HH:MM" : ""));

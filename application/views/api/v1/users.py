@@ -10,6 +10,7 @@ from application.models.news import News
 from application.models.comment import Comment
 from application.utils.decorators import requires_permissions
 from application.utils.validator import Validator
+from application.utils import auth
 from application.bl.users import create_user, update_user, DataProcessingError
 from application.views.api.decorators import json
 
@@ -154,6 +155,44 @@ def edit_user(id):
             return {"status": "fail", "errors": v.errors}
 
         try:
+            update_user(**data)
+            return {"status": "ok"}
+        except DataProcessingError as e:
+            return {'status': 'failOnProcess', 'error': e.value}
+
+    return {"status": "fail", "errors": v.errors}
+
+
+@api_v1.put('/users/profile/')
+@json()
+def edit_profile():
+    current_user = auth.service.get_user()
+    _data = dict(request.form)
+    _data["file"] = request.files["file"]
+
+    v = Validator(_data)
+    v.field('full_name').required()
+    v.field('email').required().email()
+    v.field('mobile_phone').required().phone_number()
+    v.field('department').required()
+    v.field('birth_date').datetime(format="%d.%m.%Y")
+    v.field('file').image()
+    if v.is_valid():
+        data = {
+            'id': current_user.id,
+            'full_name': v.valid_data.full_name,
+            'position': v.valid_data.position,
+            'mobile_phone': v.valid_data.mobile_phone,
+            'inner_phone': v.valid_data.inner_phone,
+            'department': v.valid_data.department,
+            'email': v.valid_data.email,
+            'skype': v.valid_data.skype,
+            'photo': v.valid_data.file,
+            'birth_date': v.valid_data.birth_date
+        }
+
+        try:
+            print(data)
             update_user(**data)
             return {"status": "ok"}
         except DataProcessingError as e:

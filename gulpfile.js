@@ -23,7 +23,8 @@ var static_folder = './application/static';
 gulp.task('stylus', function() {
     return gulp.src([
             static_folder+'/stylus/*.styl',
-            static_folder+'/stylus/style.styl'])
+            static_folder+'/stylus/style.styl',
+            '!'+static_folder+'/stylus/bundle.styl'])
         .pipe(concat('bundle.styl'))
         .pipe(gulp.dest(static_folder+'/stylus'))
         .pipe(stylus())
@@ -51,7 +52,9 @@ gulp.task('css', function() {
 
 /* Compile Our JSX */
 gulp.task('jsx', function() {
-    return gulp.src(static_folder+'/jsx/*.jsx')
+    return gulp.src([
+                static_folder+'/jsx/*.jsx',
+                '!'+static_folder+'/jsx/components.jsx'])
         .pipe(concat('components.jsx'))
         .pipe(gulp.dest(static_folder+'/jsx'))
         .pipe(react())
