@@ -10,6 +10,7 @@ from application.utils import widget
 from application.db import db, redis
 from application.ldap import ldap
 from application.sms import sms_service
+from application.celery import celery
 from application.config import config
 from application.module import Module
 from application.utils.session import Session
@@ -33,6 +34,8 @@ def create_app(config_name):
     redis.init_app(app)
     ldap.init_app(app)
     sms_service.init_app(app)
+    celery.init_app(app)
+
 
     from application import models
 

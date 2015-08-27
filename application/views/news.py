@@ -1,6 +1,7 @@
+from collections import defaultdict
+
 from flask import render_template, request, abort, redirect, url_for
 from flask.json import jsonify
-from collections import defaultdict
 
 from application import Module, db
 from application.utils.decorators import requires_permissions
@@ -10,6 +11,7 @@ from application.models.news import News
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag
 from application.views.main import main
+from application.tasks.email import send_news_notification
 
 module = Module('news', __name__, url_prefix='/news')
 
@@ -69,6 +71,7 @@ def save():
     if v.is_valid():
         data = v.valid_data
         news = News.get(data.id) or News()
+
         if news.author and news.author != user:
             abort(403)
         news.title = data.title
@@ -85,8 +88,13 @@ def save():
 
         news.tags = list(tags.values())
 
+        is_new = True if user.id is not None else False
         db.session.add(news)
         db.session.commit()
+
+        # if is_new:
+        #     send_news_notification.delay(news.id, news.title)
+
         return jsonify({'status': 'ok',
                         'news': news.as_dict()})
 

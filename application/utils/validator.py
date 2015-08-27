@@ -217,6 +217,7 @@ def get_message(code, message):
     messages = {
         'required': "Обязательное поле",
         'not_integer': "Должно быть целым числом",
+        'not_number': "Должно быть числом",
         'not_float': "Должно быть числом",
         'not_boolean': "Должно быть булевым значением",
         'string_not_in_range': "Длина текста должна быть не меньше %(min)d и не больше %(max)d символов",

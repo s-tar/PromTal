@@ -1,6 +1,6 @@
 from application.models.file import File
 from application.utils import image
-from flask import request, current_app, abort
+from flask import request, current_app
 from flask.ext.sqlalchemy import BaseQuery
 from sqlalchemy import func, desc
 
@@ -10,9 +10,8 @@ from application.db import db
 from application.models.user import User
 from application.models.news import News
 from application.models.comment import Comment
-from application.models.serializers.user import user_schema
+from application.utils.decorators import requires_permissions
 from application.utils.validator import Validator
-from application.utils import auth
 from application.bl.users import create_user, update_user, DataProcessingError
 from application.views.api.decorators import json
 
@@ -55,10 +54,14 @@ def delete_user(id):
     return {}, 204
 
 
+@requires_permissions('manage_users')
 @api_v1.post('/users/')
 @json()
 def add_user():
-    v = Validator(request.form)
+    _data = dict(request.form)
+    _data['file'] = request.files['file']
+
+    v = Validator(_data)
     v.field('name').required()
     v.field('surname').required()
     v.field('file').image()
@@ -95,13 +98,6 @@ def add_user():
 
         try:
             create_user(**data)
-            if data['photo']:
-                p = File.create(name='photo.png', module='users', entity=User.get_by_login(data['login']))
-                p.makedir()
-                p.update_hash()
-                image.thumbnail(data["photo"], width=100, height=100, fill=image.COVER).save(p.get_path(sufix="thumbnail"))
-                image.resize(data["photo"]).save(p.get_path())
-
             return {"status": "ok"}
         except DataProcessingError as e:
             return {'status': 'failOnProcess', 'error': e.value}
@@ -109,22 +105,20 @@ def add_user():
     return {"status": "fail", "errors": v.errors}
 
 
+@requires_permissions('manage_users')
 @api_v1.put('/users/<int:id>/')
 @json()
 def edit_user(id):
-    #  --- HARDCODE ZONE begin ---
-    current_user = auth.service.get_user()
-    if not current_user.has_permission('manage_users') and current_user.id != id:
-        abort(403)
-    #  --- HARDCODE ZONE end ---
+    _data = dict(request.form)
+    _data['file'] = request.files['file']
 
-    v = Validator(request.form)
+    v = Validator(_data)
     v.field('name').required()
     v.field('surname').required()
     v.field('file').image()
     v.field('email').required().email()
-    v.field('login').required()
     v.field('department').required()
+    v.field('inner_phone').integer(nullable=True)
     v.field('mobile_phone').required().phone_number()
     v.field('birth_date').datetime(format='%d.%m.%Y')
     if v.is_valid():
@@ -134,7 +128,6 @@ def edit_user(id):
             'id': id,
             'full_name': "{0} {1}".format(v.valid_data.name, v.valid_data.surname),
             'email': v.valid_data.email,
-            'login': v.valid_data.login,
             'department': v.valid_data.department,
             'mobile_phone': v.valid_data.mobile_phone,
             'inner_phone': v.valid_data.inner_phone,
@@ -144,12 +137,8 @@ def edit_user(id):
             'photo': v.valid_data.file
         }
 
-        user_with_same_login = User.get_by_login(data['login'])
         user_with_same_email = User.get_by_email(data['email'])
 
-        if user_with_same_login and user_with_same_login != edited_user:
-            duplicate_error = True
-            v.add_error('login', 'Такой логин уже занят')
         if user_with_same_email and user_with_same_email != edited_user:
             duplicate_error = True
             v.add_error('email', 'Такой email уже занят')
@@ -159,13 +148,6 @@ def edit_user(id):
 
         try:
             update_user(**data)
-            if data['photo']:
-                p = File.create(name='photo.png', module='users', entity=User.get_by_login(data['login']))
-                p.makedir()
-                p.update_hash()
-                image.thumbnail(data["photo"], width=100, height=100, fill=image.COVER).save(p.get_path(sufix="thumbnail"))
-                image.resize(data["photo"]).save(p.get_path())
-
             return {"status": "ok"}
         except DataProcessingError as e:
             return {'status': 'failOnProcess', 'error': e.value}

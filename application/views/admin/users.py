@@ -12,7 +12,10 @@ from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTab
 
 
 def _default_value(chain):
-    return chain or '-'
+    if (not chain) or (chain == 'None'):
+        return '-'
+    return chain
+
 
 def _empty(chain):
     return ''
@@ -22,6 +25,15 @@ def _default_value_view(chain):
     if chain == 'None':
         return None
     return chain
+
+
+def _status(chain):
+    act, dele = "Активный", "Удалён"
+    if chain == 'None':
+        return act
+    elif chain == '1':
+        return dele
+    return act
 
 
 @module.get('/users_list')
@@ -61,6 +73,7 @@ def s_users_json():
     columns.append(ColumnDT('login', filter=_default_value))
     columns.append(ColumnDT('mobile_phone', filter=_default_value))
     columns.append(ColumnDT('inner_phone', filter=_default_value))
+    columns.append(ColumnDT('status', filter=_status))
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
     json_result = rowTable.output_result()

@@ -142,12 +142,21 @@ class LDAP(object):
 
     def modify_user(self, user, attributes):
         conn = self.bind()
-        user_dn = self.get_object_details(user=user, dn_only=True)
-        if user_dn is None:
+        ldap_user = self.get_object_details(user=user)
+        if ldap_user is None:
             return
-        changes = {attr_name: [(ldap3.MODIFY_REPLACE, attr_value if isinstance(attr_value, list) else [attr_value])]
-                   for attr_name, attr_value in attributes.items()}
-        conn.modify(dn=user_dn, changes=changes)
+        changes = {}
+        for attr_name, attr_value in attributes.items():
+            if not attr_value:
+                if ldap_user['attributes'].get('telephoneNumber', None) is not None:
+                    changes.update({
+                        attr_name: [(ldap3.MODIFY_DELETE, ldap_user['attributes']['telephoneNumber'])]
+                    })
+            else:
+                changes.update({
+                    attr_name: [(ldap3.MODIFY_REPLACE, attr_value if isinstance(attr_value, list) else [attr_value])]
+                })
+        conn.modify(dn=ldap_user['dn'], changes=changes)
         conn.unbind()
         return True if conn.result['description'] == 'success' else False
 

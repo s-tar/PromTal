@@ -102,6 +102,7 @@ class User(db.Model, AuthUser, Mixin):
     position = db.Column(db.String(255))
     photo_id = db.Column(db.Integer, db.ForeignKey('file.id'))
     is_admin = db.Column(db.Boolean, default=False)
+    news_notification = db.Column(db.Boolean, default=False)
     reg_date = db.Column(db.DateTime, default=datetime.now)
 
     permissions = db.relationship("Permission", secondary=user_permission_associate, backref="users", lazy='dynamic')
@@ -204,7 +205,6 @@ class User(db.Model, AuthUser, Mixin):
             dep_id = None
         u.department_id = dep_id
         db.session.add(u)
-        db.session.commit()
 
     @classmethod
     def edit_user(cls, uid, full_name=full_name,
@@ -216,7 +216,6 @@ class User(db.Model, AuthUser, Mixin):
                             skype=skype,
                             photo=photo):
         u = cls.query.filter_by(id=uid).first()
-
         if u:
             u.full_name = full_name
             u.position = position
@@ -230,14 +229,12 @@ class User(db.Model, AuthUser, Mixin):
             u.skype = skype
 
             db.session.add(u)
-            db.session.flush()
             if photo:
                 p = u.photo = u.photo or File.create(name='photo.png', module='users', entity=u)
                 p.makedir()
                 p.update_hash()
                 image.thumbnail(photo, width = 100, height = 100, fill = image.COVER).save(p.get_path(sufix="thumbnail"))
                 image.resize(photo).save(p.get_path())
-            db.session.commit()
         return u
 
     def get_permissions(self):
@@ -247,9 +244,6 @@ class User(db.Model, AuthUser, Mixin):
 
     def has_role(self, role):
         return role in self.roles
-
-    def has_permission(self, permission):
-        return permission in self.permissions
 
     @property
     def age(self):
