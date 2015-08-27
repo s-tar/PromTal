@@ -9,6 +9,8 @@ from application.models.user import User
 from application.models.department import Department
 from application.db import db
 from application.bl.users import modify_password, PasswordError, DataProcessingError, update_user
+from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
+from application.models.view_users4search import ViewUsers4Search
 
 module = Module('user', __name__, url_prefix='/user')
 
@@ -89,3 +91,31 @@ def birthdays():
 def new_members():
     users = User.get_new()
     return render_template('user/new_members.html',  **{'users': users})
+
+
+def _default_value_view(chain):
+    if chain == 'None':
+        return None
+    return chain
+
+
+def _empty(chain):
+    return ''
+
+
+@module.get('/users_search_json')
+def users_search_json():
+    columns = list()
+    columns.append(ColumnDT('users_id', filter=_default_value_view))
+    columns.append(ColumnDT('users_full_name', filter=_default_value_view))
+    columns.append(ColumnDT('users_login', filter=_empty))
+    columns.append(ColumnDT('users_email', filter=_empty))
+    columns.append(ColumnDT('users_status', filter=_empty))
+    columns.append(ColumnDT('users_mobile_phone', filter=_empty))
+    columns.append(ColumnDT('users_inner_phone', filter=_empty))
+    columns.append(ColumnDT('users_birth_date', filter=_empty))
+    columns.append(ColumnDT('users_skype', filter=_empty))
+    columns.append(ColumnDT('users_position', filter=_empty))
+    columns.append(ColumnDT('department_name', filter=_default_value_view))
+    columns.append(ColumnDT('photo_url', filter=_default_value_view))
+    return jsonify(**DataTables(request, ViewUsers4Search, db.session.query(ViewUsers4Search), columns).output_result())
