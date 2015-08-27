@@ -38,7 +38,13 @@ var Popup = React.createClass({
             closeButton: true,
             title: '',
             buttons: [],
-            outsideClickClose: false
+            outsideClickClose: false,
+            closeTimeout: 0
+        }
+    },
+    componentDidMount: function(){
+        if(!!this.props.closeTimeout){
+            setTimeout(this.onClose, this.props.closeTimeout);
         }
     },
     onClose: function(){
