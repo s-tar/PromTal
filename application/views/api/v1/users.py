@@ -54,6 +54,15 @@ def delete_user(id):
     return {}, 204
 
 
+@api_v1.put('/user/activate/<int:id>/')
+@json()
+def activate_user(id):
+    user = User.query.get_or_404(id)
+    user.status = User.STATUS_ACTIVE
+    db.session.commit()
+    return {}, 204
+
+
 @requires_permissions('manage_users')
 @api_v1.post('/users/')
 @json()

@@ -26,11 +26,21 @@
 </head>
 <body>
     <div id="popup"></div>
-{% block body %}
-    {% include 'admin/header.html' %}
-    {% block content %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block body %}
+        {% include 'admin/header.html' %}
+        {% block content %}
+        {% endblock %}
     {% endblock %}
-{% endblock %}
     <script src="/static/js/lib/tinymce/tinymce.min.js"></script>
 </body>
 </html>

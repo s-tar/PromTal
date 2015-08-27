@@ -36,7 +36,6 @@ def create_app(config_name):
     sms_service.init_app(app)
     celery.init_app(app)
 
-
     from application import models
 
     for _module in Module.get_all():
