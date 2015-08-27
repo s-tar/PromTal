@@ -56,8 +56,8 @@ def insert_roles():
     roles = {
         'user': ['post_comment'],
         'moderator': [
-            'post_comment', 'edit_comments',
-            'write_articles', 'moderate_comments',
+            'post_comment',
+            'write_articles', 'manage_comments',
             'manage_articles', 'manage_users',
         ]
     }

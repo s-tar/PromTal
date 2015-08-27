@@ -31,11 +31,12 @@ class Permission(db.Model):
     __tablename__ = 'permissions'
 
     PERMISSIONS = [
-        ('post_comment', 'Писать комментарии'), ('edit_comments', 'Редактировать комментарии'),
-        ('write_articles', 'Писать новости'), ('moderate_comments', 'Модерировать комментарии'),
+        ('post_comment', 'Писать комментарии'),
+        ('write_articles', 'Писать новости'), ('manage_comments', 'Управлять комментариями'),
         ('manage_users', 'Управлять пользователями'), ('set_permissions', 'Выдавать разрешения'),
         ('change_company_structure', 'Изменять структуру компании'),
-        ('manage_user_groups', 'Управлять группами пользователей'), ('manage_articles', 'Управлять новостями'),
+        ('manage_user_groups', 'Управлять группами пользователей'),
+        ('manage_articles', 'Управлять новостями'),
     ]
 
     id = db.Column(db.Integer, primary_key=True)
