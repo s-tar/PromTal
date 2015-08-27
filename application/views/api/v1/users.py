@@ -1,5 +1,3 @@
-from application.models.file import File
-from application.utils import image
 from flask import request, current_app
 from flask.ext.sqlalchemy import BaseQuery
 from sqlalchemy import func, desc

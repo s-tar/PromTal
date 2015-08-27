@@ -2,7 +2,6 @@ var user = {}
 
 user.delete = function(id) {
     Popup.show({
-        title: 'Удаление пользователя',
         content: 'Вы уверены, что хотите удалить пользователя?',
         closeButton: false,
         buttons: [
@@ -32,7 +31,6 @@ user.delete = function(id) {
 
 user.activate = function(id) {
     Popup.show({
-        title: 'Активация пользователя',
         content: 'Активировать пользователя?',
         closeButton: false,
         buttons: [
