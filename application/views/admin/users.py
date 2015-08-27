@@ -9,6 +9,7 @@ from application.utils.validator import Validator
 from application.utils import auth
 from application.bl.users import create_user, update_user, DataProcessingError
 from application.utils.datatables_sqlalchemy.datatables import ColumnDT, DataTables
+from flask.helpers import flash
 
 
 def _default_value(chain):
@@ -19,7 +20,6 @@ def _default_value(chain):
 
 def _empty(chain):
     return ''
-
 
 def _default_value_view(chain):
     if chain == 'None':
@@ -74,19 +74,20 @@ def s_users_json():
     columns.append(ColumnDT('mobile_phone', filter=_default_value))
     columns.append(ColumnDT('inner_phone', filter=_default_value))
     columns.append(ColumnDT('status', filter=_status))
+
     query = db.session.query(User)
     rowTable = DataTables(request, User, query, columns)
     json_result = rowTable.output_result()
 
     current_user = auth.service.get_user()
     disabled = ''
-    if not current_user.is_admin:
+    if not current_user.is_admin and ('set_permissions' not in current_user.get_permissions()):
         disabled = 'disabled'
 
     for row in json_result['aaData']:
         row_id = row['0']
         row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
-        last_col = len(columns)-1
+        last_col = len(columns) - 1
 
         # Permission
         last_col += 1
@@ -131,16 +132,21 @@ def s_users_json():
         last_col += 1
         last_columns = str(last_col)
         manage_html = """
-            <a href="{edit_user_profile}">
+            <a href="javascript: user.activate({0})">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </a>
+            <a href="{1}">
                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
-            <a href="javascript: user.delete(%s)">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <a href="javascript: user.delete({0})">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </a>
-        """ % row_id
-        row[last_columns] = manage_html.format(
-            edit_user_profile = url_for('admin.edit_user', id=row_id),
-            delete_user_profile = url_for('admin.delete_user', id=row_id))
+        """.format(
+            row_id,
+            url_for('admin.edit_user', id=row_id)
+        )
+        row[last_columns] = manage_html
+
     return jsonify(**json_result)
 
 
@@ -165,22 +171,6 @@ def users_search_json():
     columns.append(ColumnDT('department_name', filter=_default_value_view))
     columns.append(ColumnDT('photo_url', filter=_default_value_view))
     return jsonify(**DataTables(request, ViewUsers4Search, db.session.query(ViewUsers4Search), columns).output_result())
-
-
-@module.get('/users/delete/<int:id>')
-def delete_user(id):
-    user = User.query.get_or_404(id)
-    user.status = User.STATUS_DELETED
-    db.session.commit()
-    return redirect(url_for('admin.users_index'))
-
-
-@module.get('/users/activate/<int:id>')
-def activate_user(id):
-    user = User.query.get_or_404(id)
-    user.status = User.STATUS_ACTIVE
-    db.session.commit()
-    return redirect(url_for('admin.users_index'))
 
 
 @module.get('/users/edit/<int:id>')

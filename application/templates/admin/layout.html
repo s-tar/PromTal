@@ -27,11 +27,11 @@
 </head>
 <body>
     <div id="popup"></div>
-{% block body %}
-    {% include 'admin/header.html' %}
-    {% block content %}
+    {% block body %}
+        {% include 'admin/header.html' %}
+        {% block content %}
+        {% endblock %}
     {% endblock %}
-{% endblock %}
     <script src="/static/js/lib/tinymce/tinymce.min.js"></script>
 </body>
 </html>

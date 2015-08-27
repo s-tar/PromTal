@@ -10,7 +10,9 @@
           <ul class="nav navbar-nav">
             <li><a href="{{ url_for('admin.s_users') }}">Пользователи </a></li>
             <li><a href="{{ url_for('admin.s_news') }}">Новости </a></li>
-            <li><a href="{{ url_for('admin.company_structure_show') }}">Структура компании </a></li>
+            {% if current_user.is_admin %}
+                <li><a href="{{ url_for('admin.company_structure_show') }}">Структура компании </a></li>
+            {% endif %}
             <li><a href="{{ url_for('admin.news_categories') }}">Разделы новостей </a></li>
           </ul>
           <div class="user-profile-header">
