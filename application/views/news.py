@@ -7,6 +7,7 @@ from application import Module, db
 from application.utils.decorators import requires_permissions
 from application.utils import auth
 from application.utils.validator import Validator
+from application.models.user import User
 from application.models.news import News
 from application.models.news_category import NewsCategory
 from application.models.news_tag import NewsTag

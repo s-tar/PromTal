@@ -5,7 +5,7 @@
 var mobilePhoneStyle = {fontSize: 18, marginTop: -2};
 var skypeStyle = {fontSize: 15};
 React.render(
-    <AJAXForm action="{{ url_for('user.edit_profile') }}" method="post" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
+    <AJAXForm action="{{ url_for('api_v1.edit_profile') }}" method="put" enctype="multipart/form-data" onSuccess={wellDone} onDone={showErrors}>
         <div className="row">
           <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <table className="table table-striped">
