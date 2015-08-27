@@ -17,12 +17,41 @@ function tinymceInit() {
         language : "ru",
         height : 300,
         convert_urls: false,
+        //menubar: 'format edit insert view table',
+        menu: {
+            format: {title: 'Format', items: 'bold italic underline strikethrough| formats | removeformat'},
+            edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
+            insert: {title: 'Insert', items: 'link image media | pagebreak charmap hr'},
+            view: {title: 'View', items: 'visualblocks visualaid | preview print'},
+            table: {title: 'Table', items: 'inserttable tableprops deletetable | cell row column'}
+        },
         plugins : [
-            "pagebreak",
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table contextmenu paste"
+            "pagebreak autoresize textpattern",
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime media nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor colorpicker textpattern imagetools"
         ],
+        textpattern_patterns: [
+             {start: '*', end: '*', format: 'italic'},
+             {start: '**', end: '**', format: 'bold'},
+             {start: '#', format: 'h1'},
+             {start: '##', format: 'h2'},
+             {start: '###', format: 'h3'},
+             {start: '####', format: 'h4'},
+             {start: '#####', format: 'h5'},
+             {start: '######', format: 'h6'},
+             {start: 'h1', format: 'h1'},
+             {start: 'h2', format: 'h2'},
+             {start: 'h3', format: 'h3'},
+             {start: 'h4', format: 'h4'},
+             {start: 'h5', format: 'h5'},
+             {start: 'h6', format: 'h6'},
+             {start: '1. ', cmd: 'InsertOrderedList'},
+             {start: '* ', cmd: 'InsertUnorderedList'},
+             {start: '- ', cmd: 'InsertUnorderedList'}
+        ],
+        toolbar1: "undo redo | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
         statusbar: false,
         pagebreak_separator: "<!-- page break -->",
         file_picker_callback: function(callback, value, meta) {
