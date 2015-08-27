@@ -53,9 +53,6 @@ def news_form(id=None):
     categories = defaultdict(list)
     for c in NewsCategory.all():
         categories[c.parent_id].append(c)
-
-    if id and news.author != auth.service.get_user():
-        abort(403)
     return render_template('news/form.html', **{'news': news, 'categories': categories})
 
 @module.route("/save", methods=['POST'])
@@ -70,13 +67,17 @@ def save():
         abort(403)
     if v.is_valid():
         data = v.valid_data
-        news = News.get(data.id) or News()
 
-        if news.author and news.author != user:
-            abort(403)
-        news.title = data.title
-        news.text = data.text
-        news.author = user
+        news = News.get(data.id)
+
+        if news:
+            news.title = data.title
+            news.text = data.text
+        else:
+            news = News()
+            news.title = data.title
+            news.text = data.text
+            news.author = user
 
         category = NewsCategory.get(data.category_id)
         news.category = category
