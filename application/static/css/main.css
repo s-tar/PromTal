@@ -181,6 +181,13 @@ table.table-manage thead .sorting:last-child:after {
 table.table-manage thead .sorting:last-child {
     cursor: default;
 }
+table.table-department thead .sorting:nth-last-child(2):after {
+    content: "";
+    cursor: pointer;
+}
+table.table-department thead .sorting:nth-last-child(2) {
+    cursor: default;
+}
 li.media {
     display: inline-block;
 }
