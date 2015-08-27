@@ -202,15 +202,17 @@ var Comments = React.createClass({displayName: "Comments",
                 if(!comment) return;
                 if(!quotes[comment.id].length && comment.status == 'deleted') {
                     delete all_comments[comment.id];
-                    quotes[comment.quote_for_id].splice(quotes[comment.quote_for_id].indexOf(comment), 1);
                     if(!comment.quote_for_id)
                         comments.splice(comments.indexOf(comment), 1);
+                    else
+                        quotes[comment.quote_for_id].splice(quotes[comment.quote_for_id].indexOf(comment), 1);
                     delete_parent(all_comments[comment.quote_for_id])
                 }
             }
 
             list.splice(i, 1);
             delete all_comments[comment.id];
+
             delete_parent(all_comments[comment.quote_for_id])
 
             self.setState({comments: self.state.comments, quotes: self.state.quotes})
@@ -342,10 +344,11 @@ var Comment = React.createClass({displayName: "Comment",
 
         if(!editForm) {
             if (current_user.is_authorized && comment.status != 'deleted') {
+                if(current_user.id == comment.author.id || current_user.is_admin || current_user.permissions.indexOf('manage_comments') != -1)
+                    deleteButton = React.createElement("a", {href: "#", className: "delete-button", onClick: this.deleteComment}, "Удалить");
                 if (current_user.id != comment.author.id) {
                     answerButton = React.createElement("a", {href: "#", className: "answer-button", onClick: this.showQuoteForm}, "Ответить")
                 } else {
-                    deleteButton = React.createElement("a", {href: "#", className: "delete-button", onClick: this.deleteComment}, "Удалить");
                     editButton = React.createElement("a", {href: "#", className: "edit-button", onClick: this.showEditForm}, "Редактировать")
                 }
             }

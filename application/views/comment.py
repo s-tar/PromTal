@@ -18,7 +18,7 @@ def delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         comment = Comment.get(id)
-        if comment:
+        if comment and (user.is_admin or comment.author == user or 'manage_comments' in user.get_permissions()):
             comment_json = None
 
             def delete_parent(comment):
