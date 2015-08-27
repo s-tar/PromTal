@@ -10,6 +10,11 @@
             <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Редактировать </a> &nbsp;
             <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Изменить пароль</a>
             </div>
+            {% elif current_user.is_admin or 'manage_users' in current_user.get_permissions() %}
+            <div class="edit-buttons edit-buttons-in-profile">
+            <a href="{{ url_for('user.edit_profile') }}"><span class="glyphicon glyphicon-pencil"></span> Редактировать </a> &nbsp;
+            <a href="{{ url_for('user.edit_pass') }}"><span><i class="fa fa-lg fa-key"></i></span> Изменить пароль</a>
+            </div>
             {% endif %}
         </div>
       </div>

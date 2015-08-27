@@ -44,8 +44,7 @@ def insert_roles():
         'moderator': [
             'post_comment', 'edit_comments',
             'write_articles', 'moderate_comments',
-            'manage_users', 'set_permissions',
-            'manage_articles',
+            'manage_articles', 'manage_users',
         ]
     }
     permissions_map = {p.name: p for p in Permission.query}

@@ -67,13 +67,13 @@ def s_users_json():
 
     current_user = auth.service.get_user()
     disabled = ''
-    if not current_user.is_admin:
+    if not current_user.is_admin and ('set_permissions' not in current_user.get_permissions()):
         disabled = 'disabled'
 
     for row in json_result['aaData']:
         row_id = row['0']
         row['1'] = "<a href='"+url_for('user.profile')+"/"+row_id+"'>"+row['1']+"</a>"
-        last_col = len(columns)-1
+        last_col = len(columns) - 1
 
         # Permission
         last_col += 1
@@ -126,8 +126,8 @@ def s_users_json():
             </a>
         """ % row_id
         row[last_columns] = manage_html.format(
-            edit_user_profile = url_for('admin.edit_user', id=row_id),
-            delete_user_profile = url_for('admin.delete_user', id=row_id))
+            edit_user_profile=url_for('admin.edit_user', id=row_id),
+            delete_user_profile=url_for('admin.delete_user', id=row_id))
     return jsonify(**json_result)
 
 
