@@ -13,14 +13,14 @@ SUBMIT_SM = 'http://sms.skysms.net/api/submit_sm'
 RETURNCODE = 'RETURNCODE'
 SUCCESS_CODE = '00'
 CODEVALUE = {
-    '00': u'Сообщение успешно добавлено в очередь',
-    '01': u'Недопустимые значения параметров или нет обязательных параметров',
-    '02': u'Зарезервировано',
-    '03': u'Зарезервировано',
-    '04': u'Зарезервировано',
-    '05': u'Ошибка аутентификации клиента',
-    '06': u'Ошибка настроек клиента',
-    '07': u'Ошибка проверки состояния сообщения'
+    '00': 'The message was successfully added to the queue',
+    '01': 'Invalid parameter values or not required parameters',
+    '02': 'Reserved',
+    '03': 'Reserved',
+    '04': 'Reserved',
+    '05': 'Failed client authentication',
+    '06': 'Error client settings',
+    '07': 'Error checking the status messages'
 }
 
 class SkySMS(object):
