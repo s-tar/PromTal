@@ -6,8 +6,8 @@ from application.models.user import User
 from application.mail_sender import gmail
 
 # TODO Resolve problem with sending html in email
-restore_password = "Для восстановления пароля пройдите по ссылке: http://reimu.uaprom{{ url_for('password.restore_pass', token=token) }}"
-news_notification = "Новая новость на портале: http://reimu.uaprom{{ url_for('news.news_one', id=id) }} ({{ title }})"
+restore_password = u"Для восстановления пароля пройдите по ссылке: http://reimu.uaprom{{ url_for('password.restore_pass', token=token) }}"
+news_notification = u"Новая новость на портале: http://reimu.uaprom{{ url_for('news.news_one', id=id) }} ({{ title }})"
 
 
 @celery.task()
