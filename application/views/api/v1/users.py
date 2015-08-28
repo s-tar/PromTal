@@ -192,7 +192,6 @@ def edit_profile():
         }
 
         try:
-            print(data)
             update_user(**data)
             return {"status": "ok"}
         except DataProcessingError as e:

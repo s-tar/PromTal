@@ -34,5 +34,6 @@ def send_password_restore_ref(email, name, token):
         # text_body=render_template('email/password_restore.html', token=token),
         text_body=render_template_string(restore_password, token=token),
     )
-    envelope.add_attachment("Content-type", "text/html")
+    print(envelope)
+    envelope.add_header("Content-Type", "text/html")
     gmail.send(envelope)

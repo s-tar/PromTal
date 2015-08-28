@@ -25,6 +25,7 @@ def restore_post():
         user = User.get_by_email(email)
         if user:
             token = PasswordRestore.add_token(user)
+            print(token)
             send_password_restore_ref.delay(user.email, user.full_name, token)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
