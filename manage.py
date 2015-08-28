@@ -22,7 +22,7 @@ def runcelery():
     celery_worker = worker.worker(app=celery)
 
     options = {
-        'traceback': True,
+        'loglevel': 'INFO'
     }
 
     celery_worker.run(**options)

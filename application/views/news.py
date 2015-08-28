@@ -42,7 +42,7 @@ def list_all_by_tag(id):
 
 @module.get('/<int:id>')
 def news_one(id):
-    news = News.get(id)
+    news = News.query.get_or_404(id)
     news.increment_views()
     return render_template('news/one.html', **{'news': news})
 
@@ -93,8 +93,8 @@ def save():
         db.session.add(news)
         db.session.commit()
 
-        # if is_new:
-        #     send_news_notification.delay(news.id, news.title)
+        if is_new:
+            send_news_notification.delay(news.id, news.title)
 
         return jsonify({'status': 'ok',
                         'news': news.as_dict()})

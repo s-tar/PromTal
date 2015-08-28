@@ -60,10 +60,10 @@ class Config:
                                                              REDIS_PORT,
                                                              1)
     CELERY_RESULT_BACKEND = "redis://{0}:{1}@{2}:{3}/{4}".format(REDIS_USERNAME,
-                                                                  REDIS_PASSWORD,
-                                                                  REDIS_HOST,
-                                                                  REDIS_PORT,
-                                                                  2)
+                                                                 REDIS_PASSWORD,
+                                                                 REDIS_HOST,
+                                                                 REDIS_PORT,
+                                                                 2)
 
     session = {
         'session.type': 'file',

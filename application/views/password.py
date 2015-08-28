@@ -3,7 +3,7 @@ from flask.json import jsonify
 
 from application import Module
 from application.utils.validator import Validator
-from application.mail_sender import send_mail_restore_pass
+from application.tasks.email import send_password_restore_ref
 from application.models.user import User, PasswordRestore
 from application.bl.users import restore_password
 
@@ -25,7 +25,7 @@ def restore_post():
         user = User.get_by_email(email)
         if user:
             token = PasswordRestore.add_token(user)
-            send_mail_restore_pass(email, token)
+            send_password_restore_ref.delay(user.email, user.full_name, token)
         return jsonify({"status": "ok"})
     return jsonify({"status": "fail",
                     "errors": v.errors})
