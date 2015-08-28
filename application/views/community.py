@@ -36,10 +36,13 @@ def community_page(id):
     return render_template('community/one.html', **{'community': community})
 
 @module.get('/edit/<int:id>')
-@requires_permissions('manage_communities')
 def community_edit(id=None):
+    user = auth.service.get_user()
     community = Community.get(id)
-    return render_template('community/form.html', **{'community': community})
+    if user == community.owner or user.is_admin or ('manage_communities' in user.get_permissions()):
+        return render_template('community/form.html', **{'community': community})
+    else:
+        abort(403)
 
 @module.get('/new')
 def community_create():
