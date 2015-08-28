@@ -427,11 +427,11 @@ var CommunityMembersCounter = React.createClass({displayName: "CommunityMembersC
         });
     },
     render: function() {
-        var title = 'учасников';
+        var title = 'участников';
         var mod_count = this.state.count % 10;
-        if(mod_count == 1) title = 'учасник';
-        if(mod_count > 1 && mod_count < 5) title = 'учасника';
-        if(this.state.count % 100 > 10 && this.state.count % 100 < 20) title = 'учасников';
+        if(mod_count == 1) title = 'участник';
+        if(mod_count > 1 && mod_count < 5) title = 'участника';
+        if(this.state.count % 100 > 10 && this.state.count % 100 < 20) title = 'участников';
         return(
             React.createElement("div", {className: "members-counter"}, 
                 React.createElement("span", null, this.state.count, " ", title)

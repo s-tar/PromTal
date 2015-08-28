@@ -35,7 +35,7 @@ class Permission(db.Model):
         ('write_articles', 'Писать новости'), ('manage_comments', 'Управлять комментариями'),
         ('manage_users', 'Управлять пользователями'), ('set_permissions', 'Выдавать разрешения'),
         ('change_company_structure', 'Изменять структуру компании'),
-        ('manage_user_groups', 'Управлять группами пользователей'),
+        ('manage_communities', 'Управлять группами пользователей'),
         ('manage_articles', 'Управлять новостями'),
     ]
 

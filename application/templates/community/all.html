@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="frame header">
                 <h3 class="title"><a href="{{ url_for('main.list_communities') }}">Группы</a> | <a href="{{ url_for('main.mine_communities') }}">Мои группы</a></h3>
-                <a href="{{ url_for('community.community_form') }}" class="button new community-create">Новая группа</a>
+                <a href="{{ url_for('community.community_create') }}" class="button new community-create">Новая группа</a>
             </div>
         </div>
         <div class="communities-list">
@@ -25,12 +25,23 @@
             </div>
             <div class="top-buttons">
                 {% if current_user == community.owner %}
-                <div class="edit-buttons">
-                    <a href="{{ url_for("community.community_form", id=community.id) }}"><span class="fa fa-edit"></span></a>
-                    <a href="javascript: deleteCommunity({{ community.id }})"><span class="fa fa-trash-o"></span></a>
-                </div>
-                {% else %}
-                    <div class="community-subscription-component" data-community-id="{{ community.id }}" data-subscribed="{{ community.has_member(current_user) }}" data-status="{{ community.member_status_title(current_user) or ''}}"></div>
+                    <div class="edit-buttons">
+                        <a href="{{ url_for("community.community_edit", id=community.id) }}"><span class="fa fa-edit"></span></a>
+                        <a href="javascript: deleteCommunity({{ community.id }})"><span class="fa fa-trash-o"></span></a>
+                    </div>
+                {% elif community.owner != current_user %}
+                    {% if current_user.is_admin or ('manage_communities' in current_user.get_permissions()) %}
+                        <div class="edit-buttons" style="margin-right: 130px; margin-top: 8px">
+                            <a href="{{ url_for("community.community_edit", id=community.id) }}"><span class="fa fa-edit"></span></a>
+                            <a href="javascript: deleteCommunity({{ community.id }})"><span class="fa fa-trash-o"></span></a>
+                        </div>
+                    {% endif %}
+                    <div class="top-buttons community-subscription-component"
+                             data-community-id="{{ community.id }}"
+                             data-subscribed="{{ community.has_member(current_user) }}"
+                             data-reload="True"
+                             data-status="{{ community.member_status_title(current_user) or ''}}">
+                    </div>
                 {% endif %}
             </div>
             <div class="bottom-buttons">
