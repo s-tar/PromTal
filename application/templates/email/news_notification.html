@@ -2,6 +2,8 @@
 <head>
 </head>
 <body>
-    <p>Новая новость на портале: <a href="{{ url_for('news.news_one', id=id) }}">{{ title }}</a></p>
+    <p>Новая новость на портале:
+        <a href="http://reimu.uaprom{{ url_for('news.news_one', id=id) }}">{{ title }}</a>
+    </p>
 </body>
 </html>

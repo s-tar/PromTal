@@ -201,6 +201,17 @@ def edit_profile():
     return {"status": "fail", "errors": v.errors}
 
 
+@api_v1.put('/users/news-notification/')
+@json()
+def edit_news_notification():
+    is_subscribed = request.form.get('subscribed')
+    current_user = auth.service.get_user()
+    current_user.news_notification = is_subscribed
+    db.session.commit()
+    return {}, 200
+
+
+
 @api_v1.get('/users/<int:id>/news/')
 @json()
 def get_user_news(id):

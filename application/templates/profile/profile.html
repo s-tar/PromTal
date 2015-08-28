@@ -83,6 +83,14 @@
                         <td><span class="fa fa-skype" style="font-size: 15px;"></span> {{ user.skype }}</td>
                     </tr>
                 {% endif %}
+                {% if user.id == current_user.id %}
+                    <tr>
+                        <td>Подписатсья на рассылку новостей:</td>
+                        <td>
+                            <input id="edit_news_notification" type="checkbox" {% if user.news_notification %}checked{% endif %}/>
+                        </td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
       </div>
@@ -101,6 +109,17 @@
         </div>
     </div>
 </div>
+
+<script>
+$( "#edit_news_notification").on("change", function( e ) {
+    var data = $(this).is(':checked');
+    $.ajax({
+        url: "{{ url_for('api_v1.edit_news_notification') }}",
+        type: "PUT",
+        data: "subscribed="+data
+    })
+});
+</script>
 
 <script>
 function renderNews ( obj ) {
