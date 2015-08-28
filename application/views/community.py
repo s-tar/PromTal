@@ -4,6 +4,7 @@ from application import Module, db
 from application.models.post import Post
 from application.models.user import User
 from application.utils import auth
+from application.utils.decorators import requires_permissions
 from application.utils.validator import Validator
 from flask import render_template, request, abort, redirect, url_for
 from flask.json import jsonify
@@ -34,14 +35,18 @@ def community_page(id):
     community = Community.get(id)
     return render_template('community/one.html', **{'community': community})
 
-@module.get('/new')
 @module.get('/edit/<int:id>')
-def community_form(id=None):
-    community = Community.get(id) or Community()
-    if id and community.owner != auth.service.get_user():
-        abort(403)
+@requires_permissions('manage_communities')
+def community_edit(id=None):
+    community = Community.get(id)
     return render_template('community/form.html', **{'community': community})
 
+@module.get('/new')
+def community_create():
+    community = Community()
+    return render_template('community/form.html', **{'community': community})
+
+@requires_permissions('manage_communities')
 @module.route("/save", methods=['POST'])
 def save():
     data = dict(request.form)
@@ -63,16 +68,18 @@ def save():
         })
 
     data = v.valid_data
-    community = Community()
-    if data.id:
-        community = Community.get(data.id)
-    if not community or (community.owner and community.owner != user):
-        abort(403)
+    community = Community.get(data.id)
 
-    community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
-    community.name = data.name
-    community.description = data.description
-    community.owner = user
+    if community:
+        community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
+        community.name = data.name
+        community.description = data.description
+    else:
+        community = Community()
+        community.type = Community.TYPE.PRIVATE if data.private else Community.TYPE.PUBLIC
+        community.name = data.name
+        community.description = data.description
+        community.owner = user
 
     db.session.add(community)
     db.session.flush()
@@ -92,7 +99,7 @@ def delete(id):
     user = auth.service.get_user()
     if user.is_authorized():
         community = Community.get(id)
-        if community and community.owner == user:
+        if (community and community.owner == user) or user.is_admin or ('manage_communities' in user.get_permissions()):
             community.status = community.STATUS.DELETED
             db.session.commit()
             return jsonify({'status': 'ok'})

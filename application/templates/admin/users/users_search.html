@@ -35,7 +35,7 @@ window.onload = function() {
         $('#users_datatables').DataTable({
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "{{ url_for('admin.users_search_json') }}"
+            "sAjaxSource": "{{ url_for('user.users_search_json') }}"
         });
     } ); 
 }

@@ -21,6 +21,7 @@ def _default_value(chain):
 def _empty(chain):
     return ''
 
+
 def _default_value_view(chain):
     if chain == 'None':
         return None
@@ -155,6 +156,7 @@ def users_search():
     return render_template('admin/users/users_search.html')
 
 
+"""
 @module.get('/users_search_json')
 def users_search_json():
     columns = list()
@@ -171,7 +173,7 @@ def users_search_json():
     columns.append(ColumnDT('department_name', filter=_default_value_view))
     columns.append(ColumnDT('photo_url', filter=_default_value_view))
     return jsonify(**DataTables(request, ViewUsers4Search, db.session.query(ViewUsers4Search), columns).output_result())
-
+"""
 
 @module.get('/users/edit/<int:id>')
 def edit_user(id):

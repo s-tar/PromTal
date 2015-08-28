@@ -27,13 +27,16 @@
         {% block content %}{% endblock %}
     </div>
     {% if not content_only %}{% include 'footer.html' %}{% endif %}
+    {
     <script>
         var current_user = {
             id: {{ current_user.id or 0 }},
             full_name: '{{ current_user.full_name or '' }}',
             photo: '{{ current_user.photo.get_url if current_user.photo else '' }}',
             photo_s: '{{ current_user.photo.get_url('thumbnail') if current_user.photo else '' }}',
-            is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }}
+            is_authorized: {{ 'true' if current_user.is_authorized() else 'false' }},
+            is_admin: {{ 'true' if current_user.is_admin else 'false' }},
+            permissions: ["{{ '", "'.join(current_user.get_permissions())|safe if current_user.get_permissions}}"]
         }
     </script>
     <script src="/static/js/lib/fancybox/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" ></script>
